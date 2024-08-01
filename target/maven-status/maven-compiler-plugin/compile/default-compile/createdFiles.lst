@@ -1,4 +1,7 @@
-LoginBean.class
+ChartSeries.class
 com/mycompany/bms/JAXRSConfiguration.class
+DashboardBean.class
 com/mycompany/bms/resources/JavaEE8Resource.class
+DashboardBean$Transaction.class
+LoginBean.class
 RemoteValidationView1.class
