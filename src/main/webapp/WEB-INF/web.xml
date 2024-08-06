@@ -31,7 +31,7 @@
 
     <!-- Welcome File Configuration -->
     <welcome-file-list>
-        <welcome-file>loginpage.xhtml</welcome-file> <!-- Adjust if needed -->
+        <welcome-file>/Admin/loginpage.xhtml</welcome-file> 
     </welcome-file-list>
     
 </web-app>

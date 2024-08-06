@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Login - Banking Management System</title>
+           <style>
+            body {
+                padding: 0px;
+                margin: 0px;
+                background-color: #ebf1fa;
+                text-align: center;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .login-container {
+                display: flex;
+                border: 1px solid #f5f5ef;
+                width: 900px;
+                height:500px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .login-left {
+                width: 100%;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                background-color: #f2f2f2;
+                text-align: center;
+            }
+            .login-right {
+                width: 100%;
+                background-image: url('cover.png');
+                background-size: cover;
+                background-position: center;
+            }
+            .login-title {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            .login-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .login-button {
+                width: 100%;
+            }
+            .icon-input {
+                display: flex;
+                align-items: center;
+            }
+            .icon-input i {
+                margin-right: 10px;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="login-container">
+            <div class="login-left">
+                <h2>Welcome to Banking Management System</h2>
+                <h3 class="login-title">Login</h3>
+                <h:form>
+                    <p:messages id="messages" showDetail="true" />
+
+                    <div class="icon-input">
+                        <i class="pi pi-user"></i>
+                        <p:inputText id="username" value="#{loginBean.username}" placeholder="Username" styleClass="login-input" required="true" requiredMessage="Username is required">
+                            <f:validateRegex pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$" />
+                        </p:inputText>
+                    </div>
+
+                    <div class="icon-input">
+                        <i class="pi pi-lock"></i>
+                        <p:password id="password" value="#{loginBean.password}" placeholder="Password" styleClass="login-input" required="true" requiredMessage="Password is required">
+                            <f:validateLength minimum="6" />
+                        </p:password>
+                    </div>
+
+                    <p:commandButton value="Login" action="#{loginBean.login}" styleClass="login-button" update="messages" />
+                </h:form>
+            </div>
+            <div class="login-right"></div>
+        </div>
+    </h:body>
+</html>
