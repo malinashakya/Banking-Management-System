@@ -17,16 +17,14 @@
             .right-menu {
                 float: right;
                 margin-left: auto;
+                height: 50px;
             }
-            .right-menu-item {
-                margin-right: 20px;
-            }
+         
         </style>
     </h:head>
     <h:body>
         <div class="card">
             <h:form>
-                <p:growl id="messages"/>
                 <p:menubar hideDelay="1000">
                     <!-- Left Menu Items -->
                     <p:menuitem>
@@ -48,8 +46,9 @@
                     <!-- Right Menu Items -->
                     <f:facet name="options">
                         <p:menubar styleClass="right-menu">
-                            <p:menuitem value="Admin" icon="pi pi-user" styleClass="right-menu-item"/>
+                            <p:submenu label="Admin" icon="pi pi-user" styleClass="right-menu-item">
                             <p:menuitem value="Logout" icon="pi pi-sign-out" styleClass="right-menu-item" outcome="loginpage"/>
+                            </p:submenu>
                         </p:menubar>
                     </f:facet>
                 </p:menubar>
