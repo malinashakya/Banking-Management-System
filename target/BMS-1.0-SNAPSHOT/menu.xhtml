@@ -1,11 +1,10 @@
-<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Menu</title>
         <style>
             .menu-logo {
                 font-weight: bold;
@@ -13,7 +12,14 @@
                 margin-right: 100px;
             }
             .menu-item {
-                margin-left: 150px;   
+                margin-left: 150px;
+            }
+            .right-menu {
+                float: right;
+                margin-left: auto;
+            }
+            .right-menu-item {
+                margin-right: 20px;
             }
         </style>
     </h:head>
@@ -21,31 +27,31 @@
         <div class="card">
             <h:form>
                 <p:growl id="messages"/>
-
                 <p:menubar hideDelay="1000">
-                    <!-- Logo Text -->
+                    <!-- Left Menu Items -->
                     <p:menuitem>
                         <h:outputText value="BMS" styleClass="menu-logo"/>
                     </p:menuitem>
-                    <p:menuitem value="Home" icon="pi pi-home" styleClass="menu-item"/>
+                    <p:menuitem value="Home" icon="pi pi-home" styleClass="menu-item" outcome="AdminDashboard"/>
                     
                     <p:submenu label="Account" icon="pi pi-user" styleClass="menu-item">
-                        <p:menuitem value="Open New Account" icon="pi pi-user-plus"/>
-                        <p:menuitem value="All Accounts" icon="pi pi-users"/>
-                        <p:menuitem value="Account Status" icon="pi pi-info-circle" />
+                        <p:menuitem value="Open New Account" icon="pi pi-user-plus" outcome="OpenNewAccount"/>
+                        <p:menuitem value="All Accounts" icon="pi pi-users" outcome="AllAccount"/>
+                        <p:menuitem value="Account Status" icon="pi pi-info-circle" outcome="AccountStatus"/>
                     </p:submenu>
                     
                     <p:submenu label="Transaction" icon="pi pi-wallet" styleClass="menu-item">
-                        <p:menuitem value="New Transactions" icon="pi pi-money-bill"/>
-                        <p:menuitem value="All Transactions" icon="pi pi-list"/>
+                        <p:menuitem value="New Transactions" icon="pi pi-money-bill" outcome="NewTransaction"/>
+                        <p:menuitem value="All Transactions" icon="pi pi-list" outcome="AllTransaction"/>
                     </p:submenu>
-                    <div class="right-part">
-                    <!-- Admin Item -->
-                    <p:menuitem value="Admin" icon="pi pi-user" styleClass="menu-item"/>
                     
-                    <!-- Logout Item -->
-                    <p:menuitem value="Logout" icon="pi pi-sign-out" styleClass="menu-item"/>
-                    </div>
+                    <!-- Right Menu Items -->
+                    <f:facet name="options">
+                        <p:menubar styleClass="right-menu">
+                            <p:menuitem value="Admin" icon="pi pi-user" styleClass="right-menu-item"/>
+                            <p:menuitem value="Logout" icon="pi pi-sign-out" styleClass="right-menu-item" outcome="loginpage"/>
+                        </p:menubar>
+                    </f:facet>
                 </p:menubar>
             </h:form>
         </div>

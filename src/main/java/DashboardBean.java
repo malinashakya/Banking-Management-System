@@ -18,7 +18,7 @@ public class DashboardBean implements Serializable {
         transactions = new ArrayList<>();
         transactions.add(new Transaction("User1", 500));
         transactions.add(new Transaction("User2", 1000));
-        transactions.add(new Transaction("User3", 1500));
+        transactions.add(new Transaction("User3", 2000));
     }
 
     public List<Transaction> getTransactions() {

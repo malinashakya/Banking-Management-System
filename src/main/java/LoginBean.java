@@ -1,9 +1,15 @@
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import javax.faces.application.FacesMessage;
+import javax.inject.Named;
+import javax.faces.view.ViewScoped;
+import java.io.Serializable;
 
-@ManagedBean
-public class LoginBean {
+@Named
+@ViewScoped
+public class LoginBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String username;
     private String password;
 
@@ -23,14 +29,14 @@ public class LoginBean {
         this.password = password;
     }
 
-    public void login() {
+    public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
-
-        if (username.equals("admin@example.com") && password.equals("password")) {
+        if ("malina@example.com".equals(username) && "password".equals(password)) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Login successful"));
-            // Add navigation or additional logic here
+            return "AdminDashboard?faces-redirect=true";
         } else {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Invalid username or password"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials", "Please try again."));
+            return null;
         }
     }
 }
