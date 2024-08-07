@@ -2,15 +2,62 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Account Status</title>
+        <style>
+            .table-details{
+                margin:20px 120px;
+            }
+            .buttons{
+                display:flex;
+                justify-content: space-between;
+
+            }
+            .select-activation {
+                width: 150px;
+                padding: 5px;
+                font-size: 16px;
+                border: 1px solid #ccc; 
+                border-radius: 4px; 
+                background-color: #f9f9f9; 
+               margin-left:10%;
+            }
+
+            .select-activation option {
+                background-color: #f9f9f9; 
+                color: #333; 
+                padding: 5px; 
+            }
+
+        </style>
     </h:head>
     <h:body> <!--Including the menu-->
-         <ui:include src="menu.xhtml" />
-         <select name="Account Status">
-             <option>Active</option>
-             <option>Deactivated</option>
-         </select>
+        <ui:include src="menu.xhtml" />
+        <h2 style="text-align: center">Account Status</h2>
+        <select name="Account-Status" class="select-activation">
+            <option>Active</option>
+            <option>Deactivated</option>
+        </select>
+        <div class="table-details">
+            <p:dataTable value="#{dashboardBean.transactions}" var="transaction" styleClass="card">
+                <p:column headerText="Account Number">
+                    <!--<h:outputText value="#{transaction.user}" />-->
+                    <h:outputText value="123456" />
+                </p:column>
+                <p:column headerText="Name">
+                    <h:outputText value="Shaina" />
+                </p:column>
+                <p:column headerText="Email">
+                    <h:outputText value="shaina@gmail.com" />
+                </p:column>
+                <p:column headerText="Action" styleClass="buttons" colspan="2">
+                    <p:button value="View" styleClass="ui-button-info" />
+                    <p:button value="Edit" styleClass="ui-button-warning" />
+                </p:column>
+
+            </p:dataTable>
+        </div>
     </h:body>
 </html>
