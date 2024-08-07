@@ -1,5 +1,7 @@
 package com.mycompany.bms.bean;
 
+import com.mycompany.bms.model.Admin;
+import com.mycompany.bms.service.AdminService;
 import javax.faces.context.FacesContext;
 import javax.faces.application.FacesMessage;
 import javax.inject.Named;
@@ -14,6 +16,8 @@ public class LoginBean implements Serializable {
 
     private String username;
     private String password;
+
+    private final AdminService adminService = new AdminService();
 
     public String getUsername() {
         return username;
@@ -33,7 +37,12 @@ public class LoginBean implements Serializable {
 
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
-        if ("malina@example.com".equals(username) && "password".equals(password)) {
+        Admin admin = adminService.getAll().stream()
+            .filter(a -> a.getUsername().equals(username) && a.getPassword().equals(password))
+            .findFirst()
+            .orElse(null);
+
+        if (admin != null) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Login successful"));
             return "AdminDashboard?faces-redirect=true";
         } else {
