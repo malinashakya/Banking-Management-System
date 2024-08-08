@@ -27,6 +27,7 @@ public class AdminBean implements Serializable {
     }
 
     public void saveAdmin() {
+        
         try {
             adminService.save(admin);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Admin saved successfully"));

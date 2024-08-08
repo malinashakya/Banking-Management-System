@@ -38,11 +38,11 @@ public class LoginBean implements Serializable {
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
         Admin admin = adminService.getAll().stream()
-            .filter(a -> a.getUsername().equals(username) && a.getPassword().equals(password))
+            .filter(a -> a.getUsername().equals(username))
             .findFirst()
             .orElse(null);
 
-        if (admin != null) {
+        if (admin != null && adminService.verifyPassword(admin, password)) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Login successful"));
             return "AdminDashboard?faces-redirect=true";
         } else {
