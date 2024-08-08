@@ -5,35 +5,40 @@ import javax.persistence.*;
 @Entity
 @Table(name = "admin")
 public class Admin {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private String username;
     private String password;
-    private String firstName;
-    private String lastName;
-    private String address;
-    private int contact;
+    
 
-    public Admin() {}
-
-    public Admin(String username, String password, String firstName, String lastName, String address, int contact) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.contact = contact;
+    public Admin() {
     }
 
-    // Getters and setters
+    public Admin(String name, String username, String password) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        
+    }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUsername() {
@@ -52,35 +57,4 @@ public class Admin {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getContact() {
-        return contact;
-    }
-
-    public void setContact(int contact) {
-        this.contact = contact;
-    }
 }

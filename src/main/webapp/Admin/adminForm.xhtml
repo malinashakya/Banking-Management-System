@@ -2,25 +2,24 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Admin Form</title>
     </h:head>
     <h:body>
         <h:form>
             <p:panel header="Admin Form">
-                <p:messages id="messages" showDetail="true" />
+                <p:messages id="messages" showDetail="true" showSummary="true" />
+                <p:panelGrid columns="2" columnClasses="label,value">
+                    <h:outputLabel for="username" value="Username:" />
+                    <p:inputText id="username" value="#{adminBean.admin.username}" placeholder="Username" required="true" requiredMessage="Username is required" />
 
-                <p:inputText id="username" value="#{adminBean.admin.username}" placeholder="Username" required="true" requiredMessage="Username is required" />
-                <p:password id="password" value="#{adminBean.admin.password}" placeholder="Password" required="true" requiredMessage="Password is required" />
-                <p:inputText id="firstName" value="#{adminBean.admin.firstName}" placeholder="First Name" required="true" requiredMessage="First Name is required" />
-                <p:inputText id="lastName" value="#{adminBean.admin.lastName}" placeholder="Last Name" required="true" requiredMessage="Last Name is required" />
-                <p:inputText id="address" value="#{adminBean.admin.address}" placeholder="Address" required="true" requiredMessage="Address is required" />
-                <p:inputText id="contact" value="#{adminBean.admin.contact}" placeholder="Contact" required="true" requiredMessage="Contact is required">
-                    <f:convertNumber integerOnly="true" />
-                </p:inputText>
+                    <h:outputLabel for="password" value="Password:" />
+                    <p:password id="password" value="#{adminBean.admin.password}" placeholder="Password" requiredMessage="Password is required" />
 
+                    <h:outputLabel for="firstName" value="Full Name:" />
+                    <p:inputText id="firstName" value="#{adminBean.admin.name}" placeholder="Full Name" required="true" requiredMessage="Full Name is required" />
+                </p:panelGrid>
                 <p:commandButton value="Submit" action="#{adminBean.saveAdmin}" update="messages" />
             </p:panel>
         </h:form>

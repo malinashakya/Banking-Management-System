@@ -3,9 +3,7 @@ com/mycompany/bms/model/Admin.class
 com/mycompany/bms/bean/DashboardBean$Transaction.class
 com/mycompany/bms/bean/DashboardBean.class
 com/mycompany/bms/service/AdminService.class
-com/mycompany/bms/test/AdminTest.class
 DatabaseConnection.class
 com/mycompany/bms/bean/AdminBean.class
-com/mycompany/bms/bean/LoginBean.class
 com/mycompany/bms/util/HibernateUtil.class
 com/mycompany/bms/repository/AdminRepository.class
