@@ -1,6 +1,8 @@
 package com.mycompany.bms.model;
 
 import javax.persistence.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @Entity
 @Table(name = "admin")
@@ -12,7 +14,6 @@ public class Admin {
     private String name;
     private String username;
     private String password;
-    
 
     public Admin() {
     }
@@ -20,11 +21,9 @@ public class Admin {
     public Admin(String name, String username, String password) {
         this.name = name;
         this.username = username;
-        this.password = password;
-        
+        setPassword(password); // Hash password when setting
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -54,7 +53,24 @@ public class Admin {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = hashPassword(password); // Hash the password
     }
 
+    public boolean checkPassword(String password) {
+        return this.password.equals(hashPassword(password)); // Verify the password
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e); // Handle the exception appropriately
+        }
+    }
 }
