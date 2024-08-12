@@ -19,37 +19,18 @@
 
                 <p:column headerText="Actions">
                     <p:commandButton value="Edit" 
-                                     action="#{adminBean.prepareEditAdmin(admin)}"
-                                     oncomplete="PF('editAdminDialog').show()" 
-                                     update=":editAdminForm"
+                                     action="#{adminBean.prepareEdit(admin)}"
+                                     update="@form"
                                      ajax="true" />
+
                     <p:commandButton value="Delete" 
                                      action="#{adminBean.deleteAdmin(admin)}"
                                      update=":adminListForm:admins"
                                      onclick="return confirm('Are you sure you want to delete this admin?');"
                                      ajax="true" />
                 </p:column>
-
             </p:dataTable>
         </h:form>
-
-        <p:dialog header="Edit Admin" widgetVar="editAdminDialog" modal="true" showEffect="fade" hideEffect="fade">
-            <h:form id="editAdminForm">
-                <h:panelGrid columns="2" cellpadding="5">
-                    <h:outputLabel for="username" value="Username:" />
-                    <p:inputText id="username" value="#{adminBean.admin.username}" required="true" />
-
-                    <h:outputLabel for="password" value="Password:" />
-                    <p:password id="password" value="#{adminBean.admin.password}" required="true" />
-
-                    <p:commandButton value="Save" action="#{adminBean.updateAdmin()}"
-                                     update=":adminListForm:admins"
-                                     oncomplete="PF('editAdminDialog').hide();"
-                                     ajax="true" />
-                    <p:commandButton value="Cancel" onclick="PF('editAdminDialog').hide();" type="button"/>
-                </h:panelGrid>
-            </h:form>
-        </p:dialog>
 
         <p:commandButton value="Back" action="#{adminBean.redirectToAdminList()}" ajax="true" />
     </h:body>
