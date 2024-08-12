@@ -1,7 +1,6 @@
 package com.mycompany.bms.repository;
 
 import com.mycompany.bms.model.Admin;
-import static com.sun.tools.javac.jvm.ByteCodes.ret;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -50,7 +49,7 @@ public class AdminRepository {
     }
 
     public List<Admin> getAll() {
-        return entityManager.createQuery("SELECT a FROM admin a", Admin.class).getResultList();
+        return entityManager.createQuery("SELECT a FROM Admin a", Admin.class).getResultList();
 //        entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();: Executes a query to get a list of all User entities.
 //User.class is used to specify the entity type for JPA operations, allowing the EntityManager to handle objects of that type for database operations and queries.
     }

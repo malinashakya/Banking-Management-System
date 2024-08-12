@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Update Admin</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:panelGroup>
+                <h:outputLabel for="adminId" value="Admin ID" />
+                <h:inputText id="adminId" value="#{updateAdminBean.adminId}" />
+                <p:commandButton value="Load Admin" action="#{updateAdminBean.loadAdmin}" update="@form" />
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{not empty updateAdminBean.adminId}">
+                <h:outputLabel for="username" value="Username" />
+                <h:inputText id="username" value="#{updateAdminBean.username}" />
+
+                <h:outputLabel for="password" value="Password" />
+                <h:inputSecret id="password" value="#{updateAdminBean.password}" />
+
+                <p:commandButton value="Update" action="#{updateAdminBean.updateAdmin}" 
+                                 update="messages" 
+                                 styleClass="update-button" />
+            </h:panelGroup>
+
+            <h:messages id="messages" globalOnly="true" />
+        </h:form>
+    </h:body>
+</html>

@@ -2,10 +2,13 @@ com/mycompany/bms/JAXRSConfiguration.class
 com/mycompany/bms/model/Admin.class
 com/mycompany/bms/bean/DashboardBean$Transaction.class
 com/mycompany/bms/bean/DashboardBean.class
+com/mycompany/bms/bean/DeleteAdminBean.class
 com/mycompany/bms/service/AdminService.class
 DatabaseConnection.class
+com/mycompany/bms/bean/UpdateAdminBean.class
 com/mycompany/bms/test/PersistenceTest.class
 com/mycompany/bms/bean/AdminBean.class
+com/mycompany/bms/bean/AdminListBean.class
 com/mycompany/bms/bean/LoginBean.class
 com/mycompany/bms/util/HibernateUtil.class
 com/mycompany/bms/repository/AdminRepository.class

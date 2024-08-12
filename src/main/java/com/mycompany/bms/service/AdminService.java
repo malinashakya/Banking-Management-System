@@ -17,7 +17,7 @@ public class AdminService{
     private AdminRepository adminRepository;
     
     // Hashing password with SHA-256 and a salt
-    private String hashPassword(String password, String salt) {
+    public String hashPassword(String password, String salt) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(salt.getBytes());
@@ -29,7 +29,7 @@ public class AdminService{
     }
 
     // Generate a new salt
-    private String generateSalt() {
+    public String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
