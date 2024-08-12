@@ -72,19 +72,19 @@
 
                     <div class="icon-input">
                         <i class="pi pi-user"></i>
-                        <p:inputText id="username" value="#{loginBean.username}" placeholder="Username" styleClass="login-input" required="true" requiredMessage="Username is required">
+                        <p:inputText id="username" value="#{loginAdminBean.username}" placeholder="Username" styleClass="login-input" required="true" requiredMessage="Username is required">
                             <f:validateRegex pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$" />
                         </p:inputText>
                     </div>
 
                     <div class="icon-input">
                         <i class="pi pi-lock"></i>
-                        <p:password id="password" value="#{loginBean.password}" placeholder="Password" styleClass="login-input" required="true" requiredMessage="Password is required">
+                        <p:password id="password" value="#{loginAdminBean.password}" placeholder="Password" styleClass="login-input" required="true" requiredMessage="Password is required">
                             <f:validateLength minimum="6" />
                         </p:password>
                     </div>
 
-                    <p:commandButton value="Login" action="#{loginBean.login}" styleClass="login-button" update="messages" />
+                    <p:commandButton value="Login" action="#{loginAdminBean.login}" styleClass="login-button" update="messages" />
                 </h:form>
             </div>
             <div class="login-right"></div>

@@ -32,7 +32,7 @@ public class UpdateAdminBean {
             admin = adminService.getAdminById(adminId);
             if (admin != null) {
                 username = admin.getUsername();
-                password = "";  // Don't load the password
+//                password = "";  // Don't load the password
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Admin not found", "No admin found with the provided ID"));
@@ -44,6 +44,8 @@ public class UpdateAdminBean {
         if (admin != null) {
             admin.setUsername(username);
             admin.setPassword(password);
+            System.out.println("Pasword:"+password);
+                    
             adminService.updateAdmin(admin);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Admin updated", "Admin details updated successfully"));
