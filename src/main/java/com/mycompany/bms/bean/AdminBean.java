@@ -16,15 +16,17 @@ import javax.inject.Named;
 public class AdminBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private List<Admin> admins;  
+    private List<Admin> admins;  // List of all admins
     private Admin selectedAdmin; // Admin selected for editing
-
+    private Admin newAdmin;      // New admin for creation
+    
     @Inject
     private AdminService adminService;
 
     @PostConstruct
     public void init() {
         admins = adminService.getAllAdmins(); // Load all admins when bean is initialized
+        newAdmin = new Admin(); // Initialize newAdmin
     }
 
     // Getters and setters
@@ -41,6 +43,14 @@ public class AdminBean implements Serializable {
 
     public void setSelectedAdmin(Admin selectedAdmin) {
         this.selectedAdmin = selectedAdmin;
+    }
+    
+        public Admin getNewAdmin() {
+        return newAdmin;
+    }
+
+    public void setNewAdmin(Admin newAdmin) {
+        this.newAdmin = newAdmin;
     }
 
     // Prepare the selected admin for editing
@@ -68,6 +78,26 @@ public class AdminBean implements Serializable {
             admins = adminService.getAllAdmins(); // Refresh the admin list after deletion
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting admin", null));
+            e.printStackTrace();
+        }
+    }
+    
+     // Create a new admin
+    public void createAdmin() {
+        try {
+            // Validate newAdmin fields
+            if (newAdmin.getUsername() == null || newAdmin.getUsername().isEmpty() ||
+                newAdmin.getName() == null || newAdmin.getName().isEmpty() ||
+                newAdmin.getPassword() == null || newAdmin.getPassword().isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Please fill all required fields", null));
+                return;
+            }
+            adminService.saveAdmin(newAdmin); // Save the new admin
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Admin created successfully", null));
+            admins = adminService.getAllAdmins(); // Refresh the admin list after creation
+            newAdmin = new Admin(); // Clear the form
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error creating admin", null));
             e.printStackTrace();
         }
     }

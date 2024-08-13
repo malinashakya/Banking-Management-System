@@ -11,8 +11,13 @@
             <p:dataTable id="admins" value="#{adminBean.admins}" var="admin" rowKey="#{admin.id}">
                 <f:facet name="header">
                     Admins List
+                                 
+                     <!-- Button to show the Create New Admin Dialog -->
+            <p:commandButton icon="pi pi-user-plus" 
+                             onclick="PF('createDialog').show()" />
                 </f:facet>
-
+   
+            
                 <p:column headerText="Username">
                     <h:outputText value="#{admin.username}" />
                      </p:column>
@@ -52,6 +57,28 @@
                     <p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" />
                 </h:panelGrid>
             </p:dialog>
+            
+             <!-- Create New Admin Dialog -->
+            <p:dialog id="createDialog" header="Create New Admin" widgetVar="createDialog" modal="true" showEffect="fade" hideEffect="fade">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="newUsername" value="Username:" />
+                    <p:inputText id="newUsername" value="#{adminBean.newAdmin.username}" required="true" />
+
+                    <h:outputLabel for="newName" value="Name:" />
+                    <p:inputText id="newName" value="#{adminBean.newAdmin.name}" required="true" />
+
+                    <h:outputLabel for="newPassword" value="Password:" />
+                    <p:password id="newPassword" value="#{adminBean.newAdmin.password}" required="true" />
+
+                    <p:commandButton value="Create" action="#{adminBean.createAdmin()}" 
+                                     update=":adminListForm:admins"
+                                     oncomplete="PF('createDialog').hide()"
+                                     ajax="true" />
+                    <p:commandButton value="Cancel" onclick="PF('createDialog').hide()" type="button" />
+                </h:panelGrid>
+            </p:dialog>
+
+         
         </h:form>
     </h:body>
 </html>
