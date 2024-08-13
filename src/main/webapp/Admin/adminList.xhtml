@@ -30,13 +30,24 @@
                                      style="background-color:#FFC107; border:#FFC107; margin-right:10px;"
                                      update=":adminListForm:editDialog"
                                      oncomplete="PF('editDialog').show()"
-                                     ajax="true" />
-                    <p:commandButton icon="pi pi-trash" 
-                                     action="#{adminBean.deleteAdmin(admin)}"
-                                     style="background-color:#ff0e0e; border:#ff0e0e"
-                                     update=":adminListForm:admins"
-                                     onclick="return confirm('Are you sure you want to delete this admin?');"
-                                     ajax="true" />
+                                     ajax="true" />               
+                                        
+                    <!-- ConfirmDialog Definition -->
+<p:confirmDialog id="confirmDialog" header="Confirmation" message="Are you sure you want to delete this admin?" 
+                  widgetVar="confirmDlg" showEffect="fade" hideEffect="fade">
+    <p:commandButton value="Yes" icon="pi pi-check" 
+                     action="#{adminBean.deleteAdmin(admin)}"
+                     update=":adminListForm:admins"
+                     oncomplete="PF('confirmDlg').hide()" />
+    <p:commandButton value="No" icon="pi pi-times" 
+                     onclick="PF('confirmDlg').hide()" />
+</p:confirmDialog>
+
+<!-- CommandButton to Trigger Confirmation Dialog -->
+<p:commandButton icon="pi pi-trash" 
+                 style="background-color:#ff0e0e; border:#ff0e0e"
+                 onclick="PF('confirmDlg').show(); return false;" />
+
                 </p:column>
             </p:dataTable>
 
