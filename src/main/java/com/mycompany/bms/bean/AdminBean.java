@@ -2,99 +2,72 @@ package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Admin;
 import com.mycompany.bms.service.AdminService;
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Named("adminBean")
-@RequestScoped
-public class AdminBean {
+@ViewScoped
+public class AdminBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private List<Admin> admins;
-    private Admin admin = new Admin();
+    private List<Admin> admins;  
+    private Admin selectedAdmin; // Admin selected for editing
 
-    @EJB
+    @Inject
     private AdminService adminService;
 
     @PostConstruct
     public void init() {
-        admins = adminService.getAllAdmins();
+        admins = adminService.getAllAdmins(); // Load all admins when bean is initialized
     }
 
     // Getters and setters
-    public Admin getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
-    }
-    
     public List<Admin> getAdmins() {
         return admins;
     }
 
-    public void saveAdmin() {
-        try {
-            adminService.saveAdmin(admin);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Admin saved successfully", null));
-            admin = new Admin(); // Clear form after saving
-            admins = adminService.getAllAdmins(); // Refresh the admin list
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error saving admin", null));
-            e.printStackTrace();
+    public Admin getSelectedAdmin() {
+        if (selectedAdmin == null) {
+            selectedAdmin = new Admin(); // Initialize selectedAdmin if null
         }
+        return selectedAdmin;
     }
 
-    public void deleteAdmin(Admin admin) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        try {
-            adminService.deleteAdmin(admin.getId());
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Admin deleted successfully"));
-            admins = adminService.getAllAdmins(); // Refresh the admin list
-        } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete admin"));
-            e.printStackTrace();
-        }
+    public void setSelectedAdmin(Admin selectedAdmin) {
+        this.selectedAdmin = selectedAdmin;
     }
 
-    public void redirectToAdminList() {
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("adminList.xhtml");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
+    // Prepare the selected admin for editing
     public void prepareEdit(Admin admin) {
-        this.admin = admin; // Set the admin to be edited
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("AdminEdit.xhtml");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.selectedAdmin = adminService.getAdminById(admin.getId()); // Fetch fresh admin data from DB
     }
 
+    // Update the admin information
     public void updateAdmin() {
         try {
-            // Check if password was modified and handle accordingly
-            if (admin.getPassword() != null && !admin.getPassword().isEmpty()) {
-                String salt = adminService.generateSalt();
-                String hashedPassword = adminService.hashPassword(admin.getPassword(), salt);
-                admin.setPassword(hashedPassword + ":" + salt);
-            }
-            adminService.updateAdmin(admin);
+            adminService.updateAdmin(selectedAdmin); // Save the updated admin
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Admin updated successfully", null));
-            // Redirect back to Admin list page
-            FacesContext.getCurrentInstance().getExternalContext().redirect("adminList.xhtml");
+            admins = adminService.getAllAdmins(); // Refresh the admin list after update
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error updating admin", null));
+            e.printStackTrace();
+        }
+    }
+
+    // Delete an admin
+    public void deleteAdmin(Admin admin) {
+        try {
+            adminService.deleteAdmin(admin.getId()); // Delete the admin
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Admin deleted successfully", null));
+            admins = adminService.getAllAdmins(); // Refresh the admin list after deletion
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error deleting admin", null));
             e.printStackTrace();
         }
     }

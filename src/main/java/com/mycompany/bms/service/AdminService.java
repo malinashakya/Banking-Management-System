@@ -48,10 +48,7 @@ public class AdminService{
         return adminRepository.getById(id);
     }
     
-   public void updateAdmin(Admin admin) {
-        String salt = generateSalt();
-        String hashedPassword = hashPassword(admin.getPassword(), salt);
-        admin.setPassword(hashedPassword + ":" + salt);
+  public void updateAdmin(Admin admin) {
         adminRepository.update(admin);
     }
     
@@ -82,4 +79,6 @@ public class AdminService{
     {
         return adminRepository.getAll();
     }
+
+
 }

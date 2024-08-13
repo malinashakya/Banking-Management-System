@@ -18,11 +18,11 @@
                 </p:column>
 
                 <p:column headerText="Actions">
-                    <p:commandButton value="Edit" 
+                    <p:commandButton value="Update" 
                                      action="#{adminBean.prepareEdit(admin)}"
-                                     update="@form"
+                                     update=":adminListForm:editDialog"
+                                     oncomplete="PF('editDialog').show()"
                                      ajax="true" />
-
                     <p:commandButton value="Delete" 
                                      action="#{adminBean.deleteAdmin(admin)}"
                                      update=":adminListForm:admins"
@@ -30,8 +30,24 @@
                                      ajax="true" />
                 </p:column>
             </p:dataTable>
-        </h:form>
 
-        <p:commandButton value="Back" action="#{adminBean.redirectToAdminList()}" ajax="true" />
+            <!-- Edit Dialog -->
+            <p:dialog id="editDialog" header="Edit Admin" widgetVar="editDialog" modal="true" showEffect="fade" hideEffect="fade">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="username" value="Username:" />
+                    <p:inputText id="username" value="#{adminBean.selectedAdmin.username}" />
+
+                    <h:outputLabel for="name" value="Name:" />
+                    <p:inputText id="name" value="#{adminBean.selectedAdmin.name}" />
+
+                    <p:commandButton value="Save" action="#{adminBean.updateAdmin()}" 
+                                     update=":adminListForm:admins"
+                                     oncomplete="PF('editDialog').hide()"
+                                     ajax="true" />
+                    <p:commandButton value="Cancel" onclick="PF('editDialog').hide()" type="button" />
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+        <a href="/BMS-1.0-SNAPSHOT/Admin/adminForm.xhtml"> Back to Registration</a>
     </h:body>
 </html>
