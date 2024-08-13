@@ -15,16 +15,21 @@
 
                 <p:column headerText="Username">
                     <h:outputText value="#{admin.username}" />
+                     </p:column>
+                <p:column headerText="Name">
+                    <h:outputText value="#{admin.name}" />
                 </p:column>
 
                 <p:column headerText="Actions">
-                    <p:commandButton value="Update" 
+                    <p:commandButton icon="pi pi-pencil" 
                                      action="#{adminBean.prepareEdit(admin)}"
+                                     style="background-color:#FFC107; border:#FFC107; margin-right:10px;"
                                      update=":adminListForm:editDialog"
                                      oncomplete="PF('editDialog').show()"
                                      ajax="true" />
-                    <p:commandButton value="Delete" 
+                    <p:commandButton icon="pi pi-trash" 
                                      action="#{adminBean.deleteAdmin(admin)}"
+                                     style="background-color:#ff0e0e; border:#ff0e0e"
                                      update=":adminListForm:admins"
                                      onclick="return confirm('Are you sure you want to delete this admin?');"
                                      ajax="true" />
@@ -48,6 +53,5 @@
                 </h:panelGrid>
             </p:dialog>
         </h:form>
-        <a href="/BMS-1.0-SNAPSHOT/Admin/adminForm.xhtml"> Back to Registration</a>
     </h:body>
 </html>
