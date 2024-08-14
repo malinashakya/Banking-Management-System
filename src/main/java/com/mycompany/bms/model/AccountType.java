@@ -12,11 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "account_type")
-public class AccountType {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class AccountType extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     //    @Enumerated(EnumType.STRING): Maps the accountType field to an ENUM type in the database
@@ -38,14 +34,6 @@ public class AccountType {
         this.accountType = accountType;
         this.interestRate = interestRate;
         setMaturityDate(maturityDate); // Use the setter to apply the condition
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public AccountTypeEnum getAccountType() {

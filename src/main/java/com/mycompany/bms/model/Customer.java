@@ -3,20 +3,13 @@ package com.mycompany.bms.model;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "customer")
-public class Customer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Customer extends BaseEntity{
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -55,15 +48,6 @@ public class Customer {
         this.password = password;
         this.dateOfBirth = dateOfBirth;
         this.accountType = accountType;
-    }
-
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getFirstName() {

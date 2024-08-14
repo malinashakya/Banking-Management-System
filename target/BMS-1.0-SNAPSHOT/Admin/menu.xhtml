@@ -35,14 +35,19 @@
                     <p:menuitem>
                         <h:outputText value="BMS" styleClass="menu-logo"/>
                     </p:menuitem>
+                    
+                    <!--Home Menu-->
                     <p:menuitem value="Home" icon="pi pi-home" styleClass="menu-item" outcome="AdminDashboard"/>
                     
+                    <!--Account Menu-->
                     <p:submenu label="Account" icon="pi pi-user" styleClass="menu-item">
                         <p:menuitem value="Open New Account" icon="pi pi-user-plus" outcome="OpenNewAccount"/>
                         <p:menuitem value="All Accounts" icon="pi pi-users" outcome="AllAccount"/>
                         <p:menuitem value="Account Status" icon="pi pi-info-circle" outcome="AccountStatus"/>
+                        <p:menuitem value="Account Type" icon="pi pi-plus" outcome="AccountType"/>
                     </p:submenu>
                     
+                    <!--Transaction Menu-->
                     <p:submenu label="Transaction" icon="pi pi-wallet" styleClass="menu-item">
                         <p:menuitem value="New Transactions" icon="pi pi-money-bill" outcome="NewTransaction"/>
                         <p:menuitem value="All Transactions" icon="pi pi-list" outcome="AllTransaction"/>
@@ -52,6 +57,7 @@
                     <f:facet name="options">
                         <p:menubar styleClass="right-menu">
                             <p:submenu label="Admin" icon="pi pi-user" styleClass="right-menu-item">
+                            <p:menuitem value="Setting" icon="pi pi-cog" styleClass="right-menu-item" outcome="adminList"/>
                             <p:menuitem value="Logout" icon="pi pi-sign-out" styleClass="right-menu-item" outcome="loginpage"/>
                             </p:submenu>
                         </p:menubar>
