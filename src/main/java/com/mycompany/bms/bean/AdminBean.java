@@ -66,7 +66,7 @@ public class AdminBean implements Serializable {
             selectedAdmin = new Admin(); // Clear form after submission
             editMode = false; // Reset the edit mode flag
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save or update admin"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Admin already exists"));
         }
     }
 
