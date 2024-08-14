@@ -88,9 +88,8 @@
                     <h:outputLabel for="interestRate" value="Interest Rate:" />
                     <p:inputText id="interestRate" value="#{accountTypeBean.selectedAccountType.interestRate}" />
 
-                    <h:outputLabel for="timePeriod" value="Time Period: (in Months)" rendered="#{accountTypeBean.selectedAccountType.accountType == 'FIXED'}" />
-                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedAccountType.timePeriod}"
-                                 rendered="#{accountTypeBean.selectedAccountType.accountType == 'FIXED'}" />
+                    <h:outputLabel for="timePeriod" value="Time Period: (in Months)" />
+                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedAccountType.timePeriod}" />
                 </h:panelGrid>
 
                 <p:commandButton value="#{accountTypeBean.editMode ? 'Update' : 'Save'}"
@@ -103,5 +102,7 @@
                 <p:commandButton value="Cancel" onclick="PF('accountTypeDialog').hide();" type="button"/>
             </h:form>
         </p:dialog>
+
+
     </h:body>
 </html>
