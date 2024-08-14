@@ -36,7 +36,6 @@ public class LoginAdminBean {
         this.password = password;
     }
 
-      // Login method
    // Login method
     public String login() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
