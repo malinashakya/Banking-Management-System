@@ -8,6 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "account_type")
+
 public class AccountType extends BaseEntity {
 
     @Enumerated(EnumType.STRING)

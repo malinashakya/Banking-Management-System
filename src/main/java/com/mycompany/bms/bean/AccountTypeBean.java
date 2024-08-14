@@ -15,6 +15,7 @@ import javax.inject.Named;
 @Named("accountTypeBean")
 @ViewScoped
 public class AccountTypeBean implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -65,7 +66,19 @@ public class AccountTypeBean implements Serializable {
     public void saveOrUpdateAccountType() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            if (editMode) {
+            boolean isDuplicate = accountTypes.stream().anyMatch(accountType
+                    -> accountType.getAccountType().equals(selectedAccountType.getAccountType())
+                    && Float.compare(accountType.getInterestRate(), selectedAccountType.getInterestRate()) == 0
+                    && Integer.compare(accountType.getTimePeriod(), selectedAccountType.getTimePeriod()) == 0
+                    && (editMode ? !accountType.getId().equals(selectedAccountType.getId()) : true) // Ensure we’re not comparing the same entity
+            );
+
+            if (isDuplicate) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Account type already exists"));
+                return;
+            }
+
+            if (editMode && !isDuplicate) {
                 accountTypeService.update(selectedAccountType);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Account Type updated successfully"));
             } else {
