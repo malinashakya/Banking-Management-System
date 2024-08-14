@@ -40,14 +40,14 @@
                     <h:outputText value="#{accountType.interestRate}" />
                 </p:column>
 
-                <p:column headerText="Maturity Date">
-                    <h:outputText value="#{accountType.maturityDate}" />
+                <p:column headerText="Time Period (in Months)">
+                    <h:outputText value="#{accountType.timePeriod}" />
                 </p:column>
 
                 <!-- Actions column with Edit and Delete buttons -->
                 <p:column headerText="Actions">
                     <p:commandButton icon="pi pi-fw pi-pencil"
-                                     style="color: white; background-color: gold; border-color:gold; margin: 3px;"
+                                     style="color: white; background-color: gold; border-color: gold; margin: 3px;"
                                      action="#{accountTypeBean.prepareEditAccountType(accountType)}"
                                      oncomplete="PF('accountTypeDialog').show()"
                                      update=":accountTypeDialogForm :growl"
@@ -88,8 +88,9 @@
                     <h:outputLabel for="interestRate" value="Interest Rate:" />
                     <p:inputText id="interestRate" value="#{accountTypeBean.selectedAccountType.interestRate}" />
 
-                    <h:outputLabel for="maturityDate" value="Maturity Date:" rendered="#{accountTypeBean.selectedAccountType.accountType == 'FIXED'}" />
-                    <p:calendar id="maturityDate" value="#{accountTypeBean.selectedAccountType.maturityDate}" pattern="MM/dd/yyyy" rendered="#{accountTypeBean.selectedAccountType.accountType == 'FIXED'}" />
+                    <h:outputLabel for="timePeriod" value="Time Period: (in Months)" rendered="#{accountTypeBean.selectedAccountType.accountType == 'FIXED'}" />
+                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedAccountType.timePeriod}"
+                                 rendered="#{accountTypeBean.selectedAccountType.accountType == 'FIXED'}" />
                 </h:panelGrid>
 
                 <p:commandButton value="#{accountTypeBean.editMode ? 'Update' : 'Save'}"

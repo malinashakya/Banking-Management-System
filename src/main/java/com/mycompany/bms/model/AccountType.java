@@ -1,39 +1,33 @@
 package com.mycompany.bms.model;
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "account_type")
-public class AccountType extends BaseEntity{
+public class AccountType extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    //    @Enumerated(EnumType.STRING): Maps the accountType field to an ENUM type in the database
-//    using the string representation of the enum values.
     @Column(name = "account_type", nullable = false)
     private AccountTypeEnum accountType;
 
     @Column(name = "interest_rate", nullable = false)
     private float interestRate;
 
-    @Column(name = "maturity_date")
-    private Date maturityDate;
+    @Column(name = "time_period", nullable = false) // Ensure this field is not nullable
+    private Integer timePeriod = 0; // Default value, or use a sensible default based on your needs
 
     // Constructors, getters, and setters
     public AccountType() {
     }
 
-    public AccountType(AccountTypeEnum accountType, float interestRate, Date maturityDate) {
+    public AccountType(AccountTypeEnum accountType, float interestRate, Integer timePeriod) {
         this.accountType = accountType;
         this.interestRate = interestRate;
-        setMaturityDate(maturityDate); // Use the setter to apply the condition
+        setTimePeriod(timePeriod); // Use the setter to apply the condition
     }
 
     public AccountTypeEnum getAccountType() {
@@ -52,15 +46,16 @@ public class AccountType extends BaseEntity{
         this.interestRate = interestRate;
     }
 
-    public Date getMaturityDate() {
-        return maturityDate;
+    public Integer getTimePeriod() {
+        return timePeriod;
     }
 
-    public void setMaturityDate(Date maturityDate) {
-        if (this.accountType == AccountTypeEnum.FIXED) {
-            this.maturityDate = maturityDate;
-        } else {
-            this.maturityDate = null; // Clear maturityDate if it's not a fixed account
+    public void setTimePeriod(Integer timePeriod) {
+        // Apply condition only if the account type is FIXED
+        if (this.accountType == AccountTypeEnum.FIXED && timePeriod != null) {
+            this.timePeriod = timePeriod;
+        } else if (this.accountType != AccountTypeEnum.FIXED) {
+            this.timePeriod = 0; // Set to a default value or handle appropriately
         }
     }
 }
