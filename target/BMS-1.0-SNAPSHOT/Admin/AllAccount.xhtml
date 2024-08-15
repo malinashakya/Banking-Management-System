@@ -1,58 +1,131 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <title>All Account</title>
-        <style>
-            .search-container{
-                text-align: center;
-                margin-bottom:5px;
-            }
-            .account-info{
-                margin:10px;
-            }
-            .buttons{
-                display:flex;
-                justify-content: space-between;
-            }
-        </style>
+        <title>Customers List</title>
     </h:head>
     <h:body>
-        <!--Including the menu-->
         <ui:include src="menu.xhtml" />
-        <h2 style="text-align:center">All Account</h2>
-        <h:form>
-            <div class="search-container">
-                <p:inputText id="search" value="" placeholder="Account Number" styleClass="search-input"/>
-                <p:commandButton value="Search" icon="pi pi-search" action="#" styleClass="search-button" />
-            </div>
-        </h:form>
-        <div class="account-info">
-            <p:dataTable value="#{dashboardBean.transactions}" var="transaction" styleClass="card">
-                <p:column headerText="Account Number">
-                    <!--<h:outputText value="#{transaction.user}" />-->
-                    <h:outputText value="123456" />
+
+        <h:form id="customerListForm">
+            <p:dataTable id="customers" value="#{customerBean.lazyCustomers}" var="customer" paginator="true" rows="3" lazy="true" rowKey="#{customer.id}">
+                <!--For lazyTable we have added paginator="true" rows="3" lazy="true" Here rows=3 that means three data will be shown at once in the table-->
+                <f:facet name="header">
+                    Customers List
+
+                    <!-- Adding a new customer -->
+                    <p:commandButton icon="pi pi-fw pi-user-plus"
+                                     value="Add Customer"
+                                     style="color: white; background-color: #007bff; margin: 4px; margin-left: 83%;"
+                                     action="#{customerBean.prepareNewCustomer()}" 
+                                     oncomplete="PF('customerDialog').show()"
+                                     update=":customerDialogForm"
+                                     ajax="true" />
+                </f:facet>
+
+                <p:column headerText="ID">
+                    <h:outputText value="#{customer.id}" />
                 </p:column>
-                <p:column headerText="Status">
-                    <h:outputText value="Active" />
+
+                <p:column headerText="Username">
+                    <h:outputText value="#{customer.username}" />
                 </p:column>
-                <p:column headerText="Name">
-                    <h:outputText value="Shaina" />
+
+                <p:column headerText="First Name">
+                    <h:outputText value="#{customer.firstName}" />
                 </p:column>
-                <p:column headerText="Email">
-                    <h:outputText value="shaina@gmail.com" />
+                <p:column headerText="Last Name">
+                    <h:outputText value="#{customer.lastName}" />
                 </p:column>
-                <p:column headerText="Phone ">
-                    <h:outputText value="987654321" />
+                <p:column headerText="Contact">
+                    <h:outputText value="#{customer.contact}" />
                 </p:column>
-                <p:column headerText="Action" styleClass="buttons" colspan="2">
-                    <p:button value="View" styleClass="ui-button-info" />
-                    <p:button value="Edit" styleClass="ui-button-warning" />
+                <p:column headerText="Address">
+                    <h:outputText value="#{customer.address}" />
+                </p:column>
+                <p:column headerText="Date of Birth">
+                    <h:outputText value="#{customer.dateOfBirth}" />
+                </p:column>
+                <p:column headerText="Account Type">
+                    <h:outputText value="#{customer.accountType}" />
+                </p:column>
+
+                <!-- Actions column with Edit and Delete buttons -->
+                <p:column headerText="Actions">
+                    <p:commandButton icon="pi pi-fw pi-user-edit"
+                                     style="color: white; background-color: gold; border-color:gold; margin: 3px;"
+                                     action="#{customerBean.prepareEditCustomer(customer)}"
+                                     oncomplete="PF('customerDialog').show()"
+                                     update=":customerDialogForm"
+                                     ajax="true" />
+
+                    <p:commandButton  
+                        update=":customerListForm:customers" 
+                        action="#{customerBean.deleteCustomer(customer)}"
+                        styleClass="ui-button-danger mr-2" 
+                        icon="pi pi-trash">
+                        <p:confirm type="popup" header="Confirmation" 
+                                   message="Do you want to delete this customer?" 
+                                   icon="pi pi-info-circle"/>
+                    </p:commandButton>
                 </p:column>
             </p:dataTable>
-        </div>
+
+            <!-- ConfirmPopup Definition -->
+            <p:confirmPopup global="true" widgetVar="confirmPopup">
+                <p:commandButton value="No" type="button" 
+                                 styleClass="ui-confirm-popup-no ui-button-flat" icon="pi pi-times" />
+                <p:commandButton value="Yes" type="button" 
+                                 styleClass="ui-confirm-popup-yes" icon="pi pi-check" />
+            </p:confirmPopup>
+        </h:form>
+
+        <!-- Dialog for customer form -->
+        <p:dialog header="Customer Form" widgetVar="customerDialog" modal="true" showEffect="fade" hideEffect="fade">
+            <h:form id="customerDialogForm">
+                <p:messages id="messages" showSummary="true" />
+
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="username" value="Username:" />
+                    <p:inputText id="username" value="#{customerBean.selectedCustomer.username}" />
+                    <h:outputLabel />
+                    <!-- Conditionally show password field only when adding a new customer -->
+                    <h:outputLabel for="password" value="Password:" rendered="#{customerBean.editMode == false}" />
+                    <p:password id="password" value="#{customerBean.selectedCustomer.password}" rendered="#{customerBean.editMode == false}" />
+
+                    <h:outputLabel for="firstName" value="First Name:" />
+                    <p:inputText id="firstName" value="#{customerBean.selectedCustomer.firstName}" />
+                    
+                    <h:outputLabel for="lastName" value="Last Name:" />
+                    <p:inputText id="lastName" value="#{customerBean.selectedCustomer.lastName}" />
+                    
+                    <h:outputLabel for="contact" value="Contact:" />
+                    <p:inputText id="contact" value="#{customerBean.selectedCustomer.contact}" />
+                    
+                    <h:outputLabel for="address" value="Address:" />
+                    <p:inputText id="address" value="#{customerBean.selectedCustomer.address}" />
+
+                    <h:outputLabel for="dateOfBirth" value="Date of Birth:" />
+                    <p:calendar id="dateOfBirth" value="#{customerBean.selectedCustomer.dateOfBirth}" pattern="dd/MM/yyyy" />
+
+                    <h:outputLabel for="accountType" value="Account Type:" />
+                    <p:inputText id="accountType" value="#{customerBean.selectedCustomer.accountType}" />
+                                                      
+                    <p:commandButton value="#{customerBean.editMode ? 'Update' : 'Save'}"
+                                     action="#{customerBean.saveOrUpdateCustomer()}"
+                                     update=":customerListForm :customerDialogForm :customerListForm:messages"
+                                     oncomplete="if (args.validationFailed) 
+                                     { PF('customerDialog').show(); } 
+                                     else 
+                                     { PF('customerDialog').hide(); }"
+                                     ajax="true" />
+
+                    <p:commandButton value="Cancel" onclick="PF('customerDialog').hide();" type="button"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
     </h:body>
 </html>

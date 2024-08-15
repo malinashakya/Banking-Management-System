@@ -20,6 +20,7 @@ public class AccountTypeRepository extends GenericRepository {
         super(entityClass);
     }
   
+    @Override
     public List<AccountType> getAll() {
         return entityManager.createQuery("SELECT e FROM AccountType e", AccountType.class).getResultList();
     }
