@@ -8,23 +8,21 @@
         <title>Admins List</title>
     </h:head>
     <h:body>
-        <!-- Growl for global messages -->
-        <p:growl id="growl" showDetail="true" />
-
         <ui:include src="menu.xhtml" />
 
         <h:form id="adminListForm">
-            <p:dataTable id="admins" value="#{adminBean.admins}" var="admin" rowKey="#{admin.id}">
+            <p:dataTable id="admins" value="#{adminBean.lazyAdmins}" var="admin" paginator="true" rows="3" lazy="true" rowKey="#{admin.id}">
+                <!--For lazyTable we have added  paginator="true" rows="3" lazy="true" Here rows=3 that means three data will be shown at once in the table-->
                 <f:facet name="header">
                     Admins List
 
                     <!-- Adding a new admin -->
                     <p:commandButton icon="pi pi-fw pi-user-plus"
                                      value="Add Admin"
-                                     style="color: white; background-color: #007bff; margin-top: -10px;float: right"
+                                     style="color: white; background-color: #007bff; margin: 4px; margin-left: 83%;"
                                      action="#{adminBean.prepareNewAdmin()}" 
                                      oncomplete="PF('adminDialog').show()"
-                                     update=":adminDialogForm :growl"
+                                     update=":adminDialogForm"
                                      ajax="true" />
                 </f:facet>
 
@@ -46,11 +44,11 @@
                                      style="color: white; background-color: gold; border-color:gold; margin: 3px;"
                                      action="#{adminBean.prepareEditAdmin(admin)}"
                                      oncomplete="PF('adminDialog').show()"
-                                     update=":adminDialogForm :growl"
+                                     update=":adminDialogForm"
                                      ajax="true" />
 
                     <p:commandButton  
-                        update=":adminListForm:admins :growl" 
+                        update=":adminListForm:admins" 
                         action="#{adminBean.deleteAdmin(admin)}"
                         styleClass="ui-button-danger mr-2" 
                         icon="pi pi-trash">
@@ -81,18 +79,23 @@
 
                     <h:outputLabel for="name" value="Name:" />
                     <p:inputText id="name" value="#{adminBean.selectedAdmin.name}" />
+                     <h:outputLabel />
+                    <!-- Conditionally show password field only when adding a new admin -->
                     <h:outputLabel for="password" value="Password:" rendered="#{adminBean.editMode == false}" />
                     <p:password id="password" value="#{adminBean.selectedAdmin.password}" rendered="#{adminBean.editMode == false}" />
+                  
+                 
+                    <p:commandButton value="#{adminBean.editMode ? 'Update' : 'Save'}"
+                                     action="#{adminBean.saveOrUpdateAdmin()}"
+                                     update=":adminListForm :adminDialogForm :adminListForm:messages"
+                                     oncomplete="if (args.validationFailed) 
+                                     { PF('adminDialog').show(); } 
+                                     else 
+                                     { PF('adminDialog').hide(); }"
+                                     ajax="true" />
+
+                    <p:commandButton value="Cancel" onclick="PF('adminDialog').hide();" type="button"/>
                 </h:panelGrid>
-
-                <p:commandButton value="#{adminBean.editMode ? 'Update' : 'Save'}"
-                                 action="#{adminBean.saveOrUpdateAdmin()}"
-                                 update=":adminListForm :adminDialogForm :growl"
-                                 oncomplete="if (args.validationFailed) { PF('adminDialog').show(); } else { PF('adminDialog').hide(); }"
-                                 ajax="true"
-                                 style="margin-right: 20px;"/>
-
-                <p:commandButton value="Cancel" onclick="PF('adminDialog').hide();" type="button"/>
             </h:form>
         </p:dialog>
     </h:body>

@@ -6,10 +6,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.primefaces.model.FilterMeta;
 
 @Stateless
 public class AdminRepository extends GenericRepository<Admin, Long> {
@@ -111,4 +113,19 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
             entityManager.remove(entity);
         }
     }
+
+    //For Lazy Table
+    public List<Admin> getAdmins(int first, int pageSize) {
+        String query = "SELECT a FROM Admin a";
+        return entityManager.createQuery(query, Admin.class)
+                .setFirstResult(first)
+                .setMaxResults(pageSize)
+                .getResultList();
+    }
+
+    public int countAdmins(Map<String, FilterMeta> filters) {
+        String query = "SELECT COUNT(a) FROM Admin a";
+        return ((Long) entityManager.createQuery(query).getSingleResult()).intValue();
+    }
+
 }
