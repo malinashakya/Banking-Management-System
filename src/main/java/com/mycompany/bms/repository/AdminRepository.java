@@ -1,58 +1,30 @@
 package com.mycompany.bms.repository;
 
 import com.mycompany.bms.model.Admin;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 
 @Stateless
 //Indicates that the bean is a stateless session bean with no conversational state
 
-public class AdminRepository {
+public class AdminRepository extends GenericRepository{
 
-    @PersistenceContext(name = "BankingDS")
-//    Injects the EntityManager associated with the persistence unit named "BankingDS".
+  @PersistenceContext(unitName = "BankingDS")
+private EntityManager entityManager;
 
-    private EntityManager entityManager;
 //    EntityManager manages entity lifecycle, performs database operations, and executes queries in JPA.
 
-    @Transactional
-//    Specifies that the method or class should execute within a transactional context, ensuring data consistency.
-    public void save(Admin admin) {
-        entityManager.persist(admin);
-//        entityManager.persist(admin); saves a new Admin entity to the database.
-
+  public AdminRepository() {
+        super(Admin.class);
     }
 
-    @Transactional
-    public Admin getById(Long id) {
-        return entityManager.find(Admin.class, id);
-//        entityManager.find(Admin.class, id);: Retrieves an Admin entity by its ID.
-    }
-
-    @Transactional
-    public void update(Admin admin) {
-        entityManager.merge(admin);
-//        entityManager.merge(user);: Updates an existing user entity in the database.
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        Admin admin = getById(id);
-        if (admin != null) {
-            entityManager.remove(admin);
-//            entityManager.remove(user);: Deletes the user entity from the database.
-        }
-    }
-
-    public List<Admin> getAll() {
-        return entityManager.createQuery("SELECT a FROM Admin a", Admin.class).getResultList();
-//        entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();: Executes a query to get a list of all User entities.
-//User.class is used to specify the entity type for JPA operations, allowing the EntityManager to handle objects of that type for database operations and queries.
-    }
 
     public Admin getByUsername(String username) {
         try {
@@ -75,4 +47,68 @@ public class AdminRepository {
         return query.getResultStream().findFirst().orElse(null);
     }
 //    This code executes the query, retrieves the first result as a Stream, and returns it if present; otherwise, it returns null.
+    // Hashing password with SHA-256 and a salt
+    public String hashPassword(String password, String salt) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.update(salt.getBytes());
+            byte[] hashedPassword = digest.digest(password.getBytes());
+            return Base64.getEncoder().encodeToString(hashedPassword);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Generate a new salt
+    public String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
+    }
+    
+    public Admin getAdminByUsername(String username)
+    {
+        return getByUsername(username);
+    }
+    
+    public Admin authenticate(String username, String password) {
+        Admin admin = getByUsername(username);
+        if (admin != null) {
+            String[] parts = admin.getPassword().split(":");
+            String hashedPassword = parts[0];
+            String salt = parts[1];
+            if (hashedPassword.equals(hashPassword(password, salt))) {
+                return admin;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Admin> getAll() {
+        return entityManager.createQuery("SELECT a FROM Admin a", Admin.class).getResultList();
+    }
+
+    @Override
+    public void save(Object entity) {
+             entityManager.persist(entity);
+    }
+
+    @Override
+    public Object getById(Object id) {
+          return entityManager.find(Admin.class, id);
+    }
+
+    @Override
+    public void update(Object entity) {
+        entityManager.merge(entity);    }
+
+    @Override
+    public void delete(Object id) {
+        Admin entity = (Admin) getById(id);
+        if (entity != null) {
+            entityManager.remove(entity);
+        }
+    }
 }

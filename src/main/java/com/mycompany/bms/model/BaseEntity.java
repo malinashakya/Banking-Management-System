@@ -32,3 +32,4 @@ public abstract class BaseEntity implements Serializable{
         
 }
 
+//Entity kahile crated ra updated vayeko vanera chahiyo, database ma store garne kahile create vayeko kahile update vayeko generic bata

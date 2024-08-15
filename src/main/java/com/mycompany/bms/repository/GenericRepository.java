@@ -9,16 +9,10 @@ package com.mycompany.bms.repository;
  * @author malina
  */
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
 public abstract class GenericRepository<T, ID> {
-
-    @PersistenceContext(name = "BankingDS")
-    private EntityManager entityManager;
-
     private final Class<T> entityClass;
 
     protected GenericRepository(Class<T> entityClass) {
@@ -26,30 +20,19 @@ public abstract class GenericRepository<T, ID> {
     }
 
     @Transactional
-    public void save(T entity) {
-        entityManager.persist(entity);
-    }
+    abstract public void save(T entity) ;
 
     @Transactional
-    public T getById(ID id) {
-        return entityManager.find(entityClass, id);
-    }
+    abstract public T getById(ID id); 
 
     @Transactional
-    public void update(T entity) {
-        entityManager.merge(entity);
-    }
+    abstract public void update(T entity) ;
 
     @Transactional
-    public void delete(ID id) {
-        T entity = getById(id);
-        if (entity != null) {
-            entityManager.remove(entity);
-        }
-    }
+    abstract public void delete(ID id) ;
+        
 
-    public List<T> getAll() {
-        return entityManager.createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass).getResultList();
-    }
+    abstract public List<T> getAll();
+        
 }
 

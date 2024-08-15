@@ -2,7 +2,7 @@ package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.AccountType;
 import com.mycompany.bms.model.AccountTypeEnum;
-import com.mycompany.bms.service.AccountTypeService;
+import com.mycompany.bms.repository.AccountTypeRepository;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -26,11 +26,11 @@ public class AccountTypeBean implements Serializable {
     private List<AccountTypeEnum> accountTypeEnums; // For dropdown
 
     @Inject
-    private AccountTypeService accountTypeService;
+    private AccountTypeRepository accountTypeRepository;
 
     @PostConstruct
     public void init() {
-        accountTypes = accountTypeService.getAll(); // Load all account types when bean is initialized
+        accountTypes = accountTypeRepository.getAll(); // Load all account types when bean is initialized
         accountTypeEnums = List.of(AccountTypeEnum.values()); // Load enum values
     }
 
@@ -79,14 +79,14 @@ public class AccountTypeBean implements Serializable {
             }
 
             if (editMode && !isDuplicate) {
-                accountTypeService.update(selectedAccountType);
+                accountTypeRepository.update(selectedAccountType);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Account Type updated successfully"));
             } else {
-                accountTypeService.save(selectedAccountType);
+                accountTypeRepository.save(selectedAccountType);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Account Type saved successfully"));
             }
 
-            accountTypes = accountTypeService.getAll(); // Refresh the account type list
+            accountTypes = accountTypeRepository.getAll(); // Refresh the account type list
             selectedAccountType = new AccountType(); // Clear form after submission
             editMode = false; // Reset the edit mode flag
         } catch (Exception e) {
@@ -97,9 +97,9 @@ public class AccountTypeBean implements Serializable {
     public void deleteAccountType(AccountType accountType) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            accountTypeService.delete(accountType.getId());
+            accountTypeRepository.delete(accountType.getId());
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Account Type deleted successfully"));
-            accountTypes = accountTypeService.getAll(); // Refresh the account type list
+            accountTypes = accountTypeRepository.getAll(); // Refresh the account type list
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete account type"));
         }

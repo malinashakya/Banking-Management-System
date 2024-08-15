@@ -1,7 +1,7 @@
 package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Admin;
-import com.mycompany.bms.service.AdminService;
+import com.mycompany.bms.repository.AdminRepository;
 import java.io.IOException;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -14,7 +14,7 @@ import javax.inject.Inject;
 public class LoginAdminBean {
 
     @Inject
-    private AdminService adminService;
+    private AdminRepository adminRepository;
 
     private String username;
     private String password;
@@ -40,7 +40,7 @@ public class LoginAdminBean {
     public String login() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            Admin admin = adminService.authenticate(username, password);
+            Admin admin = adminRepository.authenticate(username, password);
             if (admin != null) {
                 facesContext.getExternalContext().getSessionMap().put("loggedInAdmin", admin);
                 // Redirect to the Admin dashboard

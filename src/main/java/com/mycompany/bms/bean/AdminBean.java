@@ -1,7 +1,7 @@
 package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Admin;
-import com.mycompany.bms.service.AdminService;
+import com.mycompany.bms.repository.AdminRepository;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -14,6 +14,7 @@ import javax.inject.Named;
 @Named("adminBean")
 @ViewScoped
 public class AdminBean implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Inject
@@ -23,11 +24,15 @@ public class AdminBean implements Serializable {
     private boolean editMode = false;
 
     @Inject
-    private AdminService adminService;
+    private AdminRepository adminRepository;
 
     @PostConstruct
     public void init() {
-        admins = adminService.getAllAdmins(); // Load all admins when bean is initialized
+        try {
+            admins = adminRepository.getAll(); // Load all admins when bean is initialized
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Getters and setters
@@ -55,14 +60,14 @@ public class AdminBean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             if (editMode) {
-                adminService.updateAdmin(selectedAdmin);
+                adminRepository.update(selectedAdmin);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Admin updated successfully"));
             } else {
-                adminService.saveAdmin(selectedAdmin);
+                adminRepository.save(selectedAdmin);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Admin saved successfully"));
             }
 
-            admins = adminService.getAllAdmins(); // Refresh the admin list
+            admins = adminRepository.getAll(); //getAll Refresh the admin list
             selectedAdmin = new Admin(); // Clear form after submission
             editMode = false; // Reset the edit mode flag
         } catch (Exception e) {
@@ -73,9 +78,9 @@ public class AdminBean implements Serializable {
     public void deleteAdmin(Admin admin) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-            adminService.deleteAdmin(admin.getId());
+            adminRepository.delete(admin.getId());
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Admin deleted successfully"));
-            admins = adminService.getAllAdmins(); // Refresh the admin list
+            admins = adminRepository.getAll();//AdminsgetAllsh the admin list
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete admin"));
         }

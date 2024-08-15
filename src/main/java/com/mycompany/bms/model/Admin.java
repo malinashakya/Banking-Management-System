@@ -1,11 +1,7 @@
 package com.mycompany.bms.model;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -15,15 +11,8 @@ import javax.validation.constraints.Size;
 //Marks the class as  a JPA entity representing a database tabla
 @Table(name = "admin")
 //Makes table named admin inside our database
-public class Admin implements Serializable {
+public class Admin extends BaseEntity {
     private static final long serialVersionUID = 1L;
-
-    @Id
-//    Defines that it is id for the table
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    Automatically generates unique IDs for th entity using an auto-increment column
-
-    private Long id;
 
     @Column(name = "name", nullable = false)
     @NotEmpty(message = "Name cannot be empty")
@@ -52,13 +41,6 @@ public class Admin implements Serializable {
     }
 
     //Making getters and setters method
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
