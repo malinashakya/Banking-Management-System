@@ -12,28 +12,20 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 @Stateless
-//Indicates that the bean is a stateless session bean with no conversational state
+public class AdminRepository extends GenericRepository<Admin, Long> {
 
-public class AdminRepository extends GenericRepository{
+    @PersistenceContext(unitName = "BankingDS")
+    private EntityManager entityManager;
 
-  @PersistenceContext(unitName = "BankingDS")
-private EntityManager entityManager;
-
-//    EntityManager manages entity lifecycle, performs database operations, and executes queries in JPA.
-
-  public AdminRepository() {
+    public AdminRepository() {
         super(Admin.class);
     }
-
 
     public Admin getByUsername(String username) {
         try {
             return entityManager.createQuery("SELECT a FROM Admin a WHERE a.username = :username", Admin.class)
                     .setParameter("username", username)
                     .getSingleResult();
-            //            This code executes a JPA query to find a single Admin entity where the username matches the provided parameter value.
-//                :username is a placeholder in the query for a parameter value, allowing dynamic input.
-//setParameter("username", username) binds the provided value to the :username placeholder in the query.
         } catch (Exception e) {
             return null;
         }
@@ -46,7 +38,7 @@ private EntityManager entityManager;
         query.setParameter("password", password);
         return query.getResultStream().findFirst().orElse(null);
     }
-//    This code executes the query, retrieves the first result as a Stream, and returns it if present; otherwise, it returns null.
+
     // Hashing password with SHA-256 and a salt
     public String hashPassword(String password, String salt) {
         try {
@@ -66,12 +58,11 @@ private EntityManager entityManager;
         random.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
     }
-    
-    public Admin getAdminByUsername(String username)
-    {
+
+    public Admin getAdminByUsername(String username) {
         return getByUsername(username);
     }
-    
+
     public Admin authenticate(String username, String password) {
         Admin admin = getByUsername(username);
         if (admin != null) {
@@ -91,22 +82,31 @@ private EntityManager entityManager;
     }
 
     @Override
-    public void save(Object entity) {
-             entityManager.persist(entity);
+    public void save(Admin entity) {
+        String salt = generateSalt();
+        String hashedPassword = hashPassword(entity.getPassword(), salt);
+        entity.setPassword(hashedPassword + ":" + salt);
+        entityManager.persist(entity);
     }
 
     @Override
-    public Object getById(Object id) {
-          return entityManager.find(Admin.class, id);
+    public Admin getById(Long id) {
+        return entityManager.find(Admin.class, id);
     }
 
     @Override
-    public void update(Object entity) {
-        entityManager.merge(entity);    }
+    public void update(Admin entity) {
+        if (entity.getPassword() != null && !entity.getPassword().isEmpty()) {
+            String salt = generateSalt();
+            String hashedPassword = hashPassword(entity.getPassword(), salt);
+            entity.setPassword(hashedPassword + ":" + salt);
+        }
+        entityManager.merge(entity);
+    }
 
     @Override
-    public void delete(Object id) {
-        Admin entity = (Admin) getById(id);
+    public void delete(Long id) {
+        Admin entity = getById(id);
         if (entity != null) {
             entityManager.remove(entity);
         }
