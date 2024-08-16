@@ -7,38 +7,48 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
-@FacesConverter(forClass = AccountType.class)
+@FacesConverter(value = "accountTypeConverter")
 public class AccountTypeConverter implements Converter {
 
-    @Inject
     private AccountTypeRepository accountTypeRepository;
 
-    @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        if (value == null || value.isEmpty()) {
-            return null;
-        }
+    public AccountTypeConverter() {
         try {
-            Long id = Long.parseLong(value);
-            return (AccountType) accountTypeRepository.getById(id);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid ID format");
+            InitialContext ctx = new InitialContext();
+            accountTypeRepository = (AccountTypeRepository) ctx.lookup("java:module/AccountTypeRepository");
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public String getAsString(FacesContext context, UIComponent component, Object object) {
-        if (object == null) {
-            return "";
-        }
-        if (object instanceof AccountType) {
-            AccountType accountType = (AccountType) object;
-            return String.valueOf(accountType.getId()); // Ensure `getId` returns the correct type
-        } else {
-            throw new IllegalArgumentException("Object is not of type AccountType");
-        }
+   @Override
+public Object getAsObject(FacesContext context, UIComponent component, String value) {
+    if (value == null || value.isEmpty()) {
+        return null;
     }
+    Long id = Long.valueOf(value);
+    AccountType accountType = accountTypeRepository.getById(id);
+    System.out.println("Converting String to AccountType: " + id + " -> " + accountType);
+    return accountType;
+}
+
+@Override
+public String getAsString(FacesContext context, UIComponent component, Object object) {
+    if (object == null) {
+        return "";
+    }
+    if (object instanceof AccountType) {
+        String id = String.valueOf(((AccountType) object).getId());
+        System.out.println("Converting AccountType to String: " + object + " -> " + id);
+        
+        return id;
+    } else {
+        throw new IllegalArgumentException("Object is not of type AccountType");
+    }
+}
+
 }
 

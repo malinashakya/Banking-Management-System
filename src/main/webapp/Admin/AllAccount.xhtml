@@ -9,9 +9,14 @@
     </h:head>
     <h:body>
         <ui:include src="menu.xhtml" />
+        
 
         <h:form id="customerListForm">
-            <p:dataTable id="customers" value="#{customerBean.lazyCustomers}" var="customer" paginator="true" rows="3" lazy="true" rowKey="#{customer.id}">
+            
+            <p:dataTable id="customers" value="#{customerBean.lazyCustomers}" var="customer" paginator="true" rows="#{customerBean.pageSize}" lazy="true" rowKey="#{customer.id}" 
+                           paginatorPosition="bottom"   rowsPerPageTemplate="5,10,15"
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} 
+                         {LastPageLink}" >
                 <!--For lazyTable we have added paginator="true" rows="3" lazy="true" Here rows=3 that means three data will be shown at once in the table-->
                 <f:facet name="header">
                     Customers List
@@ -112,11 +117,12 @@
                     <p:calendar id="dateOfBirth" value="#{customerBean.selectedCustomer.dateOfBirth}" pattern="dd/MM/yyyy" />
 
                     <h:outputLabel for="accountType" value="Account Type:" />
-                    <p:selectOneMenu id="accountType" value="#{customerBean.selectedCustomer.accountType}">
-                        <f:selectItems value="#{customerBean.accountTypes}" var="type" 
-                                       itemLabel="#{type.accountType}, #{type.interestRate}, #{type.timePeriod}" 
+                    <p:selectOneMenu id="accountType" value="#{customerBean.selectedCustomer.accountType}" converter="accountTypeConverter">
+                        <f:selectItems value="#{customerBean.accountTypes}" var="type"
+                                       itemLabel="#{type.accountType}, #{type.interestRate}, #{type.timePeriod}"
                                        itemValue="#{type}" />
                     </p:selectOneMenu>
+
 
 
                     <p:commandButton value="#{customerBean.editMode ? 'Update' : 'Save'}"

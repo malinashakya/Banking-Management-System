@@ -67,9 +67,6 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
         return Base64.getEncoder().encodeToString(salt);
     }
 
-//    public Admin getAdminByUsername(String username) {
-//        return getByUsername(username);
-//    }
 
     public Admin authenticate(String username, String password) {
         Admin admin = getByUsername(username);

@@ -32,6 +32,8 @@ public class CustomerBean implements Serializable {
 
     // For Lazy Table
     private LazyDataModel<Customer> lazyCustomers;
+    private int pageSize=5;
+    
 
     @Inject
     private CustomerRepository customerRepository;
@@ -170,5 +172,16 @@ public class CustomerBean implements Serializable {
 
     public void setLazyCustomers(LazyDataModel<Customer> lazyCustomers) {
         this.lazyCustomers = lazyCustomers;
+    }
+    
+    
+    
+    public int getPageSize()
+    {
+        return pageSize;
+    }
+    public void setPageSize(int pageSize)
+    {
+        this.pageSize=pageSize;
     }
 }

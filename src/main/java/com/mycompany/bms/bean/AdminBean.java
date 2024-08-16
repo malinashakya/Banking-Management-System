@@ -3,6 +3,7 @@ package com.mycompany.bms.bean;
 import com.mycompany.bms.model.Admin;
 import com.mycompany.bms.repository.AdminRepository;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -29,6 +30,7 @@ public class AdminBean implements Serializable {
 
     //For Lazy Table
     private LazyDataModel<Admin> lazyAdmins;
+      private int pageSize = 5;
 
     @Inject
     private AdminRepository adminRepository;
@@ -46,10 +48,9 @@ public class AdminBean implements Serializable {
                 }
 
                 @Override
-                public List<Admin> load(int first, int pageSize,
-                        Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-                    List<Admin> admins = adminRepository.getAdmins(first, pageSize); // Add pagination support in UserRepository
-                    this.setRowCount(adminRepository.countAdmins(filterBy)); // Count the total number of records
+                public List<Admin> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                    List<Admin> admins = adminRepository.getAdmins(first, pageSize); // Adjust this method as needed
+                    this.setRowCount(adminRepository.countAdmins(filterBy)); // Set the total number of records
                     return admins;
                 }
 
@@ -138,4 +139,13 @@ public class AdminBean implements Serializable {
         this.lazyAdmins = lazyAdmins;
     }
 
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+        // Reset the row count when page size changes
+        lazyAdmins.setRowCount(adminRepository.countAdmins(new HashMap<>()));
+    }
 }

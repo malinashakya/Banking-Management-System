@@ -59,4 +59,13 @@ public class AccountType extends BaseEntity {
             this.timePeriod = 0; // Set to a default value or handle appropriately
         }
     }
+    
+    @Override
+    public String toString() {
+        return "AccountType{" +
+               "accountType='" + accountType + '\'' +
+               ", interestRate=" + interestRate +
+               ", timePeriod=" + timePeriod +
+               '}';
+    }
 }
