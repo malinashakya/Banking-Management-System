@@ -98,13 +98,13 @@
 
                     <h:outputLabel for="firstName" value="First Name:" />
                     <p:inputText id="firstName" value="#{customerBean.selectedCustomer.firstName}" />
-                    
+
                     <h:outputLabel for="lastName" value="Last Name:" />
                     <p:inputText id="lastName" value="#{customerBean.selectedCustomer.lastName}" />
-                    
+
                     <h:outputLabel for="contact" value="Contact:" />
                     <p:inputText id="contact" value="#{customerBean.selectedCustomer.contact}" />
-                    
+
                     <h:outputLabel for="address" value="Address:" />
                     <p:inputText id="address" value="#{customerBean.selectedCustomer.address}" />
 
@@ -112,8 +112,13 @@
                     <p:calendar id="dateOfBirth" value="#{customerBean.selectedCustomer.dateOfBirth}" pattern="dd/MM/yyyy" />
 
                     <h:outputLabel for="accountType" value="Account Type:" />
-                    <p:inputText id="accountType" value="#{customerBean.selectedCustomer.accountType}" />
-                                                      
+                    <p:selectOneMenu id="accountType" value="#{customerBean.selectedCustomer.accountType}">
+                        <f:selectItems value="#{customerBean.accountTypes}" var="type" 
+                                       itemLabel="#{type.accountType}, #{type.interestRate}, #{type.timePeriod}" 
+                                       itemValue="#{type}" />
+                    </p:selectOneMenu>
+
+
                     <p:commandButton value="#{customerBean.editMode ? 'Update' : 'Save'}"
                                      action="#{customerBean.saveOrUpdateCustomer()}"
                                      update=":customerListForm :customerDialogForm :customerListForm:messages"

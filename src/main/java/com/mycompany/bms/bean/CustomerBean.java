@@ -27,15 +27,15 @@ public class CustomerBean implements Serializable {
     private Customer selectedCustomer; // Customer selected for editing
 
     private List<Customer> customers;
-     private List<AccountType> accountTypes;
+    private List<AccountType> accountTypes;
     private boolean editMode = false;
 
-    //For Lazy Table
+    // For Lazy Table
     private LazyDataModel<Customer> lazyCustomers;
 
     @Inject
     private CustomerRepository customerRepository;
-      
+
     @Inject
     private AccountTypeRepository accountTypeRepository;
 
@@ -43,7 +43,8 @@ public class CustomerBean implements Serializable {
     public void init() {
         try {
             accountTypes = accountTypeRepository.getAll();
-            //For lazyTable
+
+            // For lazy table
             lazyCustomers = new LazyDataModel<Customer>() {
                 private static final long serialVersionUID = 1L;
 
@@ -54,24 +55,21 @@ public class CustomerBean implements Serializable {
 
                 @Override
                 public List<Customer> load(int first, int pageSize,
-                        Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-                    List<Customer> customers = customerRepository.getCustomers(first, pageSize); // Add pagination support in UserRepository
-                    this.setRowCount(customerRepository.countCustomers(filterBy)); // Count the total number of records
+                                           Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                    List<Customer> customers = customerRepository.getCustomers(first, pageSize);
+                    this.setRowCount(customerRepository.countCustomers(filterBy));
                     return customers;
                 }
-
             };
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-    
-     public List<AccountType> getAccountTypes() {
+
+    public List<AccountType> getAccountTypes() {
         return accountTypes;
     }
 
-    // Getters and setters
     public Customer getSelectedCustomer() {
         return selectedCustomer;
     }
@@ -103,11 +101,28 @@ public class CustomerBean implements Serializable {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Customer saved successfully"));
             }
 
-            customers = customerRepository.getAll(); //getAll Refresh the customer list
+            // Refresh lazy table
+            lazyCustomers = new LazyDataModel<Customer>() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public int count(Map<String, FilterMeta> filterBy) {
+                    return customerRepository.countCustomers(filterBy);
+                }
+
+                @Override
+                public List<Customer> load(int first, int pageSize,
+                                           Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                    List<Customer> customers = customerRepository.getCustomers(first, pageSize);
+                    this.setRowCount(customerRepository.countCustomers(filterBy));
+                    return customers;
+                }
+            };
+            
             selectedCustomer = new Customer(); // Clear form after submission
             editMode = false; // Reset the edit mode flag
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Customer already exists"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save customer"));
         }
     }
 
@@ -116,7 +131,24 @@ public class CustomerBean implements Serializable {
         try {
             customerRepository.delete(customer.getId());
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Customer deleted successfully"));
-            customers = customerRepository.getAll();//CustomersgetAllsh the customer list
+            
+            // Refresh lazy table
+            lazyCustomers = new LazyDataModel<Customer>() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public int count(Map<String, FilterMeta> filterBy) {
+                    return customerRepository.countCustomers(filterBy);
+                }
+
+                @Override
+                public List<Customer> load(int first, int pageSize,
+                                           Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                    List<Customer> customers = customerRepository.getCustomers(first, pageSize);
+                    this.setRowCount(customerRepository.countCustomers(filterBy));
+                    return customers;
+                }
+            };
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete customer"));
         }
@@ -132,15 +164,6 @@ public class CustomerBean implements Serializable {
         this.editMode = false;
     }
 
-    public CustomerRepository getCustomerRepository() {
-        return customerRepository;
-    }
-
-    public void setCustomerRepository(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
-
-//Getter and Setter for LazyTable    
     public LazyDataModel<Customer> getLazyCustomers() {
         return lazyCustomers;
     }
@@ -148,5 +171,4 @@ public class CustomerBean implements Serializable {
     public void setLazyCustomers(LazyDataModel<Customer> lazyCustomers) {
         this.lazyCustomers = lazyCustomers;
     }
-
 }

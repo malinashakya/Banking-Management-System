@@ -33,22 +33,26 @@ public class Customer extends BaseEntity{
     private Date dateOfBirth;
 
     @ManyToOne
-    @JoinColumn(name = "account_type_id", nullable = false)
+    @JoinColumn(name = "account_type_id",nullable = false)
     private AccountType accountType;
 
     // Constructors
     public Customer() {}
 
     public Customer(String firstName, String lastName, String address, String contact, String username, String password, Date dateOfBirth, AccountType accountType) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.contact = contact;
-        this.username = username;
-        this.password = password;
-        this.dateOfBirth = dateOfBirth;
-        this.accountType = accountType;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.address = address;
+    this.contact = contact;
+    this.username = username;
+    this.password = password;
+    this.dateOfBirth = dateOfBirth;
+    if (accountType == null) {
+        throw new IllegalArgumentException("AccountType must not be null");
     }
+    this.accountType = accountType;
+}
+
 
     public String getFirstName() {
         return firstName;

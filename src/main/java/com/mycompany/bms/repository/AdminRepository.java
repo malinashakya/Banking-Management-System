@@ -7,6 +7,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,6 +19,11 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
 
     @PersistenceContext(unitName = "BankingDS")
     private EntityManager entityManager;
+    
+      @PostConstruct
+    public void init() {
+        setEntityManager(entityManager); // Set the EntityManager after construction
+    }
 
     public AdminRepository() {
         super(Admin.class);
@@ -76,42 +82,6 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
             }
         }
         return null;
-    }
-
-    @Override
-    public List<Admin> getAll() {
-        return entityManager.createQuery("SELECT a FROM Admin a", Admin.class).getResultList();
-    }
-
-    @Override
-    public void save(Admin entity) {
-        String salt = generateSalt();
-        String hashedPassword = hashPassword(entity.getPassword(), salt);
-        entity.setPassword(hashedPassword + ":" + salt);
-        entityManager.persist(entity);
-    }
-
-    @Override
-    public Admin getById(Long id) {
-        return entityManager.find(Admin.class, id);
-    }
-
-    @Override
-    public void update(Admin entity) {
-        if (entity.getPassword() != null && !entity.getPassword().isEmpty()) {
-            String salt = generateSalt();
-            String hashedPassword = hashPassword(entity.getPassword(), salt);
-            entity.setPassword(hashedPassword + ":" + salt);
-        }
-        entityManager.merge(entity);
-    }
-
-    @Override
-    public void delete(Long id) {
-        Admin entity = getById(id);
-        if (entity != null) {
-            entityManager.remove(entity);
-        }
     }
 
     //For Lazy Table

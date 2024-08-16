@@ -8,31 +8,49 @@ package com.mycompany.bms.repository;
  *
  * @author malina
  */
-
-import javax.transaction.Transactional;
 import java.util.List;
+import javax.transaction.Transactional;
+import javax.persistence.EntityManager;
 
 public abstract class GenericRepository<T, ID> {
+
+//    @PersistenceContext(name = "BankingDS")
+    protected EntityManager entityManager;
+
     private final Class<T> entityClass;
 
-    protected GenericRepository(Class<T> entityClass) {
+    public GenericRepository(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
-    @Transactional
-    abstract public void save(T entity) ;
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Transactional
-    abstract public T getById(ID id); 
+    public void save(T entity) {
+        entityManager.persist(entity);
+    }
 
     @Transactional
-    abstract public void update(T entity) ;
+    public T getById(ID id) {
+        return entityManager.find(entityClass, id);
+    }
 
     @Transactional
-    abstract public void delete(ID id) ;
-        
+    public void update(T entity) {
+        entityManager.merge(entity);
+    }
 
-    abstract public List<T> getAll();
-        
+    @Transactional
+    public void delete(ID id) {
+        T entity = getById(id);
+        if (entity != null) {
+            entityManager.remove(entity);
+        }
+    }
+
+    public List<T> getAll() {
+        return entityManager.createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass).getResultList();
+    }
 }
-

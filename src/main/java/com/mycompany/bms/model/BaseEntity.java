@@ -47,7 +47,7 @@ public abstract class BaseEntity implements Serializable{
     protected void onCreate()
     {
         createdAt=LocalDateTime.now();
-        updatedAt=LocalDateTime.now();
+        updatedAt=null;
     }
     
     @PreUpdate
