@@ -1,5 +1,6 @@
 package com.mycompany.bms.model;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -59,13 +60,40 @@ public class AccountType extends BaseEntity {
             this.timePeriod = 0; // Set to a default value or handle appropriately
         }
     }
-    
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.accountType);
+        hash = 67 * hash + Float.floatToIntBits(this.interestRate);
+        hash = 67 * hash + Objects.hashCode(this.timePeriod);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AccountType other = (AccountType) obj;
+        if (Float.floatToIntBits(this.interestRate) != Float.floatToIntBits(other.interestRate)) {
+            return false;
+        }
+        if (this.accountType != other.accountType) {
+            return false;
+        }
+        return Objects.equals(this.timePeriod, other.timePeriod);
+    }
+
     @Override
     public String toString() {
-        return "AccountType{" +
-               "accountType='" + accountType + '\'' +
-               ", interestRate=" + interestRate +
-               ", timePeriod=" + timePeriod +
-               '}';
+        return "" + getId();
     }
+
 }

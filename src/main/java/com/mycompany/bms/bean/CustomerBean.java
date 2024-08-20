@@ -24,8 +24,9 @@ public class CustomerBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
+    
     private Customer selectedCustomer; // Customer selected for editing
-
+    
     private List<Customer> customers;
     private List<AccountType> accountTypes;
     private boolean editMode = false;
@@ -173,9 +174,7 @@ public class CustomerBean implements Serializable {
     public void setLazyCustomers(LazyDataModel<Customer> lazyCustomers) {
         this.lazyCustomers = lazyCustomers;
     }
-    
-    
-    
+          
     public int getPageSize()
     {
         return pageSize;

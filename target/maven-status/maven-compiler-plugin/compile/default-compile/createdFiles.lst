@@ -1,5 +1,6 @@
 com/mycompany/bms/JAXRSConfiguration.class
 com/mycompany/bms/bean/CustomerBean$3.class
+com/mycompany/bms/bean/ConfigurationBean.class
 com/mycompany/bms/repository/AccountTypeRepository.class
 com/mycompany/bms/bean/AccountTypeBean.class
 com/mycompany/bms/bean/DashboardBean.class
@@ -17,6 +18,7 @@ com/mycompany/bms/repository/CustomerRepository.class
 com/mycompany/bms/model/AccountTypeEnum.class
 com/mycompany/bms/bean/AdminBean$1.class
 DatabaseConnection.class
+com/mycompany/bms/bean/GenericBean.class
 com/mycompany/bms/test/PersistenceTest.class
 com/mycompany/bms/model/TransactionTypeEnum.class
 com/mycompany/bms/converter/AccountTypeConverter.class

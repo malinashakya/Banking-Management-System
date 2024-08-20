@@ -6,34 +6,43 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "customer")
 public class Customer extends BaseEntity {
 
     @Column(name = "first_name", nullable = false)
+    @NotEmpty(message = "First Name cannot be empty")
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
+    @NotEmpty(message = "Last Name cannot be empty")
     private String lastName;
 
     @Column(name = "address", nullable = false)
+    @NotEmpty(message = "Address cannot be empty")
     private String address;
 
     @Column(name = "contact", nullable = false, unique = true)
+    @NotEmpty(message = "Contact cannot be empty")
     private String contact;
 
     @Column(name = "username", nullable = false, unique = true)
+    @NotEmpty(message = "Username cannot be empty")
     private String username;
 
     @Column(name = "password", nullable = false)
+    @NotEmpty(message = "Password cannot be empty")
     private String password;
 
     @Column(name = "date_of_birth", nullable = false)
+    @NotEmpty(message = "Date of Birth cannot be empty")
     private LocalDate dateOfBirth;
 
     @ManyToOne
     @JoinColumn(name = "account_type_id", nullable = false)
+    @NotEmpty(message = "Account Type cannot be empty")
     private AccountType accountType;
 
     // Constructors
@@ -120,14 +129,20 @@ public class Customer extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Customer customer = (Customer) o;
 
         return getId() != null ? getId().equals(customer.getId()) : customer.getId() == null;
-        
+
     }
 
     @Override
@@ -137,11 +152,11 @@ public class Customer extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "id=" + getId() +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                '}';
+        return "Customer{"
+                + "id=" + getId()
+                + ", firstName='" + firstName + '\''
+                + ", lastName='" + lastName + '\''
+                + ", username='" + username + '\''
+                + '}';
     }
 }

@@ -24,6 +24,11 @@ public class CustomerRepository extends GenericRepository<Customer, Long> {
         super(Customer.class);
     }
 
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
     @Transactional
     @Override
     public void save(Customer customer) {

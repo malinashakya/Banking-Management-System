@@ -14,43 +14,38 @@ import javax.persistence.EntityManager;
 
 public abstract class GenericRepository<T, ID> {
 
-//    @PersistenceContext(name = "BankingDS")
-    protected EntityManager entityManager;
-
-    private final Class<T> entityClass;
+    private Class<T> entityClass;
 
     public GenericRepository(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    abstract EntityManager getEntityManager();
 
     @Transactional
     public void save(T entity) {
-        entityManager.persist(entity);
+        getEntityManager().persist(entity);
     }
 
     @Transactional
     public T getById(ID id) {
-        return entityManager.find(entityClass, id);
+        return getEntityManager().find(entityClass, id);
     }
 
     @Transactional
     public void update(T entity) {
-        entityManager.merge(entity);
+        getEntityManager().merge(entity);
     }
 
     @Transactional
     public void delete(ID id) {
         T entity = getById(id);
         if (entity != null) {
-            entityManager.remove(entity);
+            getEntityManager().remove(entity);
         }
     }
 
     public List<T> getAll() {
-        return entityManager.createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass).getResultList();
+        return getEntityManager().createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass).getResultList();
     }
 }

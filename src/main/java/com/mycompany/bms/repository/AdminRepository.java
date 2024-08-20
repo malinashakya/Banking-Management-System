@@ -7,7 +7,6 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,10 +18,10 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
 
     @PersistenceContext(unitName = "BankingDS")
     private EntityManager entityManager;
-    
-      @PostConstruct
-    public void init() {
-        setEntityManager(entityManager); // Set the EntityManager after construction
+
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 
     public AdminRepository() {
@@ -66,7 +65,6 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
         random.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
     }
-
 
     public Admin authenticate(String username, String password) {
         Admin admin = getByUsername(username);
