@@ -65,4 +65,8 @@ public class Admin extends BaseEntity {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public int intValue() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

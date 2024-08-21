@@ -5,13 +5,19 @@ com/mycompany/bms/repository/AccountTypeRepository.class
 com/mycompany/bms/bean/AccountTypeBean.class
 com/mycompany/bms/bean/DashboardBean.class
 com/mycompany/bms/model/Customer.class
+com/mycompany/bms/model/Customer_.class
 com/mycompany/bms/bean/CustomerBean$1.class
 com/mycompany/bms/model/Session.class
 com/mycompany/bms/model/AccountType.class
+com/mycompany/bms/model/Account_.class
+com/mycompany/bms/model/Transaction_.class
 com/mycompany/bms/bean/AdminBean.class
+com/mycompany/bms/model/Session_.class
 com/mycompany/bms/model/BaseEntity.class
+com/mycompany/bms/model/BaseEntity_.class
 com/mycompany/bms/model/Account.class
 com/mycompany/bms/model/Admin.class
+com/mycompany/bms/model/AccountType_.class
 com/mycompany/bms/bean/DashboardBean$Transaction.class
 com/mycompany/bms/model/Transaction.class
 com/mycompany/bms/repository/CustomerRepository.class
@@ -26,5 +32,6 @@ com/mycompany/bms/bean/CustomerBean$2.class
 com/mycompany/bms/bean/LoginAdminBean.class
 com/mycompany/bms/util/HibernateUtil.class
 com/mycompany/bms/repository/AdminRepository.class
+com/mycompany/bms/model/Admin_.class
 com/mycompany/bms/bean/CustomerBean.class
 com/mycompany/bms/repository/GenericRepository.class

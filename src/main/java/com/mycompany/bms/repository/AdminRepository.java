@@ -1,9 +1,11 @@
 package com.mycompany.bms.repository;
 
 import com.mycompany.bms.model.Admin;
+import com.mycompany.bms.model.Admin_;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -35,18 +37,16 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
 
     // Method to find Admin by username
     public Admin getByUsername(String username) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Admin> cq = cb.createQuery(Admin.class);
-        Root<Admin> root = cq.from(Admin.class);
+        CriteriaContext<Admin> context = createCriteriaContext();
 
-        // Create a predicate for the condition
-        Predicate usernamePredicate = cb.equal(root.get("username"), username);
+        // Create a predicate for the username condition
+        Predicate usernamePredicate = context.getCb().equal(context.getRoot().get(Admin_.username), username);
 
         // Set the query to select the admin where username matches
-        cq.select(root).where(usernamePredicate);
+        context.getCq().select(context.getRoot()).where(usernamePredicate);
 
         // Execute the query and return the result
-        TypedQuery<Admin> query = entityManager.createQuery(cq);
+        TypedQuery<Admin> query = getEntityManager().createQuery(context.getCq());
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
@@ -56,18 +56,16 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
 
     // Method to find Admin by name
     public Admin getByName(String name) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Admin> cq = cb.createQuery(Admin.class);
-        Root<Admin> root = cq.from(Admin.class);
+        CriteriaContext<Admin> context = createCriteriaContext();
 
-        // Create a predicate for the condition
-        Predicate namePredicate = cb.equal(root.get("name"), name);
+        // Create a predicate for the name condition
+        Predicate namePredicate = context.getCb().equal(context.getRoot().get(Admin_.name), name);
 
         // Set the query to select the admin where name matches
-        cq.select(root).where(namePredicate);
+        context.getCq().select(context.getRoot()).where(namePredicate);
 
         // Execute the query and return the result
-        TypedQuery<Admin> query = entityManager.createQuery(cq);
+        TypedQuery<Admin> query = getEntityManager().createQuery(context.getCq());
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
@@ -76,18 +74,16 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
     }
 
     public Admin findByUsernameAndPassword(String username, String password) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Admin> cq = cb.createQuery(Admin.class);
-        Root<Admin> root = cq.from(Admin.class);
+        CriteriaContext<Admin> context = createCriteriaContext();
 
         // Create predicates for username and password
-        Predicate usernamePredicate = cb.equal(root.get("username"), username);
-        Predicate passwordPredicate = cb.equal(root.get("password"), password);
+        Predicate usernamePredicate = context.getCb().equal(context.getRoot().get(Admin_.username), username);
+        Predicate passwordPredicate = context.getCb().equal(context.getRoot().get(Admin_.password), password);
 
         // Combine predicates using 'AND'
-        cq.where(cb.and(usernamePredicate, passwordPredicate));
+        context.getCq().where(context.getCb().and(usernamePredicate, passwordPredicate));
 
-        TypedQuery<Admin> query = entityManager.createQuery(cq);
+        TypedQuery<Admin> query = getEntityManager().createQuery(context.getCq());
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
@@ -130,24 +126,23 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
 
     // For Lazy Table
     public List<Admin> getAdmins(int first, int pageSize, Map<String, FilterMeta> filters) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Admin> cq = cb.createQuery(Admin.class);
-        Root<Admin> root = cq.from(Admin.class);
+        CriteriaContext<Admin> context = createCriteriaContext();
 
-        Predicate[] predicates = createPredicates(cb, root, filters);
+        Predicate[] predicates = createPredicates(context.getCb(), context.getRoot(), filters);
         if (predicates.length > 0) {
-            cq.where(predicates);
+            context.getCq().where(predicates);
         }
 
-        TypedQuery<Admin> query = entityManager.createQuery(cq);
+        TypedQuery<Admin> query = getEntityManager().createQuery(context.getCq());
         query.setFirstResult(first);
         query.setMaxResults(pageSize);
 
         return query.getResultList();
     }
 
+    // Keeping this method unchanged as it's optimized for counting
     public int countAdmins(Map<String, FilterMeta> filters) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Admin> root = cq.from(Admin.class);
 
@@ -158,26 +153,27 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
             cq.where(predicates);
         }
 
-        TypedQuery<Long> query = entityManager.createQuery(cq);
+        TypedQuery<Long> query = getEntityManager().createQuery(cq);
         return query.getSingleResult().intValue();
     }
 
     private Predicate[] createPredicates(CriteriaBuilder cb, Root<Admin> root, Map<String, FilterMeta> filters) {
-        Predicate[] predicates = new Predicate[filters.size()];
+        List<Predicate> predicates = new ArrayList<>();
 
-        int i = 0;
         for (Map.Entry<String, FilterMeta> entry : filters.entrySet()) {
             String key = entry.getKey();
             FilterMeta filter = entry.getValue();
             if (filter.getFilterValue() != null && !filter.getFilterValue().toString().isEmpty()) {
                 if (key.equals("username")) {
-                    predicates[i++] = cb.like(cb.lower(root.get("username")), "%" + filter.getFilterValue().toString().toLowerCase() + "%");
+                    predicates.add(cb.like(cb.lower(root.get(Admin_.username)), "%" + filter.getFilterValue().toString().toLowerCase() + "%"));
                 } else if (key.equals("name")) {
-                    predicates[i++] = cb.like(cb.lower(root.get("name")), "%" + filter.getFilterValue().toString().toLowerCase() + "%");
+                    predicates.add(cb.like(cb.lower(root.get(Admin_.name)), "%" + filter.getFilterValue().toString().toLowerCase() + "%"));
+                } else if (key.equals("id")) {
+                    predicates.add(cb.equal(root.get(Admin_.id), Long.parseLong(filter.getFilterValue().toString())));
                 }
             }
         }
 
-        return predicates;
+        return predicates.toArray(new Predicate[0]);
     }
 }

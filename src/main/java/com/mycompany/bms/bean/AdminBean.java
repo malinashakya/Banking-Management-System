@@ -32,6 +32,7 @@ public class AdminBean implements Serializable {
     private int pageSize = 5;
 
     // For Search Query
+    private Long searchId; // Add this property
     private String searchUsername;
     private String searchName;
 
@@ -45,6 +46,12 @@ public class AdminBean implements Serializable {
 
             @Override
             public List<Admin> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                if (searchId != null) {
+                    filterBy.put("id", FilterMeta.builder()
+                            .field("id")
+                            .filterValue(searchId)
+                            .build());
+                }
                 if (searchUsername != null && !searchUsername.isEmpty()) {
                     filterBy.put("username", FilterMeta.builder()
                             .field("username")
@@ -57,7 +64,7 @@ public class AdminBean implements Serializable {
                             .filterValue(searchName)
                             .build());
                 }
-                
+
                 List<Admin> admins = adminRepository.getAdmins(first, pageSize, filterBy); // Fetch admins with filters
                 this.setRowCount(adminRepository.countAdmins(filterBy)); // Set total number of records
                 return admins;
@@ -152,6 +159,14 @@ public class AdminBean implements Serializable {
     }
 
     // Getter and Setter for the Search Query
+    public Long getSearchId() {
+        return searchId;
+    }
+
+    public void setSearchId(Long searchId) {
+        this.searchId = searchId;
+    }
+
     public String getSearchUsername() {
         return searchUsername;
     }
@@ -168,14 +183,22 @@ public class AdminBean implements Serializable {
         this.searchName = searchName;
     }
 
-    // Methods to filter by username and name
+    // Methods to filter by ID, username, and name
+    public void filterById() {
+        searchUsername = null; // Clear other search filters
+        searchName = null;
+        lazyAdmins.load(0, pageSize, null, new HashMap<>()); // Refresh the data
+    }
+
     public void filterByUsername() {
-        searchName = null; // Clear the other search filter
+        searchId = null; // Clear other search filters
+        searchName = null;
         lazyAdmins.load(0, pageSize, null, new HashMap<>()); // Refresh the data
     }
 
     public void filterByName() {
-        searchUsername = null; // Clear the other search filter
+        searchId = null; // Clear other search filters
+        searchUsername = null;
         lazyAdmins.load(0, pageSize, null, new HashMap<>()); // Refresh the data
     }
 }

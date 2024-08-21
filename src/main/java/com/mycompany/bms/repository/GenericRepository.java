@@ -11,6 +11,9 @@ package com.mycompany.bms.repository;
 import java.util.List;
 import javax.transaction.Transactional;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 public abstract class GenericRepository<T, ID> {
 
@@ -52,5 +55,38 @@ public abstract class GenericRepository<T, ID> {
     @Transactional
     public void flush() {
         getEntityManager().flush();
+    }
+    
+     // Utility method to initialize CriteriaBuilder, CriteriaQuery, and Root<T>
+    protected CriteriaContext<T> createCriteriaContext() {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(entityClass);
+        Root<T> root = cq.from(entityClass);
+        return new CriteriaContext<>(cb, cq, root);
+    }
+
+    // Inner class to hold CriteriaBuilder, CriteriaQuery, and Root
+    protected static class CriteriaContext<T> {
+        private final CriteriaBuilder cb;
+        private final CriteriaQuery<T> cq;
+        private final Root<T> root;
+
+        public CriteriaContext(CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> root) {
+            this.cb = cb;
+            this.cq = cq;
+            this.root = root;
+        }
+
+        public CriteriaBuilder getCb() {
+            return cb;
+        }
+
+        public CriteriaQuery<T> getCq() {
+            return cq;
+        }
+
+        public Root<T> getRoot() {
+            return root;
+        }
     }
 }
