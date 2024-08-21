@@ -24,20 +24,19 @@ public class AccountTypeBean implements Serializable {
     private List<AccountType> accountTypes;
     private boolean editMode = false;
     private List<AccountTypeEnum> accountTypeEnums; // For dropdown
-        
+
     @Inject
     private AccountTypeRepository accountTypeRepository;
 
     private float interestRateFilter; //For filtering by interest rate
     private AccountTypeEnum accountTypeEnumFilter;//For filtering by accountTypeEnum
-    
+
     @PostConstruct
     public void init() {
         accountTypes = accountTypeRepository.getAll(); // Load all account types when bean is initialized
         accountTypeEnums = List.of(AccountTypeEnum.values()); // Load enum values
     }
 
-    
     // Method to filter account types by interest rate
     public void filterByInterestRate() {
         accountTypes = accountTypeRepository.findByInterestRate(interestRateFilter);
@@ -64,7 +63,7 @@ public class AccountTypeBean implements Serializable {
     public void setAccountTypeEnumFilter(AccountTypeEnum accountTypeEnumFilter) {
         this.accountTypeEnumFilter = accountTypeEnumFilter;
     }
-    
+
     // Getters and setters
     public AccountType getSelectedAccountType() {
         return selectedAccountType;

@@ -12,7 +12,7 @@
         <ui:include src="menu.xhtml" />
 
         <h:form id="adminListForm">
-            <p:dataTable id="admins" value="#{adminBean.lazyAdmins}" var="admin"
+            <p:dataTable id="admins" value="#{adminBean.lazyDataModel}" var="admin"
                          paginator="true" rows="#{adminBean.pageSize}" lazy="true"
                          rowKey="#{admin.id}" paginatorPosition="bottom"
                          rowsPerPageTemplate="5,10,15"
@@ -23,7 +23,7 @@
                     <p:commandButton icon="pi pi-fw pi-user-plus"
                                      value="Add Admin"
                                      style="margin:4px; margin-left: 83%"
-                                     action="#{adminBean.prepareNewAdmin}"
+                                     action="#{adminBean.prepareNewEntity}"
                                      oncomplete="PF('adminDialog').show()"
                                      update=":adminDialogForm :growl"
                                      ajax="true" />
@@ -46,7 +46,7 @@
                 <p:column headerText="Actions">
                     <p:commandButton icon="pi pi-fw pi-user-edit"
                                      style="margin: 3px; border:1px solid gold; background-color: gold;"
-                                     action="#{adminBean.prepareEditAdmin(admin)}"
+                                     action="#{adminBean.prepareEditEntity(admin)}"
                                      oncomplete="PF('adminDialog').show()"
                                      update=":adminDialogForm :growl"
                                      ajax="true" />
@@ -54,7 +54,7 @@
                     <p:commandButton icon="pi pi-trash"
                                      styleClass="ui-button-danger"
                                      update=":adminListForm:admins :growl"
-                                     action="#{adminBean.deleteAdmin(admin)}">
+                                     action="#{adminBean.deleteEntity(admin)}">
                         <p:confirm type="popup" header="Confirmation"
                                    message="Do you want to delete this admin?"
                                    icon="pi pi-info-circle"/>
@@ -78,20 +78,20 @@
 
                 <h:panelGrid columns="2" cellpadding="5">
                     <h:outputLabel for="username" value="Username:" />
-                    <p:inputText id="username" value="#{adminBean.selectedAdmin.username}" />
+                    <p:inputText id="username" value="#{adminBean.selectedEntity.username}" />
 
                     <h:outputLabel for="name" value="Name:" />
-                    <p:inputText id="name" value="#{adminBean.selectedAdmin.name}" />
+                    <p:inputText id="name" value="#{adminBean.selectedEntity.name}" />
 
                     <h:outputLabel for="password" value="Password:" rendered="#{!adminBean.editMode}" />
-                    <p:password id="password" value="#{adminBean.selectedAdmin.password}" rendered="#{!adminBean.editMode}" />
+                    <p:password id="password" value="#{adminBean.selectedEntity.password}" rendered="#{!adminBean.editMode}" />
 
 
                 </h:panelGrid>
 
                 <p:commandButton value="#{adminBean.editMode ? 'Update' : 'Save'}"
                                  icon="pi pi-fw pi-save"
-                                 action="#{adminBean.saveOrUpdateAdmin}"
+                                 action="#{adminBean.saveOrUpdateEntity}"
                                  update=":adminListForm :adminDialogForm :growl"
                                  oncomplete="if (args.validationFailed) { PF('adminDialog').show(); } else { PF('adminDialog').hide(); }"
                                  ajax="true" />
