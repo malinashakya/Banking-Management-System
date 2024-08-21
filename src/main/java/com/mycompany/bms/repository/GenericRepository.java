@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 
 public abstract class GenericRepository<T, ID> {
 
-    private Class<T> entityClass;
+    private final Class<T> entityClass;
 
     public GenericRepository(Class<T> entityClass) {
         this.entityClass = entityClass;
@@ -47,5 +47,10 @@ public abstract class GenericRepository<T, ID> {
 
     public List<T> getAll() {
         return getEntityManager().createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass).getResultList();
+    }
+
+    @Transactional
+    public void flush() {
+        getEntityManager().flush();
     }
 }

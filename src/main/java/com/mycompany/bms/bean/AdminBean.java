@@ -25,40 +25,49 @@ public class AdminBean implements Serializable {
     @Inject
     private Admin selectedAdmin; // Admin selected for editing
 
-    private List<Admin> admins;
     private boolean editMode = false;
 
-    //For Lazy Table
+    // For Lazy Table
     private LazyDataModel<Admin> lazyAdmins;
-      private int pageSize = 5;
+    private int pageSize = 5;
+
+    // For Search Query
+    private String searchUsername;
+    private String searchName;
 
     @Inject
     private AdminRepository adminRepository;
 
     @PostConstruct
     public void init() {
-        try {
-            //For lazyTable
-            lazyAdmins = new LazyDataModel<Admin>() {
-                private static final long serialVersionUID = 1L;
+        lazyAdmins = new LazyDataModel<Admin>() {
+            private static final long serialVersionUID = 1L;
 
-                @Override
-                public int count(Map<String, FilterMeta> filterBy) {
-                    return adminRepository.countAdmins(filterBy);
+            @Override
+            public List<Admin> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                if (searchUsername != null && !searchUsername.isEmpty()) {
+                    filterBy.put("username", FilterMeta.builder()
+                            .field("username")
+                            .filterValue(searchUsername)
+                            .build());
                 }
-
-                @Override
-                public List<Admin> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-                    List<Admin> admins = adminRepository.getAdmins(first, pageSize); // Adjust this method as needed
-                    this.setRowCount(adminRepository.countAdmins(filterBy)); // Set the total number of records
-                    return admins;
+                if (searchName != null && !searchName.isEmpty()) {
+                    filterBy.put("name", FilterMeta.builder()
+                            .field("name")
+                            .filterValue(searchName)
+                            .build());
                 }
+                
+                List<Admin> admins = adminRepository.getAdmins(first, pageSize, filterBy); // Fetch admins with filters
+                this.setRowCount(adminRepository.countAdmins(filterBy)); // Set total number of records
+                return admins;
+            }
 
-            };
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+            @Override
+            public int count(Map<String, FilterMeta> filterBy) {
+                return adminRepository.countAdmins(filterBy);
+            }
+        };
     }
 
     // Getters and setters
@@ -68,10 +77,6 @@ public class AdminBean implements Serializable {
 
     public void setSelectedAdmin(Admin selectedAdmin) {
         this.selectedAdmin = selectedAdmin;
-    }
-
-    public List<Admin> getAdmins() {
-        return admins;
     }
 
     public boolean isEditMode() {
@@ -92,8 +97,6 @@ public class AdminBean implements Serializable {
                 adminRepository.save(selectedAdmin);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Admin saved successfully"));
             }
-
-            admins = adminRepository.getAll(); //getAll Refresh the admin list
             selectedAdmin = new Admin(); // Clear form after submission
             editMode = false; // Reset the edit mode flag
         } catch (Exception e) {
@@ -106,7 +109,6 @@ public class AdminBean implements Serializable {
         try {
             adminRepository.delete(admin.getId());
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Admin deleted successfully"));
-            admins = adminRepository.getAll();//AdminsgetAllsh the admin list
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete admin"));
         }
@@ -130,7 +132,7 @@ public class AdminBean implements Serializable {
         this.adminRepository = adminRepository;
     }
 
-//Getter and Setter for LazyTable    
+    // Getter and Setter for LazyTable    
     public LazyDataModel<Admin> getLazyAdmins() {
         return lazyAdmins;
     }
@@ -147,5 +149,33 @@ public class AdminBean implements Serializable {
         this.pageSize = pageSize;
         // Reset the row count when page size changes
         lazyAdmins.setRowCount(adminRepository.countAdmins(new HashMap<>()));
+    }
+
+    // Getter and Setter for the Search Query
+    public String getSearchUsername() {
+        return searchUsername;
+    }
+
+    public void setSearchUsername(String searchUsername) {
+        this.searchUsername = searchUsername;
+    }
+
+    public String getSearchName() {
+        return searchName;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
+    }
+
+    // Methods to filter by username and name
+    public void filterByUsername() {
+        searchName = null; // Clear the other search filter
+        lazyAdmins.load(0, pageSize, null, new HashMap<>()); // Refresh the data
+    }
+
+    public void filterByName() {
+        searchUsername = null; // Clear the other search filter
+        lazyAdmins.load(0, pageSize, null, new HashMap<>()); // Refresh the data
     }
 }

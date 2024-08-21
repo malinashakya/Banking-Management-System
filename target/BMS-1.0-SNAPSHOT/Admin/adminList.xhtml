@@ -10,12 +10,26 @@
     <h:body>
         <ui:include src="menu.xhtml" />
 
-        <h:form id="adminListForm"> 
-            <p:dataTable id="admins" widgetVar="admins" value="#{adminBean.lazyAdmins}" var="admin" paginator="true" 
-                         rows="#{adminBean.pageSize}" lazy="true" rowKey="#{admin.id}" paginatorPosition="bottom"   rowsPerPageTemplate="5,10,15"
-                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} 
-                         {LastPageLink}" >
-                <!--For lazyTable we have added  paginator="true" rows="3" lazy="true" Here rows=3 that means three data will be shown at once in the table-->
+        <!--For searching purpose-->
+        <h:form id="searchForm">
+            <h:panelGrid columns="3" styleClass="ui-panelgrid-blank" cellpadding="10" style="margin-bottom: 20px;">
+                <h:outputLabel value="Username:" style="font-weight: bold; font-size: 14px;"/>
+                <h:inputText value="#{adminBean.searchUsername}" style="width:100px;" />
+                <h:commandButton value="Filter" action="#{adminBean.filterByUsername()}"  />
+
+                <h:outputLabel value="Name:" style="font-weight: bold; font-size: 14px;" />
+                <h:inputText value="#{adminBean.searchName}" style="width:100px;" />
+                <h:commandButton value="Filter" action="#{adminBean.filterByName()}" />
+            </h:panelGrid>
+        </h:form>
+
+        <!-- DataTable for displaying admins -->
+        <h:form id="adminListForm">
+            <p:dataTable id="admins" value="#{adminBean.lazyAdmins}" var="admin" paginator="true" 
+                         rows="#{adminBean.pageSize}" lazy="true" rowKey="#{admin.id}" paginatorPosition="bottom" 
+                         rowsPerPageTemplate="5,10,15" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} 
+                         {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
                 <f:facet name="header">
                     Admins List
 
@@ -25,7 +39,7 @@
                                      style="color: white; background-color: #007bff; margin: 4px; margin-left: 83%;"
                                      action="#{adminBean.prepareNewAdmin()}" 
                                      oncomplete="PF('adminDialog').show()"
-                                     update=":adminDialogForm"
+                                     update="adminDialogForm"
                                      ajax="true" />
                 </f:facet>
 
@@ -44,20 +58,19 @@
                 <!-- Actions column with Edit and Delete buttons -->
                 <p:column headerText="Actions">
                     <p:commandButton icon="pi pi-fw pi-user-edit"
-                                     style="color: white; background-color: gold; border-color:gold; margin: 3px;"
+                                     style="color: white; background-color: gold; border-color: gold; margin: 3px;"
                                      action="#{adminBean.prepareEditAdmin(admin)}"
                                      oncomplete="PF('adminDialog').show()"
-                                     update=":adminDialogForm"
+                                     update="adminDialogForm"
                                      ajax="true" />
 
-                    <p:commandButton  
-                        update=":adminListForm:admins" 
-                        action="#{adminBean.deleteAdmin(admin)}"
-                        styleClass="ui-button-danger mr-2" 
-                        icon="pi pi-trash">
+                    <p:commandButton icon="pi pi-trash"
+                                     action="#{adminBean.deleteAdmin(admin)}"
+                                     update=":adminListForm:admins"
+                                     styleClass="ui-button-danger mr-2">
                         <p:confirm type="popup" header="Confirmation" 
                                    message="Do you want to delete this admin?" 
-                                   icon="pi pi-info-circle"/>
+                                   icon="pi pi-info-circle" />
                     </p:commandButton>
                 </p:column>
             </p:dataTable>
@@ -82,23 +95,19 @@
 
                     <h:outputLabel for="name" value="Name:" />
                     <p:inputText id="name" value="#{adminBean.selectedAdmin.name}" />
-                    <h:outputLabel />
+
                     <!-- Conditionally show password field only when adding a new admin -->
                     <h:outputLabel for="password" value="Password:" rendered="#{adminBean.editMode == false}" />
                     <p:password id="password" value="#{adminBean.selectedAdmin.password}" rendered="#{adminBean.editMode == false}" />
-
-
-                    <p:commandButton value="#{adminBean.editMode ? 'Update' : 'Save'}"
-                                     action="#{adminBean.saveOrUpdateAdmin()}"
-                                     update=":adminListForm :adminDialogForm :adminListForm:messages"
-                                     oncomplete="if (args.validationFailed) 
-                                     { PF('adminDialog').show(); } 
-                                     else 
-                                     { PF('adminDialog').hide(); }"
-                                     ajax="true" />
-
-                    <p:commandButton value="Cancel" onclick="PF('adminDialog').hide();" type="button"/>
                 </h:panelGrid>
+
+                <p:commandButton value="#{adminBean.editMode ? 'Update' : 'Save'}"
+                                 action="#{adminBean.saveOrUpdateAdmin()}"
+                                 update=":adminListForm :adminDialogForm :messages"
+                                 oncomplete="if (args.validationFailed) { PF('adminDialog').show(); } else { PF('adminDialog').hide(); }"
+                                 ajax="true" />
+
+                <p:commandButton value="Cancel" onclick="PF('adminDialog').hide();" type="button" />
             </h:form>
         </p:dialog>
     </h:body>

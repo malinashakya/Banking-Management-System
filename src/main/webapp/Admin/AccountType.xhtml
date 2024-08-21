@@ -13,22 +13,22 @@
 
         <ui:include src="menu.xhtml" />
         <h:form>
-    <h:panelGrid columns="3" styleClass="ui-panelgrid-blank" cellpadding="10" style="margin-bottom: 20px;">
-        <h:outputLabel value="Interest Rate:" style="font-weight: bold; font-size: 14px;"/>
-        <h:inputText value="#{accountTypeBean.interestRateFilter}" style="width:100px;"  />
-        <h:commandButton value="Filter" action="#{accountTypeBean.filterByInterestRate}" />
-        
-        <h:outputLabel value="Account Type:" style="font-weight: bold; font-size: 14px;"/>
-        <h:selectOneMenu value="#{accountTypeBean.accountTypeEnumFilter}" style="width:100px;">
-            <f:selectItems value="#{accountTypeBean.accountTypeEnums}" />
-        </h:selectOneMenu>
-        <h:commandButton value="Filter" action="#{accountTypeBean.filterByAccountTypeEnum}" />
-    </h:panelGrid>
-    
-    <h:dataTable value="#{accountTypeBean.accountTypes}" var="accountType">
-        <!-- Table columns go here -->
-    </h:dataTable>
-</h:form>
+            <h:panelGrid columns="3" styleClass="ui-panelgrid-blank" cellpadding="10" style="margin-bottom: 20px;">
+                <h:outputLabel value="Interest Rate:" style="font-weight: bold; font-size: 14px;"/>
+                <h:inputText value="#{accountTypeBean.interestRateFilter}" style="width:100px;"  />
+                <h:commandButton value="Filter" action="#{accountTypeBean.filterByInterestRate}" />
+
+                <h:outputLabel value="Account Type:" style="font-weight: bold; font-size: 14px;"/>
+                <h:selectOneMenu value="#{accountTypeBean.accountTypeEnumFilter}" style="width:100px;">
+                    <f:selectItems value="#{accountTypeBean.accountTypeEnums}" />
+                </h:selectOneMenu>
+                <h:commandButton value="Filter" action="#{accountTypeBean.filterByAccountTypeEnum}" />
+            </h:panelGrid>
+
+            <h:dataTable value="#{accountTypeBean.accountTypes}" var="accountType">
+                <!-- Table columns go here -->
+            </h:dataTable>
+        </h:form>
 
         <h:form id="accountTypeListForm">
             <p:dataTable id="accountTypes" value="#{accountTypeBean.accountTypes}" var="accountType" rowKey="#{accountType.id}">
