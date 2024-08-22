@@ -7,10 +7,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 import java.util.Map;
+import javax.faces.view.ViewScoped;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 
 @Named("adminBean")
+@ViewScoped
 public class AdminBean extends GenericBean<Admin> {
 
     @Inject
@@ -19,6 +21,9 @@ public class AdminBean extends GenericBean<Admin> {
     @PostConstruct
     public void init() {
         super.init();
+        if (selectedEntity == null) {
+            selectedEntity = new Admin();
+        }
     }
 
     @Override
