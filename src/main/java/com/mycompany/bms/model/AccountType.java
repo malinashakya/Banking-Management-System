@@ -29,16 +29,22 @@ public class AccountType extends BaseEntity {
     public AccountType(AccountTypeEnum accountType, float interestRate, Integer timePeriod) {
         this.accountType = accountType;
         this.interestRate = interestRate;
-        setTimePeriod(timePeriod); // Use the setter to apply the condition
+        this.timePeriod=timePeriod;
     }
 
     public AccountTypeEnum getAccountType() {
         return accountType;
     }
 
-    public void setAccountType(AccountTypeEnum accountType) {
-        this.accountType = accountType;
+   public void setAccountType(AccountTypeEnum accountType) {
+    this.accountType = accountType;
+    
+    // Automatically adjust the timePeriod based on the accountType
+    if (accountType != AccountTypeEnum.FIXED) {
+        this.timePeriod = 0;
     }
+}
+
 
     public float getInterestRate() {
         return interestRate;

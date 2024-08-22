@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Account Type List</title>
+    </h:head>
+    <h:body>
+        <p:growl id="growl" showDetail="true" />
+        <ui:include src="menu.xhtml" />
+
+        <h:form id="accountTypeListForm">
+            <p:dataTable id="accountTypes" value="#{accountTypeBean.lazyDataModel}" var="accountType"
+                         paginator="true" rows="#{accountTypeBean.pageSize}" lazy="true"
+                         rowKey="#{accountType.id}" paginatorPosition="bottom"
+                         rowsPerPageTemplate="5,10,15"
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                <f:facet name="header">
+                    Account Type List
+                    <p:commandButton icon="pi pi-fw pi-user-plus"
+                                     value="Add Account Type"
+                                     style="margin:4px; margin-left: 83%"
+                                     action="#{accountTypeBean.prepareNewEntity}"
+                                     oncomplete="PF('accountTypeDialog').show()"
+                                     update=":accountTypeDialogForm :growl"
+                                     ajax="true" />
+                </f:facet>
+
+                <p:column headerText="ID" filterBy="#{accountType.id}" filterMatchMode="exact">
+                    <h:outputText value="#{accountType.id}" />
+                </p:column>
+
+                <p:column headerText="Interest Rate" filterBy="#{accountType.interestRate}" filterMatchMode="contains">
+                    <h:outputText value="#{accountType.interestRate}" />
+                </p:column>
+
+                <p:column headerText="Time Period" filterBy="#{accountType.timePeriod}" filterMatchMode="contains">
+                    <h:outputText value="#{accountType.timePeriod}" />
+                </p:column>
+
+                <p:column headerText="Account Type" filterBy="#{accountType.accountType}" filterMatchMode="contains">
+                    <h:outputText value="#{accountType.accountType}" />
+                </p:column>
+
+                <p:column headerText="Actions">
+                    <p:commandButton icon="pi pi-fw pi-user-edit"
+                                     style="margin: 3px; border:1px solid gold; background-color: gold;"
+                                     action="#{accountTypeBean.prepareEditEntity(accountType)}"
+                                     oncomplete="PF('accountTypeDialog').show()"
+                                     update=":accountTypeDialogForm :growl"
+                                     ajax="true" />
+
+                    <p:commandButton icon="pi pi-trash"
+                                     styleClass="ui-button-danger"
+                                     update=":accountTypeListForm:accountTypes :growl"
+                                     action="#{accountTypeBean.deleteEntity(accountType)}">
+                        <p:confirm type="popup" header="Confirmation"
+                                   message="Do you want to delete this accountType?"
+                                   icon="pi pi-info-circle"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <p:confirmPopup global="true" widgetVar="confirmPopup">
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirm-popup-no ui-button-flat" icon="pi pi-times" />
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirm-popup-yes" icon="pi pi-check" />
+            </p:confirmPopup>
+        </h:form>
+
+        <!-- Dialog for accountType form -->
+        <p:dialog header="Account Type Form" widgetVar="accountTypeDialog" modal="true" showEffect="fade" hideEffect="fade">
+            <h:form id="accountTypeDialogForm">
+                <p:messages id="messages" showSummary="true" />
+
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="interestRate" value="Interest Rate:" />
+                    <p:inputText id="interestRate" value="#{accountTypeBean.selectedEntity.interestRate}" />
+
+                    <h:outputLabel for="timePeriod" value="Time Period:" />
+                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedEntity.timePeriod}" />
+
+                    <h:outputLabel for="accountType" value="Account Type:" />
+                    <p:selectOneMenu id="accountType" value="#{accountTypeBean.selectedEntity.accountType}">
+                        <f:selectItem itemLabel="Select Type" itemValue="" />
+                        <f:selectItems value="#{accountTypeBean.accountTypeEnums}" var="type"
+                                       itemLabel="#{type}" itemValue="#{type}" />
+                    </p:selectOneMenu>
+                </h:panelGrid>
+
+                <p:commandButton value="#{accountTypeBean.editMode ? 'Update' : 'Save'}"
+                                 icon="pi pi-fw pi-save"
+                                 action="#{accountTypeBean.saveOrUpdateEntity}"
+                                 update=":accountTypeListForm :accountTypeDialogForm :growl"
+                                 oncomplete="PF('accountTypeDialog').hide();"
+                                 ajax="true" />
+
+                <p:commandButton value="Cancel"
+                                 icon="pi pi-fw pi-times"
+                                 onclick="PF('accountTypeDialog').hide();"
+                                 type="button" />
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

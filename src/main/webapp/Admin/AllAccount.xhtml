@@ -10,9 +10,7 @@
     <h:body>
         <ui:include src="menu.xhtml" />
         
-
         <h:form id="customerListForm">
-            
             <p:dataTable id="customers" value="#{customerBean.lazyCustomers}" var="customer" paginator="true" rows="#{customerBean.pageSize}" lazy="true" rowKey="#{customer.id}" 
                            paginatorPosition="bottom"   rowsPerPageTemplate="5,10,15"
                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} 
@@ -50,9 +48,6 @@
                 </p:column>
                 <p:column headerText="Address">
                     <h:outputText value="#{customer.address}" />
-                </p:column>
-                <p:column headerText="Date of Birth">
-                    <h:outputText value="#{customer.dateOfBirth}" />
                 </p:column>
                 <p:column headerText="Account Type">
                     <h:outputText value="#{customer.accountType}" />
@@ -115,19 +110,14 @@
                     <h:outputLabel for="address" value="Address:" />
                     <p:inputText id="address" value="#{customerBean.selectedCustomer.address}" required="true"/>
 
-                    <h:outputLabel for="dateOfBirth" value="Date of Birth:" />
-                    <p:calendar id="dateOfBirth" value="#{customerBean.selectedCustomer.dateOfBirth}" pattern="dd/MM/yyyy" required="true"/>
-
                     <h:outputLabel for="accountType" value="Account Type:" />
                     <p:selectOneMenu id="accountType" value="#{customerBean.selectedCustomer.accountType}" >
-                        <!--This is coming from the faces-config.xm-->
+                        <!--This is coming from the faces-config.xml-->
                         <f:converter converterId="accountTypeConverter"/>
                         <f:selectItems value="#{customerBean.accountTypes}" var="type"
                                        itemLabel="#{type.accountType}, #{type.interestRate}, #{type.timePeriod}"
                                        itemValue="#{type}" />
                     </p:selectOneMenu>
-
-
 
                     <p:commandButton value="#{customerBean.editMode ? 'Update' : 'Save'}"
                                      action="#{customerBean.saveOrUpdateCustomer()}"
