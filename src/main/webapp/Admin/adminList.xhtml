@@ -78,13 +78,13 @@
 
                 <h:panelGrid columns="2" cellpadding="5">
                     <h:outputLabel for="username" value="Username:" />
-                    <p:inputText id="username" value="#{adminBean.selectedEntity.username}" />
+                    <p:inputText id="username" value="#{adminBean.selectedEntity.username}" required="true" requiredMessage="Username is required"/>
 
                     <h:outputLabel for="name" value="Name:" />
-                    <p:inputText id="name" value="#{adminBean.selectedEntity.name}" />
+                    <p:inputText id="name" value="#{adminBean.selectedEntity.name}" required="true" requiredMessage="Name is required"/>
 
                     <h:outputLabel for="password" value="Password:" rendered="#{!adminBean.editMode}" />
-                    <p:password id="password" value="#{adminBean.selectedEntity.password}" rendered="#{!adminBean.editMode}" />
+                    <p:password id="password" value="#{adminBean.selectedEntity.password}" rendered="#{!adminBean.editMode}" required="true" requiredMessage="Password is required"/>
 
 
                 </h:panelGrid>
@@ -92,7 +92,7 @@
                 <p:commandButton value="#{adminBean.editMode ? 'Update' : 'Save'}"
                                  icon="pi pi-fw pi-save"
                                  action="#{adminBean.saveOrUpdateEntity}"
-                                 update=":adminListForm :adminDialogForm :growl"
+                                 update=":adminListForm :adminDialogForm :messages :growl"
                                  oncomplete="if (args.validationFailed) { PF('adminDialog').show(); } else { PF('adminDialog').hide(); }"
                                  ajax="true" />
 

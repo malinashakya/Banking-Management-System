@@ -79,13 +79,13 @@
 
                 <h:panelGrid columns="2" cellpadding="5">
                     <h:outputLabel for="interestRate" value="Interest Rate:" />
-                    <p:inputText id="interestRate" value="#{accountTypeBean.selectedEntity.interestRate}" />
+                    <p:inputText id="interestRate" value="#{accountTypeBean.selectedEntity.interestRate}" required="true" />
 
                     <h:outputLabel for="timePeriod" value="Time Period:" />
-                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedEntity.timePeriod}" />
+                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedEntity.timePeriod}" required="true" />
 
                     <h:outputLabel for="accountType" value="Account Type:" />
-                    <p:selectOneMenu id="accountType" value="#{accountTypeBean.selectedEntity.accountType}">
+                    <p:selectOneMenu id="accountType" value="#{accountTypeBean.selectedEntity.accountType}" required="true" requiredMessage="Account Type is Required">
                         <f:selectItem itemLabel="Select Type" itemValue="" />
                         <f:selectItems value="#{accountTypeBean.accountTypeEnums}" var="type"
                                        itemLabel="#{type}" itemValue="#{type}" />

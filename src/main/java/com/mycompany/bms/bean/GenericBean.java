@@ -18,7 +18,6 @@ import org.primefaces.model.SortMeta;
  * @author malina
  * @param <T>
  */
-
 public abstract class GenericBean<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,7 +44,6 @@ public abstract class GenericBean<T> implements Serializable {
 
     protected abstract void deleteEntity(Long id);
 
-
     @PostConstruct
     public void init() {
         lazyDataModel = new LazyDataModel<T>() {
@@ -53,7 +51,7 @@ public abstract class GenericBean<T> implements Serializable {
             @Override
 //            This process makes sure that your search is done with all the specified criteria
 //            and gives you the results and the total count of matching items.
-            
+
 //            Depth explanation
 //                    Search Criteria: The rules you set for finding items (e.g., "author is J.K. Rowling").
 //                    Entry Set: A list of these rules.
@@ -65,7 +63,6 @@ public abstract class GenericBean<T> implements Serializable {
 //                    Put All: Add these filters to the existing filter list.
 //                    Load Entities: Find and return items that match these filters.
 //                    Count: Get the total number of items that match the filters.
-            
             public List<T> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
                 filterBy.putAll(searchCriteria.entrySet().stream()
                         .map(entry -> FilterMeta.builder().field(entry.getKey()).filterValue(entry.getValue()).build())
@@ -128,7 +125,11 @@ public abstract class GenericBean<T> implements Serializable {
 
     // Getters and setters
     public T getSelectedEntity() {
+        if (selectedEntity == null) {
+            selectedEntity = createNewEntity();
+        }
         return selectedEntity;
+
     }
 
     public void setSelectedEntity(T selectedEntity) {
@@ -168,5 +169,4 @@ public abstract class GenericBean<T> implements Serializable {
 //    public void setSearchCriteria(Map<String, Object> searchCriteria) {
 //        this.searchCriteria = searchCriteria;
 //    }
-
 }
