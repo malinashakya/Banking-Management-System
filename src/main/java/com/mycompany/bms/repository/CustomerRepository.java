@@ -1,6 +1,7 @@
 package com.mycompany.bms.repository;
 
 import com.mycompany.bms.model.Customer;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -15,7 +16,7 @@ import javax.transaction.Transactional;
 import org.primefaces.model.FilterMeta;
 
 @Stateless
-public class CustomerRepository extends GenericRepository<Customer, Long> {
+public class CustomerRepository extends GenericRepository<Customer, Long> implements Serializable {
 
     @PersistenceContext(name = "BankingDS")
     private EntityManager entityManager;

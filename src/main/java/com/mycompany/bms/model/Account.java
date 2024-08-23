@@ -1,16 +1,11 @@
 package com.mycompany.bms.model;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "account")
-public class Account implements Serializable {
-//Serializable is like giving Java a way to package your objects for storage or transport and then unpack them later without losing any information.
- // Like in game, our level, health, weapon collected are remembered.   
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "Account")
+public class Account extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
@@ -18,44 +13,37 @@ public class Account implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "account_type_id", nullable = false)
-    private AccountType accountType;
+    public AccountType accountType;
 
     @Column(name = "balance", nullable = false)
-    private float balance;
+    private Float balance = 0.0f; // Default to zero
 
     @Column(name = "interest_earned", nullable = false)
-    private float interestEarned;
+    private Float interestEarned = 0.0f; // Default to zero
 
-    @Column(name = "account_number", nullable = false, unique = true)
+    @Column(name = "account_number", unique = true, nullable = false)
     private String accountNumber;
 
-    @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private AccountStatusEnum status = AccountStatusEnum.ACTIVE; // Default to ACTIVE
 
     @Column(name = "pin", nullable = false)
+    @Size(min = 4, max = 4, message = "PIN must be 4 digits")
     private String pin;
 
     // Constructors
     public Account() {}
 
-    public Account(Customer customer, AccountType accountType, float balance, float interestEarned, String accountNumber, String status, String pin) {
+    public Account(Customer customer, AccountType accountType, String accountNumber, String pin, AccountStatusEnum status) {
         this.customer = customer;
         this.accountType = accountType;
-        this.balance = balance;
-        this.interestEarned = interestEarned;
         this.accountNumber = accountNumber;
-        this.status = status;
         this.pin = pin;
+        this.status = status;
     }
 
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // Getters and Setters
 
     public Customer getCustomer() {
         return customer;
@@ -73,19 +61,19 @@ public class Account implements Serializable {
         this.accountType = accountType;
     }
 
-    public float getBalance() {
+    public Float getBalance() {
         return balance;
     }
 
-    public void setBalance(float balance) {
+    public void setBalance(Float balance) {
         this.balance = balance;
     }
 
-    public float getInterestEarned() {
+    public Float getInterestEarned() {
         return interestEarned;
     }
 
-    public void setInterestEarned(float interestEarned) {
+    public void setInterestEarned(Float interestEarned) {
         this.interestEarned = interestEarned;
     }
 
@@ -97,11 +85,11 @@ public class Account implements Serializable {
         this.accountNumber = accountNumber;
     }
 
-    public String getStatus() {
+    public AccountStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AccountStatusEnum status) {
         this.status = status;
     }
 

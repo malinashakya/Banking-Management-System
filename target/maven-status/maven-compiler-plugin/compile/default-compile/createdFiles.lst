@@ -24,6 +24,7 @@ com/mycompany/bms/bean/DashboardBean$Transaction.class
 com/mycompany/bms/model/Transaction.class
 com/mycompany/bms/repository/CustomerRepository.class
 com/mycompany/bms/model/AccountTypeEnum.class
+com/mycompany/bms/model/AccountStatusEnum.class
 DatabaseConnection.class
 com/mycompany/bms/bean/GenericBean.class
 com/mycompany/bms/test/PersistenceTest.class
@@ -35,4 +36,5 @@ com/mycompany/bms/util/HibernateUtil.class
 com/mycompany/bms/repository/AdminRepository.class
 com/mycompany/bms/model/Admin_.class
 com/mycompany/bms/bean/CustomerBean.class
+com/mycompany/bms/repository/AccountRepository.class
 com/mycompany/bms/repository/GenericRepository.class
