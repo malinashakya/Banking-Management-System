@@ -80,17 +80,17 @@
                 <p:messages id="messages" showSummary="true" />
 
                 <h:panelGrid columns="2" cellpadding="5">
-                    <h:outputLabel for="username" value="Username:" />
-                    <p:inputText id="username" value="#{adminBean.selectedEntity.username}"  >
+                    <p:outputLabel for="username" value="Username:" />
+                    <p:inputText id="username" value="#{adminBean.selectedEntity.username}" required="true" >
                         <p:ajax update="@this" process="@this"/>  
                     </p:inputText>
                     <h:outputLabel />
                     <!-- Conditionally show password field only when adding a new admin -->
-                    <h:outputLabel for="password" value="Password:" rendered="#{adminBean.editMode == false}" />
-                    <p:password id="password" value="#{adminBean.selectedEntity.password}" rendered="#{adminBean.editMode == false}"/>
+                    <p:outputLabel for="password" value="Password:" rendered="#{adminBean.editMode == false}" />
+                    <p:password id="password" value="#{adminBean.selectedEntity.password}" rendered="#{adminBean.editMode == false}" required="true" />
 
-                    <h:outputLabel for="Name" value="Name:" />
-                    <p:inputText id="Name" value="#{adminBean.selectedEntity.name}"/>
+                    <p:outputLabel for="Name" value="Name:" />
+                    <p:inputText id="Name" value="#{adminBean.selectedEntity.name}" required="true" />
 
                     <p:commandButton value="#{adminBean.editMode ? 'Update' : 'Save'}"
                                      action="#{adminBean.saveOrUpdateEntity()}"

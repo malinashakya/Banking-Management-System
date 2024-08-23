@@ -78,14 +78,14 @@
                 <p:messages id="messages" showSummary="true" />
 
                 <h:panelGrid columns="2" cellpadding="5">
-                    <h:outputLabel for="interestRate" value="Interest Rate:" />
-                    <p:inputText id="interestRate" value="#{accountTypeBean.selectedEntity.interestRate}" />
+                    <p:outputLabel for="interestRate" value="Interest Rate:" />
+                    <p:inputText id="interestRate" value="#{accountTypeBean.selectedEntity.interestRate}" required="true" />
 
-                    <h:outputLabel for="timePeriod" value="Time Period:" />
-                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedEntity.timePeriod}" />
+                    <p:outputLabel for="timePeriod" value="Time Period:" />
+                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedEntity.timePeriod}" required="true" />
 
-                    <h:outputLabel for="accountType" value="Account Type:" />
-                    <p:selectOneMenu id="accountType" value="#{accountTypeBean.selectedEntity.accountType}">
+                    <p:outputLabel for="accountType" value="Account Type:" />
+                    <p:selectOneMenu id="accountType" value="#{accountTypeBean.selectedEntity.accountType}" required="true" >
                         <f:selectItem itemLabel="Select Type" itemValue="" />
                         <f:selectItems value="#{accountTypeBean.accountTypeEnums}" var="type"
                                        itemLabel="#{type}" itemValue="#{type}" />
