@@ -8,8 +8,8 @@
         <title>Admins List</title>
     </h:head>
     <h:body>
+        <p:growl id="growl" showDetail="true" />
         <ui:include src="menu.xhtml" />
-
         <h:form id="adminListForm">
             <p:dataTable id="admins" value="#{adminBean.lazyDataModel}" var="admin"
                          paginator="true" rows="#{adminBean.pageSize}" lazy="true"
@@ -81,25 +81,26 @@
 
                 <h:panelGrid columns="2" cellpadding="5">
                     <h:outputLabel for="username" value="Username:" />
-                    <p:inputText id="username" value="#{adminBean.selectedEntity.username}"  required="true" requiredMessage="Username is Required">
+                    <p:inputText id="username" value="#{adminBean.selectedEntity.username}"  >
                         <p:ajax update="@this" process="@this"/>  
                     </p:inputText>
                     <h:outputLabel />
                     <!-- Conditionally show password field only when adding a new admin -->
                     <h:outputLabel for="password" value="Password:" rendered="#{adminBean.editMode == false}" />
-                    <p:password id="password" value="#{adminBean.selectedEntity.password}" rendered="#{adminBean.editMode == false}" required="true" requiredMessage="Password is Required"/>
+                    <p:password id="password" value="#{adminBean.selectedEntity.password}" rendered="#{adminBean.editMode == false}"/>
 
                     <h:outputLabel for="Name" value="Name:" />
-                    <p:inputText id="Name" value="#{adminBean.selectedEntity.name}" required="true" requiredMessage="Name is Required"/>
+                    <p:inputText id="Name" value="#{adminBean.selectedEntity.name}"/>
 
                     <p:commandButton value="#{adminBean.editMode ? 'Update' : 'Save'}"
                                      action="#{adminBean.saveOrUpdateEntity()}"
-                                     update=":adminListForm :adminDialogForm :adminListForm:messages"
+                                     update=":adminListForm :adminDialogForm :growl :adminListForm:messages"
                                      oncomplete="if (args.validationFailed) 
                                      { PF('adminDialog').show(); } 
                                      else 
                                      { PF('adminDialog').hide(); }"
                                      ajax="true" />
+
 
                     <p:commandButton value="Cancel" onclick="PF('adminDialog').hide();" type="button"/>
                 </h:panelGrid>

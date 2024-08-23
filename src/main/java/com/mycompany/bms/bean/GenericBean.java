@@ -162,11 +162,4 @@ public abstract class GenericBean<T> implements Serializable {
         lazyDataModel.setRowCount(countEntities(new HashMap<>()));
     }
 
-//    public Map<String, Object> getSearchCriteria() {
-//        return searchCriteria;
-//    }
-//
-//    public void setSearchCriteria(Map<String, Object> searchCriteria) {
-//        this.searchCriteria = searchCriteria;
-//    }
 }

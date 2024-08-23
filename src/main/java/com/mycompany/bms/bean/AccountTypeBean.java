@@ -23,7 +23,7 @@ public class AccountTypeBean extends GenericBean<AccountType> {
     @Override
     public void init() {
         super.init();
-         if (selectedEntity == null) {
+        if (selectedEntity == null) {
             selectedEntity = new AccountType();
         }
     }

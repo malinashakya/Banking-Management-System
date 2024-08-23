@@ -17,7 +17,7 @@
                          rowKey="#{accountType.id}" paginatorPosition="bottom"
                          rowsPerPageTemplate="5,10,15"
                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
- <f:selectItem itemLabel="Select Type" itemValue="" />
+
                 <f:facet name="header">
                     Account Type List
                     <p:commandButton icon="pi pi-fw pi-user-plus"
@@ -79,13 +79,13 @@
 
                 <h:panelGrid columns="2" cellpadding="5">
                     <h:outputLabel for="interestRate" value="Interest Rate:" />
-                    <p:inputText id="interestRate" value="#{accountTypeBean.selectedEntity.interestRate}" required="true" />
+                    <p:inputText id="interestRate" value="#{accountTypeBean.selectedEntity.interestRate}" />
 
                     <h:outputLabel for="timePeriod" value="Time Period:" />
-                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedEntity.timePeriod}" required="true" />
+                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedEntity.timePeriod}" />
 
                     <h:outputLabel for="accountType" value="Account Type:" />
-                    <p:selectOneMenu id="accountType" value="#{accountTypeBean.selectedEntity.accountType}" required="true" requiredMessage="Account Type is Required">
+                    <p:selectOneMenu id="accountType" value="#{accountTypeBean.selectedEntity.accountType}">
                         <f:selectItem itemLabel="Select Type" itemValue="" />
                         <f:selectItems value="#{accountTypeBean.accountTypeEnums}" var="type"
                                        itemLabel="#{type}" itemValue="#{type}" />
@@ -96,7 +96,10 @@
                                  icon="pi pi-fw pi-save"
                                  action="#{accountTypeBean.saveOrUpdateEntity}"
                                  update=":accountTypeListForm :accountTypeDialogForm :growl"
-                                 oncomplete="PF('accountTypeDialog').hide();"
+                                 oncomplete="if (args.validationFailed) 
+                                 { PF('accountTypeDialog').show(); } 
+                                 else 
+                                 { PF('accountTypeDialog').hide(); }"
                                  ajax="true" />
 
                 <p:commandButton value="Cancel"

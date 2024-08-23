@@ -33,25 +33,6 @@ public class AccountTypeRepository extends GenericRepository<AccountType, Long> 
     }
 
     // Method to find AccountTypes by interestRate
-//    public List<AccountType> findByInterestRate(float interestRate) {
-//        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-////        CriteriaBuilder: Used to construct different parts of a query in a type-safe way
-//        CriteriaQuery<AccountType> cq = cb.createQuery(AccountType.class);
-////     CriteriaQuery: Represents the query itself
-//        Root<AccountType> accountType = cq.from(AccountType.class);
-////       Root: Defines the entity that the query will be selecting from, i.e. which table
-//
-//        // Create a predicate for the condition
-//        Predicate interestRatePredicate = cb.equal(accountType.get("interestRate"), interestRate);
-////        The Predicate interestRatePredicate is a condition that will be applied to the query. It represents the SQL condition WHERE interestRate = :interestRate.
-//        
-//        // Set the query to select account types where interestRate matches
-//        cq.select(accountType).where(interestRatePredicate);
-//
-//        // Execute the query and return the result
-//        return getEntityManager().createQuery(cq).getResultList();
-//    }
-    // Method to find AccountTypes by interestRate
     public List<AccountType> findByInterestRate(float interestRate) {
         CriteriaContext<AccountType> context = createCriteriaContext();
         Predicate interestRatePredicate = createPredicate(context.getCb(), context.getRoot(), AccountType_.interestRate.getName(), interestRate);

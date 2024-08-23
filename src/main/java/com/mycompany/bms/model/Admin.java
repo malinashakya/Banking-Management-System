@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -12,10 +13,13 @@ import javax.validation.constraints.Size;
 @Table(name = "admin")
 //Makes table named admin inside our database
 public class Admin extends BaseEntity {
+
     private static final long serialVersionUID = 1L;
 
     @Column(name = "name", nullable = false)
     @NotEmpty(message = "Name cannot be empty")
+    @Size(min = 5, max = 30, message = "Full name should be at least 5 characters")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name should be a valid string")
     private String name;
 
     @Column(name = "username", nullable = false, unique = true)
@@ -41,7 +45,6 @@ public class Admin extends BaseEntity {
     }
 
     //Making getters and setters method
-
     public String getName() {
         return name;
     }
@@ -66,7 +69,4 @@ public class Admin extends BaseEntity {
         this.password = password;
     }
 
-    public int intValue() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

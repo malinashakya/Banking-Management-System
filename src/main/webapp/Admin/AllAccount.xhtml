@@ -8,8 +8,8 @@
         <title>Customers List</title>
     </h:head>
     <h:body>
+        <p:growl id="growl" showDetail="true" life="3000" />
         <ui:include src="menu.xhtml" />
-
         <h:form id="customerListForm">
             <p:dataTable id="customers" value="#{customerBean.lazyCustomers}" var="customer" paginator="true" rows="#{customerBean.pageSize}" lazy="true" rowKey="#{customer.id}" 
                          paginatorPosition="bottom"   rowsPerPageTemplate="5,10,15"
@@ -90,28 +90,28 @@
 
                 <h:panelGrid columns="2" cellpadding="5">
                     <h:outputLabel for="username" value="Username:" />
-                    <p:inputText id="username" value="#{customerBean.selectedCustomer.username}"  required="true" requiredMessage="Username is Required">
+                    <p:inputText id="username" value="#{customerBean.selectedCustomer.username}" >
                         <p:ajax update="@this" process="@this"/>  
                     </p:inputText>
                     <h:outputLabel />
                     <!-- Conditionally show password field only when adding a new customer -->
                     <h:outputLabel for="password" value="Password:" rendered="#{customerBean.editMode == false}" />
-                    <p:password id="password" value="#{customerBean.selectedCustomer.password}" rendered="#{customerBean.editMode == false}" required="true" requiredMessage="Password is Required"/>
+                    <p:password id="password" value="#{customerBean.selectedCustomer.password}" rendered="#{customerBean.editMode == false}" />
 
                     <h:outputLabel for="firstName" value="First Name:" />
-                    <p:inputText id="firstName" value="#{customerBean.selectedCustomer.firstName}" required="true" requiredMessage="First name is Required"/>
+                    <p:inputText id="firstName" value="#{customerBean.selectedCustomer.firstName}" />
 
                     <h:outputLabel for="lastName" value="Last Name:" />
-                    <p:inputText id="lastName" value="#{customerBean.selectedCustomer.lastName}" required="true" requiredMessage="Last name is Required"/>
+                    <p:inputText id="lastName" value="#{customerBean.selectedCustomer.lastName}" />
 
                     <h:outputLabel for="contact" value="Contact:" />
-                    <p:inputText id="contact" value="#{customerBean.selectedCustomer.contact}" required="true" requiredMessage="Contact is Required"/>
+                    <p:inputText id="contact" value="#{customerBean.selectedCustomer.contact}" />
 
                     <h:outputLabel for="address" value="Address:" />
-                    <p:inputText id="address" value="#{customerBean.selectedCustomer.address}" required="true" requiredMessage="Address is Required"/>
+                    <p:inputText id="address" value="#{customerBean.selectedCustomer.address}" />
 
                     <h:outputLabel for="accountType" value="Account Type:" />
-                    <p:selectOneMenu id="accountType" value="#{customerBean.selectedCustomer.accountType}" required="true" requiredMessage="Account Type is Required">
+                    <p:selectOneMenu id="accountType" value="#{customerBean.selectedCustomer.accountType}" >
                         <!--This is coming from the faces-config.xml-->
                         <f:selectItem itemLabel="Select Type" itemValue="" />
                         <f:converter converterId="accountTypeConverter"/>
@@ -122,7 +122,7 @@
 
                     <p:commandButton value="#{customerBean.editMode ? 'Update' : 'Save'}"
                                      action="#{customerBean.saveOrUpdateCustomer()}"
-                                     update=":customerListForm :customerDialogForm :customerListForm:messages"
+                                     update=":customerListForm :customerDialogForm :growl"
                                      oncomplete="if (args.validationFailed) 
                                      { PF('customerDialog').show(); } 
                                      else 

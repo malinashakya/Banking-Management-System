@@ -5,34 +5,45 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "customer")
 public class Customer extends BaseEntity {
 
     @Column(name = "first_name", nullable = false)
+    @Size(min = 2, max = 20, message = "First name should be at least 2 characters")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name should be a valid string")
     @NotNull(message = "First Name cannot be empty")
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
+    @Size(min = 2, max = 20, message = "First name should be at least 2 characters")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name should be a valid string")
     @NotNull(message = "Last Name cannot be empty")
     private String lastName;
 
     @Column(name = "address", nullable = false)
-    @NotNull(message = "Address cannot be empty")
+    @NotEmpty(message = "Address cannot be empty")
     private String address;
 
     @Column(name = "contact", nullable = false, unique = true)
-    @NotNull(message = "Contact cannot be empty")
+    @Size(min=10, max=10, message="Contact number should be 10 digits")
+    @NotEmpty(message = "Contact cannot be empty")
     private String contact;
 
     @Column(name = "username", nullable = false, unique = true)
-    @NotNull(message = "Username cannot be empty")
+    @Email(message = "Username must be a valid email address")
+    @NotEmpty(message = "Username cannot be empty")
     private String username;
 
     @Column(name = "password", nullable = false)
     @NotNull(message = "Password cannot be empty")
+    @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
     @ManyToOne

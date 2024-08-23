@@ -19,7 +19,7 @@ public class AccountTypeConverter implements Converter, Serializable {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-             if (value == null || value.isEmpty() || value.length() == 0 || value.equals("")) {
+        if (value == null || value.isEmpty() || value.length() == 0 || value.equals("")) {
             return null;
         }
         Long id = Long.valueOf(value);
@@ -30,7 +30,7 @@ public class AccountTypeConverter implements Converter, Serializable {
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object object) {
-        if (object == null||object.equals("")) {
+        if (object == null || object.equals("")) {
             return "";
         }
         if (object instanceof AccountType) {
