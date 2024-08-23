@@ -2,15 +2,24 @@ package com.mycompany.bms.repository;
 
 import com.mycompany.bms.model.Account;
 import com.mycompany.bms.model.AccountStatusEnum;
+import com.mycompany.bms.model.Account;
+import com.mycompany.bms.model.Account;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Named;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.primefaces.model.FilterMeta;
 
 @Named
 @Stateless
@@ -122,5 +131,57 @@ public class AccountRepository extends GenericRepository<Account, Long> {
     public String generateRandomPin() {
         int pin = RANDOM.nextInt(9000) + 1000; // Generates a number between 1000 and 9999
         return String.valueOf(pin);
+    }
+    
+       public List<Account> getAccounts(int first, int pageSize, Map<String, FilterMeta> filters) {
+        // Initialize Criteria API context with CriteriaBuilder, CriteriaQuery, and Root
+        CriteriaContext<Account> context = createCriteriaContext();
+
+        // Create predicates based on the provided filters
+        Predicate[] predicates = createPredicates(context.getCb(), context.getRoot(), filters);
+        if (predicates.length > 0) {
+            context.getCq().where(predicates); // Apply predicates to the query
+        }
+
+        // Create and execute the query
+        TypedQuery<Account> query = getEntityManager().createQuery(context.getCq());
+        query.setFirstResult(first); // Set the starting index
+        query.setMaxResults(pageSize); // Set the maximum number of results
+
+        return query.getResultList(); // Return the list of results
+    }
+       private Predicate[] createPredicates(CriteriaBuilder cb, Root<Account> root, Map<String, FilterMeta> filters) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        // Iterate over the filters and create predicates
+        for (Map.Entry<String, FilterMeta> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            FilterMeta filter = entry.getValue();
+
+            if (filter.getFilterValue() != null && !filter.getFilterValue().toString().isEmpty()) {
+                // Create predicate based on the filter key and value using metamodel types
+                predicates.add(createPredicate(cb, root, key, filter.getFilterValue()));
+            }
+        }
+
+        return predicates.toArray(new Predicate[0]); // Return the array of predicates
+    }
+        public int countAccounts(Map<String, FilterMeta> filters) {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<Account> root = cq.from(Account.class);
+
+        // Select the count of Account entities
+        cq.select(cb.count(root));
+
+        // Create predicates based on the provided filters
+        Predicate[] predicates = createPredicates(cb, root, filters);
+        if (predicates.length > 0) {
+            cq.where(predicates); // Apply predicates to the query
+        }
+
+        // Create and execute the query
+        TypedQuery<Long> query = getEntityManager().createQuery(cq);
+        return query.getSingleResult().intValue(); // Return the count of matching entities
     }
 }
