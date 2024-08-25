@@ -2,58 +2,55 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-    <h:head>
-        <title>Account Status List</title>
-    </h:head>
-    <h:body>
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-        <p:growl id="growl" showDetail="true" life="3000" />
-        <ui:include src="menu.xhtml" />
-  
-        <p:selectOneMenu id="status" value="#{accountBean.selectedEntity.status}" style="width:100px;  margin:10px;">
-            <f:selectItem itemLabel="Select Account Status" itemValue="" noSelectionOption="true"/>
-            <f:selectItems value="#{accountBean.accountStatusValues}" var="status" itemLabel="#{status}" itemValue="#{status}" />
-        </p:selectOneMenu>
+<h:head>
+    <title>Account Status</title>
+</h:head>
 
-        <h:form id="accountListForm">
-            <p:dataTable id="accounts" value="#{accountBean.lazyDataModel}" var="account" paginator="true" rows="#{accountBean.pageSize}" lazy="true" rowKey="#{account.id}" 
-                         paginatorPosition="bottom"   rowsPerPageTemplate="5,10,15"
-                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} 
-                         {LastPageLink}" >
-                <!--For lazyTable we have added paginator="true" rows="3" lazy="true" Here rows=3 that means three data will be shown at once in the table-->
-           
-                <p:column headerText="Account Number">
-                    <h:outputText value="#{account.accountNumber}" />
-                </p:column>
+<h:body>
+    <h:form id="accountStatusForm">
+        <!-- Dropdown for selecting account status -->
+        <p:panel header="Filter Accounts by Status">
+            <h:panelGrid columns="2">
+                <h:outputLabel for="status" value="Select Account Status:" />
+                <p:selectOneMenu id="status" value="#{accountBean.selectedStatus}" style="width: 150px">
+                    <f:selectItem itemLabel="Select Status" itemValue="" />
+                    <f:selectItems value="#{accountBean.accountStatusValues}" var="status"
+                                   itemLabel="#{status}" itemValue="#{status}" />
+                    <p:ajax event="change" update=":accountStatusForm:accountTable" listener="#{accountBean.filterByStatus}" process="@this" />
+                </p:selectOneMenu>
+            </h:panelGrid>
+        </p:panel>
 
-                <p:column headerText="First Name">
-                    <h:outputText value="#{account.customer.firstName}" />
-                </p:column>
+        <!-- DataTable for displaying accounts -->
+        <p:dataTable id="accountTable" var="account"
+                     value="#{accountBean.lazyDataModel}" paginator="true"
+                     rows="10" rowsPerPageTemplate="5,10,15"
+                     lazy="true" style="margin-top:20px"
+                     paginatorPosition="bottom">
 
-                <p:column headerText="Last Name">
-                    <h:outputText value="#{account.customer.lastName}" />
-                </p:column>
+            <p:column headerText="Account Number">
+                <h:outputText value="#{account.accountNumber}" />
+            </p:column>
 
+            <p:column headerText="Customer">
+                <h:outputText value="#{account.customer.firstName} #{account.customer.lastName}" />
+            </p:column>
 
-                <p:column headerText="Username">
-                    <h:outputText value="#{account.customer.username}" />
-                </p:column>
+            <p:column headerText="Balance">
+                <h:outputText value="#{account.balance}" />
+            </p:column>
 
-                <p:column headerText="Account Type">
-                    <h:outputText value="#{account.customer.accountType.accountType}" />
-                </p:column>
+            <p:column headerText="Status">
+                <h:outputText value="#{account.status}" />
+            </p:column>
 
+            <p:column headerText="Interest Earned">
+                <h:outputText value="#{account.interestEarned}" />
+            </p:column>
 
-
-                <!-- Actions column with Edit and Delete buttons -->
-                <p:column headerText="Actions">
-                    <p:commandButton icon="pi pi-pencil" 
-                                     style="color: white; background-color: gold; border-color:gold; margin: 3px;" />
-
-                </p:column>
-            </p:dataTable>
-        </h:form>
-    </h:body>
+        </p:dataTable>
+    </h:form>
+</h:body>
 </html>

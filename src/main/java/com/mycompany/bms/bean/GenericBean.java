@@ -14,24 +14,22 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
 /**
- *
- * @author malina
- * @param <T>
+ * Abstract class providing generic CRUD operations and lazy loading for entities.
+ * @param <T> Entity type
  */
 public abstract class GenericBean<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     T selectedEntity; // Entity selected for editing
-
     private boolean editMode = false;
 
     // For Lazy Table
-    private LazyDataModel<T> lazyDataModel;
+    LazyDataModel<T> lazyDataModel;
     private int pageSize = 5;
 
     // For Search Query
-    private Map<String, Object> searchCriteria = new HashMap<>();
+    Map<String, Object> searchCriteria = new HashMap<>();
 
     // Abstract methods to be implemented by subclasses
     protected abstract List<T> loadEntities(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy);
@@ -49,26 +47,14 @@ public abstract class GenericBean<T> implements Serializable {
         lazyDataModel = new LazyDataModel<T>() {
 
             @Override
-//            This process makes sure that your search is done with all the specified criteria
-//            and gives you the results and the total count of matching items.
-
-//            Depth explanation
-//                    Search Criteria: The rules you set for finding items (e.g., "author is J.K. Rowling").
-//                    Entry Set: A list of these rules.
-//                    Stream: A way to go through each rule one by one.
-//                    Map: Convert each rule into a special format (FilterMeta).
-//                    FilterMeta: Defines how to filter items based on your rules.
-//                    Build: Finalize each filter rule into FilterMeta.
-//                    Collect: Gather all these filters into one map.
-//                    Put All: Add these filters to the existing filter list.
-//                    Load Entities: Find and return items that match these filters.
-//                    Count: Get the total number of items that match the filters.
             public List<T> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+                if (filterBy == null) {
+                    filterBy = new HashMap<>();
+                }
                 filterBy.putAll(searchCriteria.entrySet().stream()
                         .map(entry -> FilterMeta.builder().field(entry.getKey()).filterValue(entry.getValue()).build())
                         .collect(Collectors.toMap(FilterMeta::getField, Function.identity()))
                 );
-
                 List<T> entities = loadEntities(first, pageSize, sortBy, filterBy);
                 this.setRowCount(countEntities(filterBy));
                 return entities;
@@ -76,6 +62,9 @@ public abstract class GenericBean<T> implements Serializable {
 
             @Override
             public int count(Map<String, FilterMeta> filterBy) {
+                if (filterBy == null) {
+                    filterBy = new HashMap<>();
+                }
                 return countEntities(filterBy);
             }
         };
@@ -129,7 +118,6 @@ public abstract class GenericBean<T> implements Serializable {
             selectedEntity = createNewEntity();
         }
         return selectedEntity;
-
     }
 
     public void setSelectedEntity(T selectedEntity) {
@@ -161,5 +149,4 @@ public abstract class GenericBean<T> implements Serializable {
         // Reset the row count when page size changes
         lazyDataModel.setRowCount(countEntities(new HashMap<>()));
     }
-
 }

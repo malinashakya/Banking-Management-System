@@ -1,12 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Account;
 import com.mycompany.bms.model.AccountStatusEnum;
 import com.mycompany.bms.repository.AccountRepository;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.faces.view.ViewScoped;
@@ -15,25 +12,37 @@ import javax.inject.Named;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 
-/**
- *
- * @author malina
- */
 @Named("accountBean")
 @ViewScoped
 public class AccountBean extends GenericBean<Account> {
 
     @Inject
     private AccountRepository accountRepository;
-    
-   
+
+    private AccountStatusEnum selectedStatus;
+    private Map<String, FilterMeta> filterBy = new HashMap<>(); // Initialize filterBy
+
     @Override
     protected List<Account> loadEntities(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-       return accountRepository.getAccounts(first, pageSize, filterBy);
+        if (filterBy == null) {
+            filterBy = new HashMap<>();
+        }
+        // Apply the selected status as a filter
+        if (selectedStatus != null) {
+            filterBy.put("status", FilterMeta.builder().field("status").filterValue(selectedStatus).build());
+        }
+        return accountRepository.getAccounts(first, pageSize, filterBy);
     }
 
-        @Override
+    @Override
     protected int countEntities(Map<String, FilterMeta> filterBy) {
+        if (filterBy == null) {
+            filterBy = new HashMap<>();
+        }
+        // Apply the selected status as a filter
+        if (selectedStatus != null) {
+            filterBy.put("status", FilterMeta.builder().field("status").filterValue(selectedStatus).build());
+        }
         return accountRepository.countAccounts(filterBy);
     }
 
@@ -61,8 +70,27 @@ public class AccountBean extends GenericBean<Account> {
     protected Long getEntityId(Account entity) {
         return entity.getId();
     }
-   
-    //For dropdown in the AccountStatus.xhtml
+
+    public void filterByStatus() {
+        // Ensure filterBy is initialized
+        if (filterBy == null) {
+            filterBy = new HashMap<>();
+        }
+
+        // Refresh the data model
+        lazyDataModel.setRowCount(countEntities(filterBy));
+        lazyDataModel.load(0, getPageSize(), null, null);
+    }
+
+    public AccountStatusEnum getSelectedStatus() {
+        return selectedStatus;
+    }
+
+    public void setSelectedStatus(AccountStatusEnum selectedStatus) {
+        this.selectedStatus = selectedStatus;
+        filterByStatus();
+    }
+
     public AccountStatusEnum[] getAccountStatusValues() {
         return AccountStatusEnum.values();
     }
