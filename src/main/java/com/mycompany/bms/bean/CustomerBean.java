@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import javax.faces.view.ViewScoped;
@@ -135,8 +136,8 @@ public class CustomerBean implements Serializable {
         Account newAccount = new Account();
         newAccount.setCustomer(customer);
         newAccount.setAccountType(customer.getAccountType()); // Ensure the account type matches the customer's account type
-        newAccount.setBalance(0f);
-        newAccount.setInterestEarned(0f);
+        newAccount.setBalance(BigInteger.ZERO);
+        newAccount.setInterestEarned(BigInteger.ZERO);
         newAccount.setPin(accountRepository.generateRandomPin()); // Use the repository method to generate the pin
         newAccount.setStatus(AccountStatusEnum.ACTIVE); // Default status
         newAccount.setAccountNumber(accountRepository.generateAccountNumber(newAccount)); // Generate the account number

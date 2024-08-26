@@ -1,5 +1,6 @@
 package com.mycompany.bms.model;
 
+import java.math.BigInteger;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
@@ -16,10 +17,10 @@ public class Account extends BaseEntity {
     public AccountType accountType;
 
     @Column(name = "balance", nullable = false)
-    private Float balance = 0.0f; // Default to zero
+    private BigInteger balance; // Default to zero
 
     @Column(name = "interest_earned", nullable = false)
-    private Float interestEarned = 0.0f; // Default to zero
+    private BigInteger interestEarned; // Default to zero
 
     @Column(name = "account_number", unique = true, nullable = false)
     private String accountNumber;
@@ -61,21 +62,23 @@ public class Account extends BaseEntity {
         this.accountType = accountType;
     }
 
-    public Float getBalance() {
+    public BigInteger getBalance() {
         return balance;
     }
 
-    public void setBalance(Float balance) {
+    public void setBalance(BigInteger balance) {
         this.balance = balance;
     }
 
-    public Float getInterestEarned() {
+    public BigInteger getInterestEarned() {
         return interestEarned;
     }
 
-    public void setInterestEarned(Float interestEarned) {
+    public void setInterestEarned(BigInteger interestEarned) {
         this.interestEarned = interestEarned;
     }
+
+
 
     public String getAccountNumber() {
         return accountNumber;

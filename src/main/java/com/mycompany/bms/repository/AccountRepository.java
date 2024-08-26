@@ -1,38 +1,38 @@
 package com.mycompany.bms.repository;
 
-import com.mycompany.bms.model.AccountStatusEnum;
 import com.mycompany.bms.model.Account;
+import com.mycompany.bms.model.AccountStatusEnum;
+import org.primefaces.model.FilterMeta;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import org.primefaces.model.FilterMeta;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @Stateless
-
 public class AccountRepository extends GenericRepository<Account, Long> {
 
     private static final String ACCOUNT_NUMBER_PREFIX = "AT";
     private static final SecureRandom RANDOM = new SecureRandom();
 
+    @PersistenceContext(name = "BankingDS")
+    private EntityManager entityManager;
+
     public AccountRepository() {
         super(Account.class);
     }
-
-    @PersistenceContext(name = "BankingDS")
-    private EntityManager entityManager;
 
     @Override
     public EntityManager getEntityManager() {
@@ -46,10 +46,10 @@ public class AccountRepository extends GenericRepository<Account, Long> {
             account.setAccountNumber(generateAccountNumber(account));
         }
         if (account.getBalance() == null) {
-            account.setBalance(0.0f); // Default to zero
+            account.setBalance(BigInteger.ZERO); // Default to zero
         }
         if (account.getInterestEarned() == null) {
-            account.setInterestEarned(0.0f); // Default to zero
+            account.setInterestEarned(BigInteger.ZERO); // Default to zero
         }
         if (account.getPin() == null || account.getPin().isEmpty()) {
             account.setPin(generateRandomPin()); // Generate a random PIN
@@ -69,7 +69,7 @@ public class AccountRepository extends GenericRepository<Account, Long> {
      */
     public String generateAccountNumber(Account account) {
         // Ensure accountTypeAlias is a String
-        String accountTypeAlias = String.valueOf(account.getAccountType().getAccountType()).substring(0, 2); // Taking three letters from the AccountType as the alias
+        String accountTypeAlias = String.valueOf(account.getAccountType().getAccountType()).substring(0, 2); // Taking two letters from the AccountType as the alias
         String customerId = String.valueOf(account.getCustomer().getId());
         String accountTypeId = String.valueOf(account.getAccountType().getId());
         String sequenceNumber = getNextSequenceNumber(accountTypeAlias, customerId, accountTypeId);
@@ -82,8 +82,6 @@ public class AccountRepository extends GenericRepository<Account, Long> {
      * adjust this based on your sequence generation strategy.
      */
     private String getNextSequenceNumber(String accountTypeAlias, String customerId, String accountTypeId) {
-        // Example sequence generator, replace with your implementation
-        // In a real-world scenario, use a database sequence or similar approach
         int lastSequenceNumber = getLastSequenceNumber(accountTypeAlias, customerId, accountTypeId);
         int nextSequenceNumber = lastSequenceNumber + 1;
         return String.format("%05d", nextSequenceNumber);
@@ -130,38 +128,37 @@ public class AccountRepository extends GenericRepository<Account, Long> {
     }
 
     public List<Account> getAccounts(int first, int pageSize, Map<String, FilterMeta> filters) {
-        // Initialize Criteria API context with CriteriaBuilder, CriteriaQuery, and Root
-        CriteriaContext<Account> context = createCriteriaContext();
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Account> cq = cb.createQuery(Account.class);
+        Root<Account> root = cq.from(Account.class);
 
-        // Create predicates based on the provided filters
-        Predicate[] predicates = createPredicates(context.getCb(), context.getRoot(), filters);
+        // Apply filters
+        Predicate[] predicates = createPredicates(cb, root, filters);
         if (predicates.length > 0) {
-            context.getCq().where(predicates); // Apply predicates to the query
+            cq.where(predicates);
         }
 
         // Create and execute the query
-        TypedQuery<Account> query = getEntityManager().createQuery(context.getCq());
-        query.setFirstResult(first); // Set the starting index
-        query.setMaxResults(pageSize); // Set the maximum number of results
+        TypedQuery<Account> query = getEntityManager().createQuery(cq);
+        query.setFirstResult(first);
+        query.setMaxResults(pageSize);
 
-        return query.getResultList(); // Return the list of results
+        return query.getResultList();
     }
 
     private Predicate[] createPredicates(CriteriaBuilder cb, Root<Account> root, Map<String, FilterMeta> filters) {
         List<Predicate> predicates = new ArrayList<>();
 
-        // Iterate over the filters and create predicates
         for (Map.Entry<String, FilterMeta> entry : filters.entrySet()) {
             String key = entry.getKey();
             FilterMeta filter = entry.getValue();
 
             if (filter.getFilterValue() != null && !filter.getFilterValue().toString().isEmpty()) {
-                // Create predicate based on the filter key and value using metamodel types
                 predicates.add(createPredicate(cb, root, key, filter.getFilterValue()));
             }
         }
 
-        return predicates.toArray(new Predicate[0]); // Return the array of predicates
+        return predicates.toArray(new Predicate[0]);
     }
 
     public int countAccounts(Map<String, FilterMeta> filters) {
@@ -175,11 +172,11 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         // Create predicates based on the provided filters
         Predicate[] predicates = createPredicates(cb, root, filters);
         if (predicates.length > 0) {
-            cq.where(predicates); // Apply predicates to the query
+            cq.where(predicates);
         }
 
         // Create and execute the query
         TypedQuery<Long> query = getEntityManager().createQuery(cq);
-        return query.getSingleResult().intValue(); // Return the count of matching entities
+        return query.getSingleResult().intValue();
     }
 }
