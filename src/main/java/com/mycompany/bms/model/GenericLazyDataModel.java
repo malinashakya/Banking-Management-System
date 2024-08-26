@@ -1,33 +1,33 @@
 package com.mycompany.bms.model;
 
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortMeta;
-import org.primefaces.model.FilterMeta;
-
+import com.mycompany.bms.repository.GenericRepository;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import org.primefaces.model.FilterMeta;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 
-public class GenericLazyDataModel<T> extends LazyDataModel<T> {
+public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T> {
 
-    private final Function<Map<String, SortMeta>, List<T>> loadEntities;
-    private final Function<Map<String, FilterMeta>, Integer> countEntities;
+    private final GenericRepository<T, Long> genericRepo;
 
-    public GenericLazyDataModel(Function<Map<String, SortMeta>, List<T>> loadEntities,
-                                Function<Map<String, FilterMeta>, Integer> countEntities) {
-        this.loadEntities = loadEntities;
-        this.countEntities = countEntities;
-    }
-
-    @Override
-    public List<T> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        List<T> data = loadEntities.apply(sortBy);
-        setRowCount(countEntities.apply(filterBy));
-        return data;
+    public GenericLazyDataModel(GenericRepository<T, Long> genericRepo, Class<T> entityClass) {
+        this.genericRepo = genericRepo;
     }
 
     @Override
     public int count(Map<String, FilterMeta> filterBy) {
-        return countEntities.apply(filterBy);
+        return genericRepo.countEntities(filterBy);
     }
+
+    @Override
+    public List<T> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+        List<T> lazyDataModel = (List<T>) genericRepo.getEntities(first, pageSize, sortBy, filterBy);
+        for (T data : lazyDataModel) {
+            System.out.println(data);
+        }
+
+        return genericRepo.getEntities(first, pageSize, sortBy, filterBy);
+    }
+
 }

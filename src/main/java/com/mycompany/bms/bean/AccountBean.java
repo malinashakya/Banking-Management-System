@@ -2,6 +2,7 @@ package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Account;
 import com.mycompany.bms.model.AccountStatusEnum;
+import com.mycompany.bms.model.GenericLazyDataModel;
 import com.mycompany.bms.repository.AccountRepository;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -9,14 +10,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortMeta;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Named("accountBean")
 @ViewScoped
@@ -29,7 +26,7 @@ public class AccountBean implements Serializable {
 
     private Account selectedEntity;
     private boolean editMode = false;
-    private LazyDataModel<Account> lazyDataModel;
+    private GenericLazyDataModel<Account> lazyDataModel;
     private int pageSize = 5;
     private AccountStatusEnum accountStatusFilter;
 
@@ -41,23 +38,8 @@ public class AccountBean implements Serializable {
         if (selectedEntity == null) {
             selectedEntity = new Account();
         }
+        lazyDataModel = new GenericLazyDataModel<>(accountRepository, Account.class);
 
-        lazyDataModel = new LazyDataModel<Account>() {
-            @Override
-            public List<Account> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-                if (accountStatusFilter != null) {
-                    filterBy.put("status", FilterMeta.builder().field("status").filterValue(accountStatusFilter).build());
-                }
-                List<Account> accounts = accountRepository.getAccounts(first, pageSize, filterBy);
-                this.setRowCount(accountRepository.countAccounts(filterBy));
-                return accounts;
-            }
-
-            @Override
-            public int count(Map<String, FilterMeta> filterBy) {
-                return accountRepository.countAccounts(filterBy);
-            }
-        };
     }
 
     public void saveOrUpdateEntity() {
@@ -87,15 +69,16 @@ public class AccountBean implements Serializable {
         }
     }
 
-      public void saveEntity() {
+    public void saveEntity() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-             accountRepository.update(selectedEntity);
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Entity updated successfully"));
+            accountRepository.update(selectedEntity);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Entity updated successfully"));
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save/update entity"));
         }
     }
+
     public void prepareEditEntity(Account entity) {
         this.selectedEntity = entity;
         this.editMode = true;
@@ -137,11 +120,11 @@ public class AccountBean implements Serializable {
         this.editMode = editMode;
     }
 
-    public LazyDataModel<Account> getLazyDataModel() {
+    public GenericLazyDataModel<Account> getLazyDataModel() {
         return lazyDataModel;
     }
 
-    public void setLazyDataModel(LazyDataModel<Account> lazyDataModel) {
+    public void setLazyDataModel(GenericLazyDataModel<Account> lazyDataModel) {
         this.lazyDataModel = lazyDataModel;
     }
 

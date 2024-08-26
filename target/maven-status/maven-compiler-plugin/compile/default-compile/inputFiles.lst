@@ -16,6 +16,7 @@
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/model/Admin.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/bean/LoginAdminBean.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/bean/AccountBean.java
+/home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/model/GenericLazyDataModel.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/repository/AccountTypeRepository.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/bean/LoginCustomerBean.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/model/Customer.java

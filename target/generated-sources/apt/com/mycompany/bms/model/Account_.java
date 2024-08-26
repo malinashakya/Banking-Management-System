@@ -1,5 +1,6 @@
 package com.mycompany.bms.model;
 
+import java.math.BigInteger;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -8,10 +9,10 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Account.class)
 public abstract class Account_ extends com.mycompany.bms.model.BaseEntity_ {
 
-	public static volatile SingularAttribute<Account, Float> balance;
+	public static volatile SingularAttribute<Account, BigInteger> balance;
 	public static volatile SingularAttribute<Account, String> pin;
 	public static volatile SingularAttribute<Account, AccountType> accountType;
-	public static volatile SingularAttribute<Account, Float> interestEarned;
+	public static volatile SingularAttribute<Account, BigInteger> interestEarned;
 	public static volatile SingularAttribute<Account, String> accountNumber;
 	public static volatile SingularAttribute<Account, Customer> customer;
 	public static volatile SingularAttribute<Account, AccountStatusEnum> status;

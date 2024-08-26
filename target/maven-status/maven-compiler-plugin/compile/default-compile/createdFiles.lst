@@ -1,5 +1,6 @@
 com/mycompany/bms/JAXRSConfiguration.class
 com/mycompany/bms/bean/CustomerBean$3.class
+com/mycompany/bms/model/GenericLazyDataModel.class
 com/mycompany/bms/repository/GenericRepository$CriteriaContext.class
 com/mycompany/bms/repository/AccountTypeRepository.class
 com/mycompany/bms/bean/AccountTypeBean.class
@@ -17,7 +18,7 @@ com/mycompany/bms/model/BaseEntity.class
 com/mycompany/bms/model/BaseEntity_.class
 com/mycompany/bms/bean/AccountBean.class
 com/mycompany/bms/model/Account.class
-com/mycompany/bms/bean/GenericBean$1.class
+com/mycompany/bms/bean/AccountTypeBean$1.class
 com/mycompany/bms/model/Admin.class
 com/mycompany/bms/model/AccountType_.class
 com/mycompany/bms/bean/DashboardBean$Transaction.class
@@ -26,10 +27,10 @@ com/mycompany/bms/repository/CustomerRepository.class
 com/mycompany/bms/model/AccountTypeEnum.class
 com/mycompany/bms/model/AccountStatusEnum.class
 DatabaseConnection.class
-com/mycompany/bms/bean/GenericBean.class
 com/mycompany/bms/test/PersistenceTest.class
 com/mycompany/bms/model/TransactionTypeEnum.class
 com/mycompany/bms/converter/AccountTypeConverter.class
+com/mycompany/bms/bean/AccountBean$1.class
 com/mycompany/bms/bean/CustomerBean$2.class
 com/mycompany/bms/bean/LoginAdminBean.class
 com/mycompany/bms/util/HibernateUtil.class

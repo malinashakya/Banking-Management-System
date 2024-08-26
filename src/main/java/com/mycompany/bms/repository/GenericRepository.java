@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.primefaces.model.SortMeta;
 
 /**
  * Generic repository class providing basic CRUD operations for entities.
@@ -182,7 +183,7 @@ public abstract class GenericRepository<T, ID> {
      * @param filters A map of filters to apply.
      * @return A list of entities matching the filters.
      */
-    public List<T> getEntities(int first, int pageSize, Map<String, FilterMeta> filters) {
+    public List<T> getEntities(int first, int pageSize,Map<String, SortMeta> sortBy, Map<String, FilterMeta> filters) {
         CriteriaContext<T> context = createCriteriaContext();
         Predicate[] predicates = createPredicates(context.getCb(), context.getRoot(), filters);
         if (predicates.length > 0) {

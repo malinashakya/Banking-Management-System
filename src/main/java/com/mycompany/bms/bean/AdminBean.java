@@ -1,6 +1,7 @@
 package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Admin;
+import com.mycompany.bms.model.GenericLazyDataModel;
 import com.mycompany.bms.repository.AdminRepository;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -8,14 +9,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortMeta;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Named("adminBean")
 @ViewScoped
@@ -26,43 +22,32 @@ public class AdminBean implements Serializable {
     @Inject
     private AdminRepository adminRepository;
 
-    private Admin selectedEntity;
+    private Admin selectedAdmin;
     private boolean editMode = false;
-    private LazyDataModel<Admin> lazyDataModel;
+    private GenericLazyDataModel<Admin> lazyDataModel;
     private int pageSize = 5;
 
     @PostConstruct
     public void init() {
-        if (selectedEntity == null) {
-            selectedEntity = new Admin();
+        if (selectedAdmin == null) {
+            selectedAdmin = new Admin();
         }
 
-        lazyDataModel = new LazyDataModel<Admin>() {
-            @Override
-            public List<Admin> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-                List<Admin> admins = adminRepository.getAdmins(first, pageSize, filterBy);
-                this.setRowCount(adminRepository.countAdmins(filterBy));
-                return admins;
-            }
+        lazyDataModel = new GenericLazyDataModel<>(adminRepository, Admin.class);
 
-            @Override
-            public int count(Map<String, FilterMeta> filterBy) {
-                return adminRepository.countAdmins(filterBy);
-            }
-        };
     }
 
     public void saveOrUpdateEntity() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             if (editMode) {
-                adminRepository.update(selectedEntity);
+                adminRepository.update(selectedAdmin);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Admin updated successfully"));
             } else {
-                adminRepository.save(selectedEntity);
+                adminRepository.save(selectedAdmin);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Admin saved successfully"));
             }
-            selectedEntity = new Admin();
+            selectedAdmin = new Admin();
             editMode = false;
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save/update admin"));
@@ -80,24 +65,24 @@ public class AdminBean implements Serializable {
     }
 
     public void prepareEditEntity(Admin entity) {
-        this.selectedEntity = entity;
+        this.selectedAdmin = entity;
         this.editMode = true;
     }
 
     public void prepareNewEntity() {
-        this.selectedEntity = new Admin();
+        this.selectedAdmin = new Admin();
         this.editMode = false;
     }
 
-    public Admin getSelectedEntity() {
-        if (selectedEntity == null) {
-            selectedEntity = new Admin();
+    public Admin getSelectedAdmin() {
+        if (selectedAdmin == null) {
+            selectedAdmin = new Admin();
         }
-        return selectedEntity;
+        return selectedAdmin;
     }
 
-    public void setSelectedEntity(Admin selectedEntity) {
-        this.selectedEntity = selectedEntity;
+    public void setSelectedAdmin(Admin selectedAdmin) {
+        this.selectedAdmin = selectedAdmin;
     }
 
     public boolean isEditMode() {
@@ -108,11 +93,11 @@ public class AdminBean implements Serializable {
         this.editMode = editMode;
     }
 
-    public LazyDataModel<Admin> getLazyDataModel() {
+    public GenericLazyDataModel<Admin> getLazyDataModel() {
         return lazyDataModel;
     }
 
-    public void setLazyDataModel(LazyDataModel<Admin> lazyDataModel) {
+    public void setLazyDataModel(GenericLazyDataModel<Admin> lazyDataModel) {
         this.lazyDataModel = lazyDataModel;
     }
 

@@ -2,6 +2,7 @@ package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.AccountType;
 import com.mycompany.bms.model.AccountTypeEnum;
+import com.mycompany.bms.model.GenericLazyDataModel;
 import com.mycompany.bms.repository.AccountTypeRepository;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -9,14 +10,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortMeta;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Named("accountTypeBean")
 @ViewScoped
@@ -29,7 +26,7 @@ public class AccountTypeBean implements Serializable {
 
     private AccountType selectedEntity;
     private boolean editMode = false;
-    private LazyDataModel<AccountType> lazyDataModel;
+    private GenericLazyDataModel<AccountType> lazyDataModel;
     private int pageSize = 5;
     private AccountTypeEnum accountTypeEnumFilter;
 
@@ -38,23 +35,8 @@ public class AccountTypeBean implements Serializable {
         if (selectedEntity == null) {
             selectedEntity = new AccountType();
         }
+        lazyDataModel = new GenericLazyDataModel<>(accountTypeRepository, AccountType.class);
 
-        lazyDataModel = new LazyDataModel<AccountType>() {
-            @Override
-            public List<AccountType> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-                if (accountTypeEnumFilter != null) {
-                    filterBy.put("accountType", FilterMeta.builder().field("accountType").filterValue(accountTypeEnumFilter).build());
-                }
-                List<AccountType> accountTypes = accountTypeRepository.getAccountTypes(first, pageSize, filterBy);
-                this.setRowCount(accountTypeRepository.countAccountTypes(filterBy));
-                return accountTypes;
-            }
-
-            @Override
-            public int count(Map<String, FilterMeta> filterBy) {
-                return accountTypeRepository.countAccountTypes(filterBy);
-            }
-        };
     }
 
     public void saveOrUpdateEntity() {
@@ -125,11 +107,11 @@ public class AccountTypeBean implements Serializable {
         this.editMode = editMode;
     }
 
-    public LazyDataModel<AccountType> getLazyDataModel() {
+    public GenericLazyDataModel<AccountType> getLazyDataModel() {
         return lazyDataModel;
     }
 
-    public void setLazyDataModel(LazyDataModel<AccountType> lazyDataModel) {
+    public void setLazyDataModel(GenericLazyDataModel<AccountType> lazyDataModel) {
         this.lazyDataModel = lazyDataModel;
     }
 
