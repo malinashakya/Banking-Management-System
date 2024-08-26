@@ -2,55 +2,100 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-<h:head>
-    <title>Account Status</title>
-</h:head>
+    <h:head>
+        <title>Account Status</title>
+    </h:head>
 
-<h:body>
-    <h:form id="accountStatusForm">
-        <!-- Dropdown for selecting account status -->
-        <p:panel header="Filter Accounts by Status">
-            <h:panelGrid columns="2">
-                <h:outputLabel for="status" value="Select Account Status:" />
-                <p:selectOneMenu id="status" value="#{accountBean.selectedStatus}" style="width: 150px">
-                    <f:selectItem itemLabel="Select Status" itemValue="" />
-                    <f:selectItems value="#{accountBean.accountStatusValues}" var="status"
-                                   itemLabel="#{status}" itemValue="#{status}" />
-                    <p:ajax event="change" update=":accountStatusForm:accountTable" listener="#{accountBean.filterByStatus}" process="@this" />
-                </p:selectOneMenu>
-            </h:panelGrid>
-        </p:panel>
+    <h:body>
+        <p:growl id="growl" showDetail="true" />
+        <ui:include src="menu.xhtml" />
+        <h:form id="accountStatusForm">
+            <!-- Dropdown for selecting account status -->
+                <h:panelGrid columns="2">
+                  
+                    <p:selectOneMenu id="status" value="#{accountBean.selectedStatus}" style="width: 150px">
+                        <f:selectItem itemLabel="Select Status" itemValue="" />
+                        <f:selectItems value="#{accountBean.accountStatusValues}" var="status"
+                                       itemLabel="#{status}" itemValue="#{status}" />
+                        <p:ajax event="change" update=":accountStatusForm:accountTable" listener="#{accountBean.filterByStatus}" process="@this" />
+                    </p:selectOneMenu>
+                </h:panelGrid>
 
-        <!-- DataTable for displaying accounts -->
-        <p:dataTable id="accountTable" var="account"
-                     value="#{accountBean.lazyDataModel}" paginator="true"
-                     rows="10" rowsPerPageTemplate="5,10,15"
-                     lazy="true" style="margin-top:20px"
-                     paginatorPosition="bottom">
 
-            <p:column headerText="Account Number">
-                <h:outputText value="#{account.accountNumber}" />
-            </p:column>
+            <!-- DataTable for displaying accounts -->
+            <p:dataTable id="accountTable" var="account"
+                         value="#{accountBean.lazyDataModel}" paginator="true"
+                         rows="5" rowsPerPageTemplate="5,10,15"
+                         lazy="true" style="margin-top:20px"
+                         paginatorPosition="bottom">
 
-            <p:column headerText="Customer">
-                <h:outputText value="#{account.customer.firstName} #{account.customer.lastName}" />
-            </p:column>
+                <p:column headerText="Account Number" filterBy="#{account.accountNumber}" filterMatchMode="exact">
+                    <h:outputText value="#{account.accountNumber}" />
+                </p:column>
 
-            <p:column headerText="Balance">
-                <h:outputText value="#{account.balance}" />
-            </p:column>
+                 <p:column headerText="Customer" filterBy="#{account.customer.fullName}" >
+                    <h:outputText value="#{account.customer.firstName} #{account.customer.lastName}" />
+                </p:column>
+                
+                <p:column headerText="First Name" field="customer.firstName" >
+                    <h:outputText value="#{account.customer.firstName}" />
+                </p:column>
+                <p:column headerText="Last Name" filterBy="#{account.customer.lastName}" >
+                    <h:outputText value="#{account.customer.lastName}" />
+                </p:column>
+                <p:column headerText="Balance" filterBy="#{account.balance}" filterMatchMode="exact">
+                    <h:outputText value="#{account.balance}" />
+                </p:column>
 
-            <p:column headerText="Status">
-                <h:outputText value="#{account.status}" />
-            </p:column>
+                <p:column headerText="Status" filterBy="#{account.status}" filterMatchMode="exact">
+                    <h:outputText value="#{account.status}" />
+                </p:column>
 
-            <p:column headerText="Interest Earned">
-                <h:outputText value="#{account.interestEarned}" />
-            </p:column>
+                <p:column headerText="Interest Earned" filterBy="#{account.interestEarned}" filterMatchMode="exact">
+                    <h:outputText value="#{account.interestEarned}" />
+                </p:column>
 
-        </p:dataTable>
-    </h:form>
-</h:body>
+                <p:column headerText="Actions">
+
+                    <p:commandButton icon="pi pi-fw pi-user-edit"
+                                     style="margin: 3px; border:1px solid gold; background-color: gold;"
+                                     action="#{accountBean.prepareEditEntity(account)}"
+                                     oncomplete="PF('editStatusDialog').show()"
+                                     update=":growl"
+                                     ajax="true"/>
+
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <!--Dialog box for the editing the account status-->
+        <p:dialog header="Edit Status" widgetVar="editStatusDialog" modal="true" showEffect="hide" hideEffect="fade">
+            <h:form id="editStatusDialogForm">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="accountStatus" value="Account Status:" />
+                    <p:selectOneMenu id="accountStatus" value="#{accountBean.selectedEntity.status}" required="true" >
+                        <f:selectItem itemLabel="Select Status" itemValue="" />
+                        <f:selectItems value="#{accountBean.accountStatusValues}" var="status"
+                                       itemLabel="#{status}" itemValue="#{status}" />
+                    </p:selectOneMenu>
+                </h:panelGrid>
+                 <p:commandButton value="Update"
+                                 icon="pi pi-fw pi-save"
+                                 action="#{accountBean.saveEntity}"
+                                 update=":accountTypeListForm :accountTypeDialogForm :growl"
+                                 oncomplete="if (args.validationFailed) 
+                                 { PF('accountTypeDialog').show(); } 
+                                 else 
+                                 { PF('accountTypeDialog').hide(); }"
+                                 ajax="true" />
+                  <p:commandButton value="Cancel"
+                                 icon="pi pi-fw pi-times"
+                                 onclick="PF('accountTypeDialog').hide();"
+                                 type="button" />
+            </h:form>
+        </p:dialog>
+    </h:body>
 </html>

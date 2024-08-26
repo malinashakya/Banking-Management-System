@@ -94,4 +94,6 @@ public class AccountBean extends GenericBean<Account> {
     public AccountStatusEnum[] getAccountStatusValues() {
         return AccountStatusEnum.values();
     }
+    
+    
 }

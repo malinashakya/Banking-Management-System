@@ -9,13 +9,13 @@
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/bean/CustomerBean.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/repository/AdminRepository.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/test/AdminTest.java
-/home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/bean/ConfigurationBean.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/bean/DashboardBean.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/util/HibernateUtil.java
 /home/malina/NetBeansProjects/BMS/target/generated-sources/apt/com/mycompany/bms/model/Account_.java
 /home/malina/NetBeansProjects/BMS/target/generated-sources/apt/com/mycompany/bms/model/Session_.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/model/Admin.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/bean/LoginAdminBean.java
+/home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/bean/AccountBean.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/repository/AccountTypeRepository.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/bean/LoginCustomerBean.java
 /home/malina/NetBeansProjects/BMS/src/main/java/com/mycompany/bms/model/Customer.java

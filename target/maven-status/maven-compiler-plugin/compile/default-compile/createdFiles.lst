@@ -1,6 +1,5 @@
 com/mycompany/bms/JAXRSConfiguration.class
 com/mycompany/bms/bean/CustomerBean$3.class
-com/mycompany/bms/bean/ConfigurationBean.class
 com/mycompany/bms/repository/GenericRepository$CriteriaContext.class
 com/mycompany/bms/repository/AccountTypeRepository.class
 com/mycompany/bms/bean/AccountTypeBean.class
@@ -16,6 +15,7 @@ com/mycompany/bms/bean/AdminBean.class
 com/mycompany/bms/model/Session_.class
 com/mycompany/bms/model/BaseEntity.class
 com/mycompany/bms/model/BaseEntity_.class
+com/mycompany/bms/bean/AccountBean.class
 com/mycompany/bms/model/Account.class
 com/mycompany/bms/bean/GenericBean$1.class
 com/mycompany/bms/model/Admin.class

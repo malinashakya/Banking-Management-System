@@ -14,7 +14,9 @@ import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
 /**
- * Abstract class providing generic CRUD operations and lazy loading for entities.
+ * Abstract class providing generic CRUD operations and lazy loading for
+ * entities.
+ *
  * @param <T> Entity type
  */
 public abstract class GenericBean<T> implements Serializable {
@@ -82,6 +84,16 @@ public abstract class GenericBean<T> implements Serializable {
             }
             selectedEntity = createNewEntity(); // Clear form after submission
             editMode = false; // Reset the edit mode flag
+        } catch (Exception e) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save/update entity"));
+        }
+    }
+
+    public void saveEntity() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        try {
+            updateEntity(selectedEntity);
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Entity updated successfully"));
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save/update entity"));
         }
