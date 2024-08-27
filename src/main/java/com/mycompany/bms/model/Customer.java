@@ -146,8 +146,5 @@ public class Customer extends BaseEntity {
         return getId() != null ? getId().hashCode() : 0;
     }
     
-    public String getFullName() {
-    return firstName + " " + lastName;
-}
 
 }

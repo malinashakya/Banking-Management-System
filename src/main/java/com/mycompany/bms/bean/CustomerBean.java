@@ -38,8 +38,7 @@ public class CustomerBean implements Serializable {
     private List<Customer> customers;
      private List<AccountType> accountTypes;
     private GenericLazyDataModel<Customer> lazyCustomers;
-    private boolean editMode = false;
-    private int pageSize = 5;
+    private boolean editMode = false;   
 
     @PostConstruct
     public void init() {
@@ -82,14 +81,6 @@ public class CustomerBean implements Serializable {
 
     public void setLazyCustomers(GenericLazyDataModel<Customer> lazyCustomers) {
         this.lazyCustomers = lazyCustomers;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
     }
 
     public void saveOrUpdateCustomer() {

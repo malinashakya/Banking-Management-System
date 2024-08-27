@@ -1,14 +1,118 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <title>New Transaction</title>
+        <title>Transaction List</title>
     </h:head>
     <h:body>
-         <!--Including the menu-->
-         <ui:include src="menu.xhtml" />
-        Hello from New Transaction
+        <p:growl id="growl" showDetail="true" />
+        <ui:include src="menu.xhtml" />
+        <h:form id="transactionListForm">
+            <p:dataTable id="transactions" value="#{transactionBean.lazyDataModel}" var="transaction"
+                         paginator="true" rows="5" lazy="true"
+                         rowKey="#{transaction.id}" paginatorPosition="bottom"
+                         rowsPerPageTemplate="5,10,15"
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+
+                <f:facet name="header">
+                    Transactions List
+
+                    <p:commandButton icon="pi pi-fw pi-user-plus"
+                                     value="Add Transaction"
+                                     style="color: white; background-color: #007bff; margin: 4px; margin-left: 83%;"
+                                     action="#{transactionBean.prepareNewEntity()}" 
+                                     oncomplete="PF('transactionDialog').show()"
+                                     update=":transactionDialogForm"
+                                     ajax="true" />
+                </f:facet>
+
+                <p:column headerText="ID" filterBy="#{transaction.id}" filterMatchMode="exact">
+                    <h:outputText value="#{transaction.id}" />
+                </p:column>
+
+                <p:column headerText="Account Number" filterBy="#{transaction.account.accountNumber}" filterMatchMode="contains">
+                    <h:outputText value="#{transaction.account.accountNumber}" />
+                </p:column>
+
+                <p:column headerText="Name" filterBy="#{transaction.account.customer.firstName}" filterMatchMode="contains">
+                    <h:outputText value="#{transaction.account.customer.firstName} #{transaction.account.customer.lastName}" />
+                </p:column>
+
+                <p:column headerText="Type" filterBy="#{transaction.transactionType}" filterMatchMode="contains">
+                    <h:outputText value="#{transaction.transactionType}" />
+                </p:column>
+
+                <p:column headerText="Amount" filterBy="#{transaction.amount}" filterMatchMode="contains">
+                    <h:outputText value="#{transaction.amount}" />
+                </p:column>
+
+                <p:column headerText="Date" filterBy="#{transaction.date}" filterMatchMode="contains">
+                    <h:outputText value="#{transaction.date}" />
+                </p:column>
+
+                <p:column headerText="Actions">
+                    <p:commandButton icon="pi pi-fw pi-user-edit"
+                                     style="color: white; background-color: gold; border-color:gold; margin: 3px;"
+                                     action="#{transactionBean.prepareEditEntity(transaction)}"
+                                     oncomplete="PF('transactionDialog').show()"
+                                     update=":transactionDialogForm"
+                                     ajax="true" />
+
+                    <p:commandButton  
+                        update=":transactionListForm:transactions" 
+                        action="#{transactionBean.deleteEntity(transaction)}"
+                        styleClass="ui-button-danger mr-2" 
+                        icon="pi pi-trash">
+                        <p:confirm type="popup" header="Confirmation" 
+                                   message="Do you want to delete this transaction?" 
+                                   icon="pi pi-info-circle"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <p:confirmPopup global="true" widgetVar="confirmPopup">
+                <p:commandButton value="No" type="button" 
+                                 styleClass="ui-confirm-popup-no ui-button-flat" icon="pi pi-times" />
+                <p:commandButton value="Yes" type="button" 
+                                 styleClass="ui-confirm-popup-yes" icon="pi pi-check" />
+            </p:confirmPopup>
+        </h:form>
+
+        <!-- Dialog Box to add transactions -->
+        <p:dialog header="Transaction Form" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade">
+            <h:form id="transactionDialogForm">
+                <p:messages id="messages" showSummary="true" />
+
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="acc_num" value="Account Number:" />
+                    <p:inputText id="acc_num" value="#{transactionBean.selectedEntity.account.accountNumber}" />
+
+                    <p:outputLabel for="username" value="Username:" />
+                    <p:inputText id="username" value="#{transactionBean.selectedEntity.account.customer.username}" />
+
+                    <p:outputLabel for="contact" value="Contact:" />
+                    <p:inputText id="contact" value="#{transactionBean.selectedEntity.account.customer.contact}" />
+
+                    <p:outputLabel for="balance" value="Balance:" />
+                    <p:inputText id="balance" value="#{transactionBean.selectedEntity.account.balance}">
+                        <f:convertNumber type="number" />
+                    </p:inputText>
+
+                    <p:outputLabel for="type" value="Type:" />
+                    <p:inputText id="type" value="#{transactionBean.selectedEntity.transactionType}" />
+
+                    <p:outputLabel for="amount" value="Amount:" />
+                    <p:inputText id="amount" value="#{transactionBean.selectedEntity.amount}">
+                        <f:convertNumber type="number" />
+                    </p:inputText>
+                </h:panelGrid>
+
+                <p:commandButton value="Save" action="#{transactionBean.saveOrUpdateEntity()}" update=":transactionListForm:transactions" />
+                <p:commandButton value="Cancel" onclick="PF('transactionDialog').hide()" type="button" />
+            </h:form>
+        </p:dialog>
     </h:body>
 </html>

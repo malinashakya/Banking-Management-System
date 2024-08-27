@@ -11,7 +11,7 @@
         <p:growl id="growl" showDetail="true" life="3000" />
         <ui:include src="menu.xhtml" />
         <h:form id="customerListForm">
-            <p:dataTable id="customers" value="#{customerBean.lazyCustomers}" var="customer" paginator="true" rows="#{customerBean.pageSize}" lazy="true" rowKey="#{customer.id}" 
+            <p:dataTable id="customers" value="#{customerBean.lazyCustomers}" var="customer" paginator="true" rows="5" lazy="true" rowKey="#{customer.id}" 
                          paginatorPosition="bottom"   rowsPerPageTemplate="5,10,15"
                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} 
                          {LastPageLink}" >

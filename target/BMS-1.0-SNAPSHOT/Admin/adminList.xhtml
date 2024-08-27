@@ -12,7 +12,7 @@
         <ui:include src="menu.xhtml" />
         <h:form id="adminListForm">
             <p:dataTable id="admins" value="#{adminBean.lazyDataModel}" var="admin"
-                         paginator="true" rows="#{adminBean.pageSize}" lazy="true"
+                         paginator="true" rows="5" lazy="true"
                          rowKey="#{admin.id}" paginatorPosition="bottom"
                          rowsPerPageTemplate="5,10,15"
                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">

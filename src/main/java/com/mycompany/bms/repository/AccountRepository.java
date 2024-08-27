@@ -179,4 +179,30 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         TypedQuery<Long> query = getEntityManager().createQuery(cq);
         return query.getSingleResult().intValue();
     }
+
+    public Account findByAccountNumber(String accountNumber) {
+        // Create the criteria builder
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+        // Create the criteria query
+        CriteriaQuery<Account> cq = cb.createQuery(Account.class);
+
+        // Define the root for the query
+        Root<Account> root = cq.from(Account.class);
+
+        // Add the predicate to filter by account number
+        cq.where(cb.equal(root.get("accountNumber"), accountNumber));
+
+        // Create and execute the query
+        TypedQuery<Account> query = getEntityManager().createQuery(cq);
+
+        try {
+            // Return the single result, or null if no result is found
+            return query.getSingleResult();
+        } catch (Exception e) {
+            // Handle the case where no result is found or any other exception
+            return null;
+        }
+    }
+
 }

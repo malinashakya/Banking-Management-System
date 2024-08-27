@@ -22,11 +22,6 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
 
     @Override
     public List<T> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        List<T> lazyDataModel = (List<T>) genericRepo.getEntities(first, pageSize, sortBy, filterBy);
-        for (T data : lazyDataModel) {
-            System.out.println(data);
-        }
-
         return genericRepo.getEntities(first, pageSize, sortBy, filterBy);
     }
 

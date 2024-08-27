@@ -13,17 +13,6 @@
         <p:growl id="growl" showDetail="true" />
         <ui:include src="menu.xhtml" />
         <h:form id="accountStatusForm">
-            <!-- Dropdown for selecting account status -->
-                <h:panelGrid columns="2">
-                  
-                    <p:selectOneMenu id="status" value="#{accountBean.selectedStatus}" style="width: 150px">
-                        <f:selectItem itemLabel="Select Status" itemValue="" />
-                        <f:selectItems value="#{accountBean.accountStatusValues}" var="status"
-                                       itemLabel="#{status}" itemValue="#{status}" />
-                        <p:ajax event="change" update=":accountStatusForm:accountTable" listener="#{accountBean.filterByStatus}" process="@this" />
-                    </p:selectOneMenu>
-                </h:panelGrid>
-
 
             <!-- DataTable for displaying accounts -->
             <p:dataTable id="accountTable" var="account"
@@ -36,23 +25,31 @@
                     <h:outputText value="#{account.accountNumber}" />
                 </p:column>
 
-                 <p:column headerText="Customer" filterBy="#{account.customer.fullName}" >
-                    <h:outputText value="#{account.customer.firstName} #{account.customer.lastName}" />
-                </p:column>
-                
-                <p:column headerText="First Name" field="customer.firstName" >
+                <p:column headerText="First Name" filterBy="#{account.customer.firstName}" filterMatchMode="exact" >
                     <h:outputText value="#{account.customer.firstName}" />
                 </p:column>
-                <p:column headerText="Last Name" filterBy="#{account.customer.lastName}" >
+                <p:column headerText="Last Name" filterBy="#{account.customer.lastName}" filterMatchMode="exact">
                     <h:outputText value="#{account.customer.lastName}" />
                 </p:column>
                 <p:column headerText="Balance" filterBy="#{account.balance}" filterMatchMode="exact">
                     <h:outputText value="#{account.balance}" />
                 </p:column>
-
                 <p:column headerText="Status" filterBy="#{account.status}" filterMatchMode="exact">
                     <h:outputText value="#{account.status}" />
                 </p:column>
+
+                <p:column headerText="Status" filterBy="#{status}" filterMatchMode="exact">
+                    <f:facet name="filter">
+                        <p:selectOneMenu onchange="PF('accountTable').filter()" value="#{accountBean.selectedStatus}">
+                            <f:selectItem itemLabel="Select Status" itemValue="" />
+                            <f:selectItems value="#{accountBean.statusOptions}" var="status" 
+                                           itemLabel="#{status}" itemValue="#{status}" />
+                        </p:selectOneMenu>
+                    </f:facet>
+                    <h:outputText value="#{account.status}" />
+                </p:column>
+
+
 
                 <p:column headerText="Interest Earned" filterBy="#{account.interestEarned}" filterMatchMode="exact">
                     <h:outputText value="#{account.interestEarned}" />
@@ -82,7 +79,7 @@
                                        itemLabel="#{status}" itemValue="#{status}" />
                     </p:selectOneMenu>
                 </h:panelGrid>
-                 <p:commandButton value="Update"
+                <p:commandButton value="Update"
                                  icon="pi pi-fw pi-save"
                                  action="#{accountBean.saveEntity}"
                                  update=":accountTypeListForm :accountTypeDialogForm :growl"
@@ -91,7 +88,7 @@
                                  else 
                                  { PF('accountTypeDialog').hide(); }"
                                  ajax="true" />
-                  <p:commandButton value="Cancel"
+                <p:commandButton value="Cancel"
                                  icon="pi pi-fw pi-times"
                                  onclick="PF('accountTypeDialog').hide();"
                                  type="button" />

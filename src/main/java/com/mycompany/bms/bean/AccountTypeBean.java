@@ -10,10 +10,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.primefaces.model.LazyDataModel;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 @Named("accountTypeBean")
 @ViewScoped
@@ -27,7 +25,6 @@ public class AccountTypeBean implements Serializable {
     private AccountType selectedEntity;
     private boolean editMode = false;
     private GenericLazyDataModel<AccountType> lazyDataModel;
-    private int pageSize = 5;
     private AccountTypeEnum accountTypeEnumFilter;
 
     @PostConstruct
@@ -115,12 +112,4 @@ public class AccountTypeBean implements Serializable {
         this.lazyDataModel = lazyDataModel;
     }
 
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-        lazyDataModel.setRowCount(accountTypeRepository.countAccountTypes(new HashMap<>()));
-    }
 }

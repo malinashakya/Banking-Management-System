@@ -13,7 +13,7 @@
 
         <h:form id="accountTypeListForm">
             <p:dataTable id="accountTypes" value="#{accountTypeBean.lazyDataModel}" var="accountType"
-                         paginator="true" rows="#{accountTypeBean.pageSize}" lazy="true"
+                         paginator="true" rows="5" lazy="true"
                          rowKey="#{accountType.id}" paginatorPosition="bottom"
                          rowsPerPageTemplate="5,10,15"
                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">

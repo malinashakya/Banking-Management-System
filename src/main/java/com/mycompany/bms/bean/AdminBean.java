@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 @Named("adminBean")
 @ViewScoped
@@ -25,7 +24,6 @@ public class AdminBean implements Serializable {
     private Admin selectedAdmin;
     private boolean editMode = false;
     private GenericLazyDataModel<Admin> lazyDataModel;
-    private int pageSize = 5;
 
     @PostConstruct
     public void init() {
@@ -101,12 +99,4 @@ public class AdminBean implements Serializable {
         this.lazyDataModel = lazyDataModel;
     }
 
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-        lazyDataModel.setRowCount(adminRepository.countAdmins(new HashMap<>()));
-    }
 }

@@ -10,10 +10,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.primefaces.model.LazyDataModel;
-
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
 
 @Named("accountBean")
 @ViewScoped
@@ -27,11 +26,8 @@ public class AccountBean implements Serializable {
     private Account selectedEntity;
     private boolean editMode = false;
     private GenericLazyDataModel<Account> lazyDataModel;
-    private int pageSize = 5;
-    private AccountStatusEnum accountStatusFilter;
-
-    // The selected status from the dropdown
     private AccountStatusEnum selectedStatus;
+    private List<AccountStatusEnum> statusOptions;
 
     @PostConstruct
     public void init() {
@@ -39,7 +35,15 @@ public class AccountBean implements Serializable {
             selectedEntity = new Account();
         }
         lazyDataModel = new GenericLazyDataModel<>(accountRepository, Account.class);
+        statusOptions = Arrays.asList(AccountStatusEnum.values());
+    }
 
+    public List<AccountStatusEnum> getStatusOptions() {
+        return statusOptions;
+    }
+
+    public void setStatusOptions(List<AccountStatusEnum> statusOptions) {
+        this.statusOptions = statusOptions;
     }
 
     public void saveOrUpdateEntity() {
@@ -128,12 +132,4 @@ public class AccountBean implements Serializable {
         this.lazyDataModel = lazyDataModel;
     }
 
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-        lazyDataModel.setRowCount(accountRepository.countAccounts(new HashMap<>()));
-    }
-}
+ }
