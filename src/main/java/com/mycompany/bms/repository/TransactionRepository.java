@@ -4,10 +4,15 @@
  */
 package com.mycompany.bms.repository;
 
+import com.mycompany.bms.model.Account;
 import com.mycompany.bms.model.Transaction;
 import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -27,4 +32,5 @@ public class TransactionRepository extends GenericRepository<Transaction, Long> 
         return entityManager;
     }
     
+     
 }

@@ -9,6 +9,8 @@ import com.mycompany.bms.model.Account;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -34,7 +36,6 @@ public class TransactionBean implements Serializable {
     private boolean editMode = false;
 
     private Transaction selectedEntity;
-    private boolean transferMode = false;
     private String transferAccountNumber; // Field for the transfer account number
 
     @PostConstruct
@@ -90,7 +91,6 @@ public class TransactionBean implements Serializable {
             }
             selectedEntity = new Transaction();
             editMode = false;
-            transferMode = false;
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save/update Transaction"));
         }
@@ -109,7 +109,6 @@ public class TransactionBean implements Serializable {
     public void prepareNewEntity() {
         this.selectedEntity = new Transaction();
         this.selectedEntity.setAccount(new Account()); 
-        this.transferMode = false;
     }
 
     public void prepareEditEntity(Transaction entity) {
@@ -118,31 +117,8 @@ public class TransactionBean implements Serializable {
             this.selectedEntity.setAccount(new Account()); // Ensure Account is initialized
         }
         this.editMode = true;
-        this.transferMode = selectedEntity.getTransactionType() == TransactionTypeEnum.TRANSFER;
-    }
+           }
 
-    public void loadAccountData() {
-        String accountNumber = selectedEntity.getAccount().getAccountNumber();
-        Account account = accountRepository.findByAccountNumber(accountNumber);
-        if (account != null) {
-            selectedEntity.setAccount(account);
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Account not found"));
-        }
-    }
-
-    public void onTransactionTypeChange() {
-        transferMode = selectedTransaction == TransactionTypeEnum.TRANSFER;
-    }
-
-    public TransactionTypeEnum getSelectedTransaction() {
-        return selectedTransaction;
-    }
-
-    public void setSelectedTransaction(TransactionTypeEnum selectedTransaction) {
-        this.selectedTransaction = selectedTransaction;
-        onTransactionTypeChange();
-    }
 
     public Transaction getSelectedEntity() {
         return selectedEntity;
@@ -152,15 +128,9 @@ public class TransactionBean implements Serializable {
         this.selectedEntity = selectedEntity;
     }
 
-    public boolean isTransferMode() {
-        return transferMode;
-    }
-
-    public String getTransferAccountNumber() {
-        return transferAccountNumber;
-    }
-
-    public void setTransferAccountNumber(String transferAccountNumber) {
-        this.transferAccountNumber = transferAccountNumber;
-    }
+    public List<TransactionTypeEnum> getTransactionTypeList() {
+    return Arrays.asList(TransactionTypeEnum.values());
+}
+    
+    
 }

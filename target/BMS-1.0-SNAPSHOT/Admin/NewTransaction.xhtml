@@ -82,27 +82,20 @@
         </h:form>
 
         <!-- Dialog Box to add transactions -->
+        <!-- Dialog Box to add transactions -->
         <p:dialog header="Transaction Form" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="transactionDialogForm">
                 <p:messages id="messages" showSummary="true" />
 
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="acc_num" value="Account Number:" />
-                    <p:inputText id="acc_num" value="#{transactionBean.selectedEntity.account.accountNumber}" />
-
-                    <p:outputLabel for="username" value="Username:" />
-                    <p:inputText id="username" value="#{transactionBean.selectedEntity.account.customer.username}" />
-
-                    <p:outputLabel for="contact" value="Contact:" />
-                    <p:inputText id="contact" value="#{transactionBean.selectedEntity.account.customer.contact}" />
-
-                    <p:outputLabel for="balance" value="Balance:" />
-                    <p:inputText id="balance" value="#{transactionBean.selectedEntity.account.balance}">
-                        <f:convertNumber type="number" />
-                    </p:inputText>
+                    <p:inputText id="acc_num" value="#{transactionBean.selectedEntity.account}"
+                                 converter="accountNumberConverter" />
 
                     <p:outputLabel for="type" value="Type:" />
-                    <p:inputText id="type" value="#{transactionBean.selectedEntity.transactionType}" />
+                    <p:selectOneMenu id="type" value="#{transactionBean.selectedEntity.transactionType}">
+                        <f:selectItems value="#{transactionBean.transactionTypeList}" var="type" itemValue="#{type}" itemLabel="#{type}" />
+                    </p:selectOneMenu>
 
                     <p:outputLabel for="amount" value="Amount:" />
                     <p:inputText id="amount" value="#{transactionBean.selectedEntity.amount}">

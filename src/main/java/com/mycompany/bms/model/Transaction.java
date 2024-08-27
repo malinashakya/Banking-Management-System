@@ -1,6 +1,5 @@
 package com.mycompany.bms.model;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Column;
