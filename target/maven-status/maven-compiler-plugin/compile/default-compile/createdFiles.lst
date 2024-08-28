@@ -1,3 +1,4 @@
+com/mycompany/bms/converter/AccountConverter.class
 com/mycompany/bms/JAXRSConfiguration.class
 com/mycompany/bms/model/GenericLazyDataModel.class
 com/mycompany/bms/repository/GenericRepository$CriteriaContext.class
@@ -13,10 +14,12 @@ com/mycompany/bms/model/Account_.class
 com/mycompany/bms/model/Transaction_.class
 com/mycompany/bms/bean/AdminBean.class
 com/mycompany/bms/model/Session_.class
+com/mycompany/bms/converter/AccountNumberConverter.class
 com/mycompany/bms/model/BaseEntity.class
 com/mycompany/bms/model/BaseEntity_.class
 com/mycompany/bms/bean/AccountBean.class
 com/mycompany/bms/model/Account.class
+com/mycompany/bms/converter/TransactionTypeEnumConverter.class
 com/mycompany/bms/repository/TransactionRepository.class
 com/mycompany/bms/model/Admin.class
 com/mycompany/bms/model/AccountType_.class

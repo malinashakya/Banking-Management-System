@@ -1,6 +1,7 @@
 package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Account;
+import com.mycompany.bms.model.AccountStatusEnum;
 import com.mycompany.bms.model.GenericLazyDataModel;
 import com.mycompany.bms.model.Transaction;
 import com.mycompany.bms.model.TransactionTypeEnum;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Named("transactionBean")
 @ViewScoped
@@ -59,100 +61,99 @@ public class TransactionBean implements Serializable {
     }
 
     public void saveOrUpdateEntity() {
-    FacesContext facesContext = FacesContext.getCurrentInstance();
-    try {
-        TransactionTypeEnum transactionTypes = selectedEntity.getTransactionType();
-        Account account = selectedEntity.getAccount();
-        amount = selectedEntity.getAmount();
-        
-        // Validation
-        if (account == null) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Account is not selected."));
-            return;
-        }
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        try {
+            TransactionTypeEnum transactionTypes = selectedEntity.getTransactionType();
+            Account account = selectedEntity.getAccount();
+            amount = selectedEntity.getAmount();
 
-        if (amount == null) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Amount cannot be null"));
-            return;
-        }
-
-        if (transactionTypes == TransactionTypeEnum.TRANSFER && (targetAccountNumber == null || targetAccountNumber.isEmpty())) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account number cannot be null or empty for transfers"));
-            return;
-        }
-
-        System.err.println("Amount:"+amount);
-        System.err.println("Balance:"+account.getBalance());
-        
-        // Handle transaction types
-        if (transactionTypes == TransactionTypeEnum.WITHDRAW || transactionTypes == TransactionTypeEnum.TRANSFER) {
-            if (account.getBalance().compareTo(amount) < 0) {
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Insufficient balance for transaction"));
+            // Validation
+            if (account == null) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Account is not selected."));
                 return;
             }
-            account.setBalance(account.getBalance().subtract(amount));
-            accountRepository.update(account);
-        } 
-        else if (transactionTypes == TransactionTypeEnum.DEPOSIT) {
-        account.setBalance(account.getBalance().add(amount));
-             accountRepository.update(account);
-        }
 
-        // Handle transfers
-        if (transactionTypes == TransactionTypeEnum.TRANSFER) {
-            Account targetAccount = accountRepository.findByAccountNumber(targetAccountNumber);
-            if (targetAccount == null) {
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));
+            if (amount == null) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Amount cannot be null"));
                 return;
             }
-            
-            // Create withdrawal transaction
-            Transaction withdrawalTransaction = new Transaction();
-            withdrawalTransaction.setAccount(account);
-            withdrawalTransaction.setTransactionType(TransactionTypeEnum.WITHDRAW);
-            withdrawalTransaction.setAmount(amount);
-            withdrawalTransaction.setDate(selectedEntity.getDate());
-            withdrawalTransaction.setTransactionTime(selectedEntity.getTransactionTime());
-            transactionRepository.save(withdrawalTransaction);
-            
-            // Update source account
-            accountRepository.update(account);
 
-            // Create deposit transaction
-            Transaction depositTransaction = new Transaction();
-            depositTransaction.setAccount(targetAccount);
-            depositTransaction.setTransactionType(TransactionTypeEnum.DEPOSIT);
-            depositTransaction.setAmount(amount);
-            depositTransaction.setDate(selectedEntity.getDate());
-            depositTransaction.setTransactionTime(selectedEntity.getTransactionTime());
-            transactionRepository.save(depositTransaction);
-            
-            // Update target account
-            targetAccount.setBalance(targetAccount.getBalance().add(amount));
-            accountRepository.update(targetAccount);
+            if (transactionTypes == TransactionTypeEnum.TRANSFER && (targetAccountNumber == null || targetAccountNumber.isEmpty())) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account number cannot be null or empty for transfers"));
+                return;
+            }
 
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Transfer completed successfully"));
+            System.err.println("Amount:" + amount);
+            System.err.println("Balance:" + account.getBalance());
 
-        } else {
-            // For non-transfer transactions
-            if (editMode) {
-                transactionRepository.update(selectedEntity);
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Transaction updated successfully"));
+            // Handle transaction types
+            if (transactionTypes == TransactionTypeEnum.WITHDRAW || transactionTypes == TransactionTypeEnum.TRANSFER) {
+                if (account.getBalance().compareTo(amount) < 0) {
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Insufficient balance for transaction"));
+                    return;
+                }
+                account.setBalance(account.getBalance().subtract(amount));
+                accountRepository.update(account);
+            } else if (transactionTypes == TransactionTypeEnum.DEPOSIT) {
+                account.setBalance(account.getBalance().add(amount));
+                accountRepository.update(account);
+            }
+
+            // Handle transfers
+            if (transactionTypes == TransactionTypeEnum.TRANSFER) {
+                Account targetAccount = accountRepository.findByAccountNumber(targetAccountNumber);
+                if (targetAccount == null) {
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));
+                    return;
+                }
+
+                // Create withdrawal transaction
+                Transaction withdrawalTransaction = new Transaction();
+                withdrawalTransaction.setAccount(account);
+                withdrawalTransaction.setTransactionType(TransactionTypeEnum.WITHDRAW);
+                withdrawalTransaction.setAmount(amount);
+                withdrawalTransaction.setDate(selectedEntity.getDate());
+                withdrawalTransaction.setTransactionTime(selectedEntity.getTransactionTime());
+                transactionRepository.save(withdrawalTransaction);
+
+                // Update source account
+                accountRepository.update(account);
+
+                // Create deposit transaction
+                Transaction depositTransaction = new Transaction();
+                depositTransaction.setAccount(targetAccount);
+                depositTransaction.setTransactionType(TransactionTypeEnum.DEPOSIT);
+                depositTransaction.setAmount(amount);
+                depositTransaction.setDate(selectedEntity.getDate());
+                depositTransaction.setTransactionTime(selectedEntity.getTransactionTime());
+                transactionRepository.save(depositTransaction);
+
+                // Update target account
+                targetAccount.setBalance(targetAccount.getBalance().add(amount));
+                accountRepository.update(targetAccount);
+
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Transfer completed successfully"));
+
             } else {
-                transactionRepository.save(selectedEntity);
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Transaction saved successfully"));
+                // For non-transfer transactions
+                if (editMode) {
+                    transactionRepository.update(selectedEntity);
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Transaction updated successfully"));
+                } else {
+                    transactionRepository.save(selectedEntity);
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Transaction saved successfully"));
+                }
             }
-        }
 
-        // Reset state
-        selectedEntity = new Transaction();
-        editMode = false;
-        
-    } catch (Exception e) {
-        e.printStackTrace(); // Print stack trace for debugging
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save/update Transaction: " + e.getMessage()));
+            // Reset state
+            selectedEntity = new Transaction();
+            editMode = false;
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Print stack trace for debugging
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save/update Transaction: " + e.getMessage()));
+        }
     }
-}
 
     public void deleteEntity(Transaction entity) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -218,11 +219,18 @@ public class TransactionBean implements Serializable {
     public List<Account> getAccountList() {
         return accountList;
     }
-    
-     // Method to prepare for viewing a transaction
+
+    //Getter for Account List having active status only
+      public List<Account> getActiveAccountList() {
+        return accountList.stream()
+                .filter(account -> account.getStatus() == AccountStatusEnum.ACTIVE)
+                .collect(Collectors.toList());
+    }
+    // Method to prepare for viewing a transaction
     public void prepareViewEntity(Transaction transaction) {
         // Set the selected transaction to the one passed as parameter
         this.selectedEntity = transaction;
     }
 
+    
 }

@@ -116,7 +116,7 @@
                         <f:selectItem itemLabel="Select Type" itemValue="" />
                         <f:converter converterId="accountTypeConverter"/>
                         <f:selectItems value="#{customerBean.accountTypes}" var="type"
-                                       itemLabel="#{type.accountType}, #{type.interestRate}, #{type.timePeriod}"
+                                       itemLabel="#{type.accountType},Interest-#{type.interestRate}%,#{type.timePeriod}month"
                                        itemValue="#{type}" />
                     </p:selectOneMenu>
 

@@ -53,10 +53,6 @@
                     <h:outputText value="#{transaction.date}" />
                 </p:column>
 
-                <p:column headerText="Balance" filterBy="#{transaction.account.balance}" filterMatchMode="contains">
-                    <h:outputText value="#{transaction.account.balance}" />
-                </p:column>
-
                 <p:column headerText="Actions">
 
                     <!-- View Button -->
@@ -105,10 +101,10 @@
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="acc_num" value="Account Number:" />
                     <p:selectOneMenu id="acc_num" value="#{transactionBean.selectedEntity.account}" converter="accountConverter">
-                        <f:selectItems value="#{transactionBean.accountList}" var="account" itemValue="#{account}" itemLabel="#{account.accountNumber}" />
+                        <f:selectItems value="#{transactionBean.activeAccountList}" var="account" itemValue="#{account}" itemLabel="#{account.accountNumber}-#{account.customer.firstName} #{account.customer.lastName} #{account.status}" />
                     </p:selectOneMenu>
 
-                    <p:outputLabel for="acc_num" value="Transaction Type" />
+                    <p:outputLabel for="type" value="Transaction Type" />
                     <p:selectOneMenu id="type" value="#{transactionBean.selectedEntity.transactionType}" converter="transactionTypeEnumConverter">
                         <f:selectItems value="#{transactionBean.transactionTypeList}" var="type" itemValue="#{type}" itemLabel="#{type}" />
                     </p:selectOneMenu>
@@ -120,7 +116,7 @@
 
                     <p:outputLabel for="targetAccNum" value="Target Account Number:" />
                     <p:selectOneMenu id="targetAccNum" value="#{transactionBean.targetAccountNumber}">
-                        <f:selectItems value="#{transactionBean.accountList}" var="account" itemValue="#{account.accountNumber}" itemLabel="#{account.accountNumber}" />
+                        <f:selectItems value="#{transactionBean.activeAccountList}" var="account" itemValue="#{account.accountNumber}" itemLabel="#{account.accountNumber}-#{account.customer.firstName} #{account.customer.lastName} #{account.status} " />
                     </p:selectOneMenu>
 
 
@@ -132,7 +128,7 @@
                 <p:commandButton value="Cancel" onclick="PF('transactionDialog').hide()" />
             </h:form>
         </p:dialog>
-        
+
         <!-- Dialog Box to view transaction details -->
         <p:dialog header="Transaction Details" widgetVar="transactionViewDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="transactionViewDialogForm">
@@ -155,14 +151,9 @@
                     <p:outputLabel value="Date:" />
                     <h:outputText value="#{transactionBean.selectedEntity.date}" />
 
-                    <p:outputLabel value="Balance:" />
-                    <h:outputText value="#{transactionBean.selectedEntity.account.balance}" />
-                    
                     <p:outputLabel value="Transaction Time:" />
                     <h:outputText value="#{transactionBean.selectedEntity.transactionTime}" />
-                    
-                    
-                    
+
                 </h:panelGrid>
 
                 <p:commandButton value="Close" onclick="PF('transactionViewDialog').hide()" />
