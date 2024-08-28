@@ -108,8 +108,10 @@
                     </p:inputText>
 
                     <p:outputLabel for="targetAccNum" value="Target Account Number:" />
-                    <p:inputText id="targetAccNum" value="#{transactionBean.selectedEntity.targetAccountNumber}" 
-                                 rendered="#{transactionBean.selectedEntity.transactionType == 'TRANSFER'}" />
+                    <p:selectOneMenu id="targetAccNum" value="#{transactionBean.targetAccountNumber}">
+                        <f:selectItems value="#{transactionBean.accountList}" var="account" itemValue="#{account.accountNumber}" itemLabel="#{account.accountNumber}" />
+                    </p:selectOneMenu>
+
 
                 </h:panelGrid>
 

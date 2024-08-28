@@ -63,8 +63,8 @@ public class TransactionBean implements Serializable {
         try {
             TransactionTypeEnum transactionTypes = selectedEntity.getTransactionType();
             Account account = selectedEntity.getAccount();
-            amount=selectedEntity.getAmount();
-
+            amount = selectedEntity.getAmount();
+            // For debugging purpose
             if (account == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Account is not selected."));
                 return;
@@ -75,6 +75,11 @@ public class TransactionBean implements Serializable {
                 return;
             }
 
+            if (targetAccountNumber == null) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account num cannot be null"));
+                System.out.println("Target Account Number is null");
+            }
+
             if (transactionTypes == TransactionTypeEnum.WITHDRAW || transactionTypes == TransactionTypeEnum.TRANSFER) {
                 if (account.getBalance().compareTo(amount) < 0) {
                     facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Insufficient balance for transaction"));
@@ -82,13 +87,15 @@ public class TransactionBean implements Serializable {
                 }
                 account.setBalance(account.getBalance().subtract(amount));
             } else if (transactionTypes == TransactionTypeEnum.DEPOSIT) {
-                System.err.println("Amount:"+amount);
-                System.err.println("Account Balance:"+account.getBalance());
-                System.err.println("After adding:"+account.getBalance().add(amount));
+                System.err.println("Amount:" + amount);
+                System.err.println("Account Balance:" + account.getBalance());
+                System.err.println("After adding:" + account.getBalance().add(amount));
                 account.setBalance(account.getBalance().add(amount));
             }
 
             if (transactionTypes == TransactionTypeEnum.TRANSFER) {
+                System.out.println("Target Account No:" + targetAccountNumber);
+                System.out.println("Targt acc:" + getTargetAccountNumber());
                 Account targetAccount = accountRepository.findByAccountNumber(targetAccountNumber);
                 if (targetAccount == null) {
                     facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));

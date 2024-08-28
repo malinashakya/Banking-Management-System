@@ -119,4 +119,12 @@ public class Account extends BaseEntity {
         return accountNumber != null ? accountNumber.hashCode() : 0;
     }
 
+    @Override
+    public String toString() {
+        return "Account{"
+                + "accountNumber='" + accountNumber + '\''
+                + ", balance=" + balance
+                + '}';
+    }
+
 }
