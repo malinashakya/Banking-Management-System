@@ -52,7 +52,7 @@
                 <p:column headerText="Date" filterBy="#{transaction.date}" filterMatchMode="contains">
                     <h:outputText value="#{transaction.date}" />
                 </p:column>
-                
+
                 <p:column headerText="Balance" filterBy="#{transaction.account.balance}" filterMatchMode="contains">
                     <h:outputText value="#{transaction.account.balance}" />
                 </p:column>
@@ -98,8 +98,7 @@
                     </p:selectOneMenu>
 
 
-                    <p:outputLabel for="type" value="Type:" />
-                    <p:selectOneMenu id="type" value="#{transactionBean.selectedEntity.transactionType}">
+                    <p:selectOneMenu id="type" value="#{transactionBean.selectedEntity.transactionType}" converter="transactionTypeEnumConverter">
                         <f:selectItems value="#{transactionBean.transactionTypeList}" var="type" itemValue="#{type}" itemLabel="#{type}" />
                     </p:selectOneMenu>
 

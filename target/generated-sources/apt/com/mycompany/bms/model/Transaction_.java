@@ -1,6 +1,6 @@
 package com.mycompany.bms.model;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
@@ -12,7 +12,7 @@ public abstract class Transaction_ extends com.mycompany.bms.model.BaseEntity_ {
 
 	public static volatile SingularAttribute<Transaction, TransactionTypeEnum> transactionType;
 	public static volatile SingularAttribute<Transaction, Date> date;
-	public static volatile SingularAttribute<Transaction, BigDecimal> amount;
+	public static volatile SingularAttribute<Transaction, BigInteger> amount;
 	public static volatile SingularAttribute<Transaction, Date> transactionTime;
 	public static volatile SingularAttribute<Transaction, Account> account;
 

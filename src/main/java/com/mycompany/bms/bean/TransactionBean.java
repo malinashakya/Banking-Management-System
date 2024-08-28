@@ -36,7 +36,8 @@ public class TransactionBean implements Serializable {
 
     private Transaction selectedEntity;
     private String targetAccountNumber; // Field for the transfer account number
-    private BigInteger amount; // Field for the amount
+    private BigInteger amount = BigInteger.ZERO;
+
     private List<Account> accountList;
 
     @PostConstruct
@@ -60,23 +61,34 @@ public class TransactionBean implements Serializable {
     public void saveOrUpdateEntity() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
+            TransactionTypeEnum transactionTypes = selectedEntity.getTransactionType();
             Account account = selectedEntity.getAccount();
+            amount=selectedEntity.getAmount();
+
             if (account == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Account is not selected."));
                 return;
             }
 
-            if (transactionType == TransactionTypeEnum.WITHDRAW || transactionType == TransactionTypeEnum.TRANSFER) {
+            if (amount == null) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Amount cannot be null"));
+                return;
+            }
+
+            if (transactionTypes == TransactionTypeEnum.WITHDRAW || transactionTypes == TransactionTypeEnum.TRANSFER) {
                 if (account.getBalance().compareTo(amount) < 0) {
                     facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Insufficient balance for transaction"));
                     return;
                 }
                 account.setBalance(account.getBalance().subtract(amount));
-            } else if (transactionType == TransactionTypeEnum.DEPOSIT) {
+            } else if (transactionTypes == TransactionTypeEnum.DEPOSIT) {
+                System.err.println("Amount:"+amount);
+                System.err.println("Account Balance:"+account.getBalance());
+                System.err.println("After adding:"+account.getBalance().add(amount));
                 account.setBalance(account.getBalance().add(amount));
             }
 
-            if (transactionType == TransactionTypeEnum.TRANSFER) {
+            if (transactionTypes == TransactionTypeEnum.TRANSFER) {
                 Account targetAccount = accountRepository.findByAccountNumber(targetAccountNumber);
                 if (targetAccount == null) {
                     facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));
@@ -98,7 +110,8 @@ public class TransactionBean implements Serializable {
             selectedEntity = new Transaction();
             editMode = false;
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save/update Transaction"));
+            e.printStackTrace(); // Print stack trace for debugging
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save/update Transaction: " + e.getMessage()));
         }
     }
 
