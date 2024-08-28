@@ -81,6 +81,9 @@ public class TransactionBean implements Serializable {
             return;
         }
 
+        System.err.println("Amount:"+amount);
+        System.err.println("Balance:"+account.getBalance());
+        
         // Handle transaction types
         if (transactionTypes == TransactionTypeEnum.WITHDRAW || transactionTypes == TransactionTypeEnum.TRANSFER) {
             if (account.getBalance().compareTo(amount) < 0) {
@@ -88,8 +91,11 @@ public class TransactionBean implements Serializable {
                 return;
             }
             account.setBalance(account.getBalance().subtract(amount));
-        } else if (transactionTypes == TransactionTypeEnum.DEPOSIT) {
-            account.setBalance(account.getBalance().add(amount));
+            accountRepository.update(account);
+        } 
+        else if (transactionTypes == TransactionTypeEnum.DEPOSIT) {
+        account.setBalance(account.getBalance().add(amount));
+             accountRepository.update(account);
         }
 
         // Handle transfers
