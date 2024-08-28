@@ -34,10 +34,7 @@
                 <p:column headerText="Balance" filterBy="#{account.balance}" filterMatchMode="exact">
                     <h:outputText value="#{account.balance}" />
                 </p:column>
-                <p:column headerText="Status" filterBy="#{account.status}" filterMatchMode="exact">
-                    <h:outputText value="#{account.status}" />
-                </p:column>
-
+    
                 <p:column headerText="Status" filterBy="#{status}" filterMatchMode="exact">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('accountTable').filter()" value="#{accountBean.selectedStatus}">

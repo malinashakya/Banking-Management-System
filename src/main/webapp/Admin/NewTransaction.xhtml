@@ -58,6 +58,16 @@
                 </p:column>
 
                 <p:column headerText="Actions">
+
+                    <!-- View Button -->
+                    <p:commandButton icon="pi pi-fw pi-eye"
+                                     style="color: white; background-color: #28a745; border-color: #28a745; margin: 3px;"
+                                     action="#{transactionBean.prepareViewEntity(transaction)}"
+                                     oncomplete="PF('transactionViewDialog').show()"
+                                     update=":transactionViewDialogForm"
+                                     ajax="true" />
+
+                    <!--Edit Button-->
                     <p:commandButton icon="pi pi-fw pi-user-edit"
                                      style="color: white; background-color: gold; border-color:gold; margin: 3px;"
                                      action="#{transactionBean.prepareEditEntity(transaction)}"
@@ -65,6 +75,7 @@
                                      update=":transactionDialogForm"
                                      ajax="true" />
 
+                    <!--Delete Button-->
                     <p:commandButton  
                         update=":transactionListForm:transactions" 
                         action="#{transactionBean.deleteEntity(transaction)}"
@@ -97,7 +108,7 @@
                         <f:selectItems value="#{transactionBean.accountList}" var="account" itemValue="#{account}" itemLabel="#{account.accountNumber}" />
                     </p:selectOneMenu>
 
-
+                    <p:outputLabel for="acc_num" value="Transaction Type" />
                     <p:selectOneMenu id="type" value="#{transactionBean.selectedEntity.transactionType}" converter="transactionTypeEnumConverter">
                         <f:selectItems value="#{transactionBean.transactionTypeList}" var="type" itemValue="#{type}" itemLabel="#{type}" />
                     </p:selectOneMenu>
@@ -119,6 +130,42 @@
                                  update=":growl :transactions" process="@form"
                                  oncomplete="PF('transactionDialog').hide()" />
                 <p:commandButton value="Cancel" onclick="PF('transactionDialog').hide()" />
+            </h:form>
+        </p:dialog>
+        
+        <!-- Dialog Box to view transaction details -->
+        <p:dialog header="Transaction Details" widgetVar="transactionViewDialog" modal="true" showEffect="fade" hideEffect="fade">
+            <h:form id="transactionViewDialogForm">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel value="Transaction ID:" />
+                    <h:outputText value="#{transactionBean.selectedEntity.id}" />
+
+                    <p:outputLabel value="Account Number:" />
+                    <h:outputText value="#{transactionBean.selectedEntity.account.accountNumber}" />
+
+                    <p:outputLabel value="Customer Name:" />
+                    <h:outputText value="#{transactionBean.selectedEntity.account.customer.firstName} #{transactionBean.selectedEntity.account.customer.lastName}" />
+
+                    <p:outputLabel value="Transaction Type:" />
+                    <h:outputText value="#{transactionBean.selectedEntity.transactionType}" />
+
+                    <p:outputLabel value="Amount:" />
+                    <h:outputText value="#{transactionBean.selectedEntity.amount}" />
+
+                    <p:outputLabel value="Date:" />
+                    <h:outputText value="#{transactionBean.selectedEntity.date}" />
+
+                    <p:outputLabel value="Balance:" />
+                    <h:outputText value="#{transactionBean.selectedEntity.account.balance}" />
+                    
+                    <p:outputLabel value="Transaction Time:" />
+                    <h:outputText value="#{transactionBean.selectedEntity.transactionTime}" />
+                    
+                    
+                    
+                </h:panelGrid>
+
+                <p:commandButton value="Close" onclick="PF('transactionViewDialog').hide()" />
             </h:form>
         </p:dialog>
 
