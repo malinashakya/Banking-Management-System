@@ -1,16 +1,11 @@
 package com.mycompany.bms.bean;
 
+import com.mycompany.bms.model.Account;
 import com.mycompany.bms.model.GenericLazyDataModel;
 import com.mycompany.bms.model.Transaction;
 import com.mycompany.bms.model.TransactionTypeEnum;
-import com.mycompany.bms.repository.TransactionRepository;
 import com.mycompany.bms.repository.AccountRepository;
-import com.mycompany.bms.model.Account;
-
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
+import com.mycompany.bms.repository.TransactionRepository;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -18,6 +13,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
 
 @Named("transactionBean")
 @ViewScoped
@@ -32,11 +31,13 @@ public class TransactionBean implements Serializable {
     private AccountRepository accountRepository;
 
     private GenericLazyDataModel<Transaction> lazyDataModel;
-    private TransactionTypeEnum selectedTransaction;
+    private TransactionTypeEnum transactionType;
     private boolean editMode = false;
 
     private Transaction selectedEntity;
-    private String transferAccountNumber; // Field for the transfer account number
+    private String targetAccountNumber; // Field for the transfer account number
+    private BigInteger amount; // Field for the amount
+    private List<Account> accountList;
 
     @PostConstruct
     public void init() {
@@ -44,6 +45,8 @@ public class TransactionBean implements Serializable {
             selectedEntity = new Transaction();
         }
         lazyDataModel = new GenericLazyDataModel<>(transactionRepository, Transaction.class);
+        accountList = accountRepository.findAll();
+        System.out.println("Account list initialized: " + accountList);
     }
 
     public GenericLazyDataModel<Transaction> getLazyDataModel() {
@@ -58,29 +61,32 @@ public class TransactionBean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             Account account = selectedEntity.getAccount();
-            BigInteger amount = selectedEntity.getAmount();
+            if (account == null) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Account is not selected."));
+                return;
+            }
 
-            if (selectedTransaction == TransactionTypeEnum.WITHDRAW || selectedTransaction == TransactionTypeEnum.TRANSFER) {
+            if (transactionType == TransactionTypeEnum.WITHDRAW || transactionType == TransactionTypeEnum.TRANSFER) {
                 if (account.getBalance().compareTo(amount) < 0) {
                     facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Insufficient balance for transaction"));
                     return;
                 }
                 account.setBalance(account.getBalance().subtract(amount));
-            } else if (selectedTransaction == TransactionTypeEnum.DEPOSIT) {
+            } else if (transactionType == TransactionTypeEnum.DEPOSIT) {
                 account.setBalance(account.getBalance().add(amount));
             }
 
-            if (selectedTransaction == TransactionTypeEnum.TRANSFER) {
-                Account targetAccount = accountRepository.findByAccountNumber(transferAccountNumber);
+            if (transactionType == TransactionTypeEnum.TRANSFER) {
+                Account targetAccount = accountRepository.findByAccountNumber(targetAccountNumber);
                 if (targetAccount == null) {
                     facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));
                     return;
                 }
                 targetAccount.setBalance(targetAccount.getBalance().add(amount));
-                accountRepository.update(targetAccount);
+                accountRepository.update(targetAccount); // Ensure update is committed
             }
 
-            accountRepository.update(account);
+            accountRepository.update(account); // Ensure update is committed
 
             if (editMode) {
                 transactionRepository.update(selectedEntity);
@@ -108,7 +114,7 @@ public class TransactionBean implements Serializable {
 
     public void prepareNewEntity() {
         this.selectedEntity = new Transaction();
-        this.selectedEntity.setAccount(new Account()); 
+        this.selectedEntity.setAccount(new Account());
     }
 
     public void prepareEditEntity(Transaction entity) {
@@ -117,8 +123,32 @@ public class TransactionBean implements Serializable {
             this.selectedEntity.setAccount(new Account()); // Ensure Account is initialized
         }
         this.editMode = true;
-           }
+    }
 
+    // Getters and setters for the new fields
+    public TransactionTypeEnum getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(TransactionTypeEnum transactionType) {
+        this.transactionType = transactionType;
+    }
+
+    public BigInteger getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigInteger amount) {
+        this.amount = amount;
+    }
+
+    public String getTargetAccountNumber() {
+        return targetAccountNumber;
+    }
+
+    public void setTargetAccountNumber(String targetAccountNumber) {
+        this.targetAccountNumber = targetAccountNumber;
+    }
 
     public Transaction getSelectedEntity() {
         return selectedEntity;
@@ -129,8 +159,12 @@ public class TransactionBean implements Serializable {
     }
 
     public List<TransactionTypeEnum> getTransactionTypeList() {
-    return Arrays.asList(TransactionTypeEnum.values());
-}
-    
-    
+        return Arrays.asList(TransactionTypeEnum.values());
+    }
+
+    // Getter for accountList
+    public List<Account> getAccountList() {
+        return accountList;
+    }
+
 }

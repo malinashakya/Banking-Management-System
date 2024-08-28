@@ -52,6 +52,10 @@
                 <p:column headerText="Date" filterBy="#{transaction.date}" filterMatchMode="contains">
                     <h:outputText value="#{transaction.date}" />
                 </p:column>
+                
+                <p:column headerText="Balance" filterBy="#{transaction.account.balance}" filterMatchMode="contains">
+                    <h:outputText value="#{transaction.account.balance}" />
+                </p:column>
 
                 <p:column headerText="Actions">
                     <p:commandButton icon="pi pi-fw pi-user-edit"
@@ -82,15 +86,17 @@
         </h:form>
 
         <!-- Dialog Box to add transactions -->
-        <!-- Dialog Box to add transactions -->
+
         <p:dialog header="Transaction Form" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="transactionDialogForm">
                 <p:messages id="messages" showSummary="true" />
 
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="acc_num" value="Account Number:" />
-                    <p:inputText id="acc_num" value="#{transactionBean.selectedEntity.account}"
-                                 converter="accountNumberConverter" />
+                    <p:selectOneMenu id="acc_num" value="#{transactionBean.selectedEntity.account}" converter="accountConverter">
+                        <f:selectItems value="#{transactionBean.accountList}" var="account" itemValue="#{account}" itemLabel="#{account.accountNumber}" />
+                    </p:selectOneMenu>
+
 
                     <p:outputLabel for="type" value="Type:" />
                     <p:selectOneMenu id="type" value="#{transactionBean.selectedEntity.transactionType}">
@@ -98,14 +104,23 @@
                     </p:selectOneMenu>
 
                     <p:outputLabel for="amount" value="Amount:" />
-                    <p:inputText id="amount" value="#{transactionBean.selectedEntity.amount}">
+                    <p:inputText id="amount" value="#{transactionBean.selectedEntity.amount}" required="true">
                         <f:convertNumber type="number" />
                     </p:inputText>
+
+                    <p:outputLabel for="targetAccNum" value="Target Account Number:" />
+                    <p:inputText id="targetAccNum" value="#{transactionBean.selectedEntity.targetAccountNumber}" 
+                                 rendered="#{transactionBean.selectedEntity.transactionType == 'TRANSFER'}" />
+
                 </h:panelGrid>
 
-                <p:commandButton value="Save" action="#{transactionBean.saveOrUpdateEntity()}" update=":transactionListForm:transactions" />
-                <p:commandButton value="Cancel" onclick="PF('transactionDialog').hide()" type="button" />
+                <p:commandButton value="Save" action="#{transactionBean.saveOrUpdateEntity()}"
+                                 update=":growl :transactions" process="@form"
+                                 oncomplete="PF('transactionDialog').hide()" />
+                <p:commandButton value="Cancel" onclick="PF('transactionDialog').hide()" />
             </h:form>
         </p:dialog>
+
+
     </h:body>
 </html>

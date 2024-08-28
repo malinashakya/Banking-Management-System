@@ -34,7 +34,8 @@ public class Account extends BaseEntity {
     private String pin;
 
     // Constructors
-    public Account() {}
+    public Account() {
+    }
 
     public Account(Customer customer, AccountType accountType, String accountNumber, String pin, AccountStatusEnum status) {
         this.customer = customer;
@@ -45,7 +46,6 @@ public class Account extends BaseEntity {
     }
 
     // Getters and Setters
-
     public Customer getCustomer() {
         return customer;
     }
@@ -78,8 +78,6 @@ public class Account extends BaseEntity {
         this.interestEarned = interestEarned;
     }
 
-
-
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -103,4 +101,22 @@ public class Account extends BaseEntity {
     public void setPin(String pin) {
         this.pin = pin;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Account account = (Account) obj;
+        return accountNumber != null ? accountNumber.equals(account.accountNumber) : account.accountNumber == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return accountNumber != null ? accountNumber.hashCode() : 0;
+    }
+
 }

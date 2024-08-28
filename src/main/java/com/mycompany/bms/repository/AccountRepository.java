@@ -60,13 +60,6 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         super.save(account);
     }
 
-    /**
-     * Generate a unique account number based on the desired format. Format:
-     * AT-<AccountTypeAlias>-<CustomerID>-<AccountTypeID>-<SequenceNumber>
-     *
-     * @param account
-     * @return
-     */
     public String generateAccountNumber(Account account) {
         // Ensure accountTypeAlias is a String
         String accountTypeAlias = String.valueOf(account.getAccountType().getAccountType()).substring(0, 2); // Taking two letters from the AccountType as the alias
@@ -77,21 +70,12 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         return String.format("%s-%s-%s-%s-%s", ACCOUNT_NUMBER_PREFIX, accountTypeAlias, customerId, accountTypeId, sequenceNumber);
     }
 
-    /**
-     * Get the next sequence number for the account number. You might need to
-     * adjust this based on your sequence generation strategy.
-     */
     private String getNextSequenceNumber(String accountTypeAlias, String customerId, String accountTypeId) {
         int lastSequenceNumber = getLastSequenceNumber(accountTypeAlias, customerId, accountTypeId);
         int nextSequenceNumber = lastSequenceNumber + 1;
         return String.format("%05d", nextSequenceNumber);
     }
 
-    /**
-     * Retrieve the last sequence number used for a specific account type,
-     * customer, and account type ID. This method assumes a sequence number is
-     * stored or calculated based on the highest number used.
-     */
     private int getLastSequenceNumber(String accountTypeAlias, String customerId, String accountTypeId) {
         TypedQuery<String> query = getEntityManager()
                 .createQuery("SELECT a.accountNumber FROM Account a WHERE a.accountNumber LIKE :prefix", String.class);
@@ -117,11 +101,6 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         return maxSequenceNumber;
     }
 
-    /**
-     * Generate a random 4-digit PIN.
-     *
-     * @return A 4-digit PIN.
-     */
     public String generateRandomPin() {
         int pin = RANDOM.nextInt(9000) + 1000; // Generates a number between 1000 and 9999
         return String.valueOf(pin);
@@ -181,28 +160,61 @@ public class AccountRepository extends GenericRepository<Account, Long> {
     }
 
     public Account findByAccountNumber(String accountNumber) {
-        // Create the criteria builder
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-
-        // Create the criteria query
         CriteriaQuery<Account> cq = cb.createQuery(Account.class);
-
-        // Define the root for the query
         Root<Account> root = cq.from(Account.class);
-
-        // Add the predicate to filter by account number
         cq.where(cb.equal(root.get("accountNumber"), accountNumber));
-
-        // Create and execute the query
         TypedQuery<Account> query = getEntityManager().createQuery(cq);
 
         try {
-            // Return the single result, or null if no result is found
             return query.getSingleResult();
         } catch (Exception e) {
-            // Handle the case where no result is found or any other exception
             return null;
         }
     }
+
+    @Transactional
+    public void updateAccountBalance(String accountNumber, BigInteger amount, boolean isDeposit) {
+        Account account = findByAccountNumber(accountNumber);
+        if (account != null) {
+            BigInteger currentBalance = account.getBalance();
+            if (isDeposit) {
+                account.setBalance(currentBalance.add(amount));
+            } else {
+                if (currentBalance.compareTo(amount) >= 0) {
+                    account.setBalance(currentBalance.subtract(amount));
+                } else {
+                    throw new IllegalArgumentException("Insufficient balance for withdrawal.");
+                }
+            }
+            getEntityManager().merge(account);
+        } else {
+            throw new IllegalArgumentException("Account not found.");
+        }
+    }
+
+    @Transactional
+    public void transferFunds(String fromAccountNumber, String toAccountNumber, BigInteger amount) {
+        Account fromAccount = findByAccountNumber(fromAccountNumber);
+        Account toAccount = findByAccountNumber(toAccountNumber);
+        if (fromAccount != null && toAccount != null) {
+            BigInteger fromAccountBalance = fromAccount.getBalance();
+            if (fromAccountBalance.compareTo(amount) >= 0) {
+                fromAccount.setBalance(fromAccountBalance.subtract(amount));
+                toAccount.setBalance(toAccount.getBalance().add(amount));
+                getEntityManager().merge(fromAccount);
+                getEntityManager().merge(toAccount);
+            } else {
+                throw new IllegalArgumentException("Insufficient balance for transfer.");
+            }
+        } else {
+            throw new IllegalArgumentException("One or both accounts not found.");
+        }
+    }
+    
+    public List<Account> findAll() {
+    TypedQuery<Account> query = getEntityManager().createQuery("SELECT a FROM Account a", Account.class);
+    return query.getResultList();
+}
 
 }

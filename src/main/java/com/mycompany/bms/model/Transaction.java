@@ -12,6 +12,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ *
+ * @author malina
+ */
 @Entity
 @Table(name = "transaction")
 public class Transaction extends BaseEntity {

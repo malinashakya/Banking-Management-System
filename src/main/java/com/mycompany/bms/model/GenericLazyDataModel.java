@@ -18,11 +18,21 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
     @Override
     public int count(Map<String, FilterMeta> filterBy) {
         return genericRepo.countEntities(filterBy);
+       
     }
 
     @Override
     public List<T> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        return genericRepo.getEntities(first, pageSize, sortBy, filterBy);
+      
+        List<T> loadedUsers=genericRepo.getEntities(first, pageSize, sortBy, filterBy);
+             int numberOfUser = 0;
+                for (Object user: loadedUsers){
+                    System.out.println(user +" added");
+                    numberOfUser++;
+                }
+                System.out.println("total loaded users = " +numberOfUser);
+       
+          return genericRepo.getEntities(first, pageSize, sortBy, filterBy);
     }
 
 }
