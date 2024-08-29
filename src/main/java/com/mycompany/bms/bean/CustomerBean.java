@@ -12,9 +12,9 @@ import com.mycompany.bms.repository.CustomerRepository;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
@@ -40,6 +40,7 @@ public class CustomerBean implements Serializable {
     private List<AccountType> availableAccountTypes;
     private GenericLazyDataModel<Customer> lazyCustomers;
     private boolean editMode = false;
+    private List<Account> customerAccounts;
 
     @PostConstruct
     public void init() {
@@ -48,9 +49,13 @@ public class CustomerBean implements Serializable {
         availableAccountTypes = accountTypeRepository.getAll();
     }
 
-    // Getters and setters for the new fields
+    // Getters and setters
     public List<AccountType> getAvailableAccountTypes() {
         return availableAccountTypes;
+    }
+
+    public void setAvailableAccountTypes(List<AccountType> availableAccountTypes) {
+        this.availableAccountTypes = availableAccountTypes;
     }
 
     public AccountType getSelectedAccountType() {
@@ -73,6 +78,10 @@ public class CustomerBean implements Serializable {
         return customers;
     }
 
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
+    }
+
     public boolean isEditMode() {
         return editMode;
     }
@@ -89,6 +98,15 @@ public class CustomerBean implements Serializable {
         this.lazyCustomers = lazyCustomers;
     }
 
+    public List<Account> getCustomerAccounts() {
+        return customerAccounts;
+    }
+
+    public void setCustomerAccounts(List<Account> customerAccounts) {
+        this.customerAccounts = customerAccounts;
+    }
+
+    // Business methods
     public void saveOrUpdateCustomer() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
@@ -125,16 +143,13 @@ public class CustomerBean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             if (selectedCustomer.getId() != null && selectedAccountType != null) {
-                // Check if the customer already has an account with the same type
                 List<Account> existingAccounts = accountRepository.findByCustomerAndAccountType(selectedCustomer, selectedAccountType);
 
                 if (!existingAccounts.isEmpty()) {
-                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Error", "Customer already has an account of this type"));
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Customer already has an account of this type"));
                     return;
                 }
 
-                // Proceed with account creation
                 Account newAccount = new Account();
                 newAccount.setCustomer(selectedCustomer);
                 newAccount.setAccountType(selectedAccountType);
@@ -145,15 +160,12 @@ public class CustomerBean implements Serializable {
                 newAccount.setAccountNumber(accountRepository.generateAccountNumber(newAccount));
 
                 accountRepository.save(newAccount);
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Success", "Account created successfully"));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Account created successfully"));
             } else {
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Error", "Please select an account type"));
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Please select an account type"));
             }
         } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Error", "Failed to create account"));
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to create account"));
         }
     }
 
@@ -167,8 +179,14 @@ public class CustomerBean implements Serializable {
         }
     }
 
-    // For dashboard purpose
+    // Dashboard purpose
     public int getTotalCustomers() {
         return customerRepository.getAll().size();
+    }
+
+    public void prepareViewCustomer(Customer customer) {
+        this.selectedCustomer = customer;
+        this.customerAccounts = accountRepository.findByCustomerId(customer.getId()); // Fetch accounts of the customer
+        FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add("customerDetailDialogForm");
     }
 }

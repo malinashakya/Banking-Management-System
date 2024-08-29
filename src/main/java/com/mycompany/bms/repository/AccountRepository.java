@@ -213,19 +213,26 @@ public class AccountRepository extends GenericRepository<Account, Long> {
             throw new IllegalArgumentException("One or both accounts not found.");
         }
     }
-    
+
     public List<Account> findAll() {
-    TypedQuery<Account> query = getEntityManager().createQuery("SELECT a FROM Account a", Account.class);
-    return query.getResultList();
-}
+        TypedQuery<Account> query = getEntityManager().createQuery("SELECT a FROM Account a", Account.class);
+        return query.getResultList();
+    }
 
     //For checking the duplicate account type of one customer
     public List<Account> findByCustomerAndAccountType(Customer customer, AccountType accountType) {
 
-    return entityManager.createQuery("SELECT a FROM Account a WHERE a.customer = :customer AND a.accountType = :accountType", Account.class)
-                        .setParameter("customer", customer)
-                        .setParameter("accountType", accountType)
-                        .getResultList();
-}
+        return entityManager.createQuery("SELECT a FROM Account a WHERE a.customer = :customer AND a.accountType = :accountType", Account.class)
+                .setParameter("customer", customer)
+                .setParameter("accountType", accountType)
+                .getResultList();
+    }
+
+    public List<Account> findByCustomerId(Long customerId) {
+        String jpql = "SELECT a FROM Account a WHERE a.customer.id = :customerId";
+        TypedQuery<Account> query = getEntityManager().createQuery(jpql, Account.class);
+        query.setParameter("customerId", customerId);
+        return query.getResultList();
+    }
 
 }

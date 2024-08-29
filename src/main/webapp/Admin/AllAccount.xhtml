@@ -50,18 +50,27 @@
                     <h:outputText value="#{customer.address}" />
                 </p:column>
 
-                <!-- Actions column with Edit and Delete buttons -->
                 <p:column headerText="Actions">
-                    <!-- Add Accounts to Customer -->
-                             <!-- Button to Add Accounts to Customer -->
-                    <p:commandButton icon="pi pi-fw pi-dollar"
-                                     style="color: white; background-color: #28a745; margin: 4px; border-color:green;"
+
+                    <!-- Button to View Accounts -->
+                    <p:commandButton icon="pi pi-fw pi-eye"
+                                     style="color: white; margin: 3px;"
+                                     action="#{customerBean.prepareViewCustomer(customer)}"
+                                     update=":customerDetailDialogForm"
+                                     oncomplete="PF('customerDetailDialog').show()"
+                                     ajax="true" />
+
+                    <!-- Button to Add Accounts to Customer -->
+                    <p:commandButton icon="pi pi-fw pi-plus"
+                                     style="color: white; background-color: #28a745; margin: 2px; border-color:#28a745;"
                                      action="#{customerBean.prepareAddAccounts(customer)}" 
                                      oncomplete="PF('accountDialog').show()"
                                      update=":accountDialogForm"
                                      ajax="true" />
+
+                    <!-- Actions column with Edit and Delete buttons -->
                     <p:commandButton icon="pi pi-fw pi-user-edit"
-                                     style="color: white; background-color: gold; border-color:gold; margin: 3px;"
+                                     style="color: white; background-color: gold; border-color:gold; margin: 2px;"
                                      action="#{customerBean.prepareEditCustomer(customer)}"
                                      oncomplete="PF('customerDialog').show()"
                                      update=":customerDialogForm"
@@ -88,7 +97,7 @@
             </p:confirmPopup>
         </h:form>
 
-            <!-- Dialog for adding accounts -->
+        <!-- Dialog for adding accounts -->
         <p:dialog header="Add Accounts to #{customerBean.selectedCustomer.username}" 
                   widgetVar="accountDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="accountDialogForm">
@@ -110,7 +119,7 @@
                 </h:panelGrid>
             </h:form>
         </p:dialog>
-            
+
         <!-- Dialog for customer form -->
         <p:dialog header="Customer Form" widgetVar="customerDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="customerDialogForm">
@@ -148,6 +157,59 @@
 
                     <p:commandButton value="Cancel" onclick="PF('customerDialog').hide();" type="button"/>
                 </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <!-- Dialog for customer details -->
+        <p:dialog header="Customer Details" widgetVar="customerDetailDialog" modal="true" showEffect="fade" hideEffect="fade">
+            <h:form id="customerDetailDialogForm">
+                <h:panelGrid columns="2" cellpadding="10">
+                    <p:dataTable value="#{customerBean.selectedCustomer}" var="customer" style="width:100%" >
+
+                        <p:column headerText="ID">
+                            <h:outputText value="#{customer.id}" />
+                        </p:column>
+                        <p:column headerText="Username">
+                            <h:outputText value="#{customer.username}" />
+                        </p:column>
+                        <p:column headerText="First Name">
+                            <h:outputText value="#{customer.firstName}" />
+                        </p:column>
+                        <p:column headerText="Last Name">
+                            <h:outputText value="#{customer.lastName}" />
+                        </p:column>
+                        <p:column headerText="Contact">
+                            <h:outputText value="#{customer.contact}" />
+                        </p:column>
+                        <p:column headerText="Address">
+                            <h:outputText value="#{customer.address}" />
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <!-- Table to show customer accounts -->
+                    <p:dataTable value="#{customerBean.customerAccounts}" var="account" style="width:100%">
+                        <p:column headerText="Account Number">
+                            <h:outputText value="#{account.accountNumber}" />
+                        </p:column>
+                        <p:column headerText="Account Type">
+                            <h:outputText value="#{account.accountType.accountType}" />
+                        </p:column>
+                        <p:column headerText="Interest Rate">
+                            <h:outputText value="#{account.accountType.interestRate}" />
+                        </p:column>
+                        <p:column headerText="Time Period">
+                            <h:outputText value="#{account.accountType.timePeriod}" />
+                        </p:column>
+                        <p:column headerText="Balance">
+                            <h:outputText value="#{account.balance}" />
+                        </p:column>
+                        <p:column headerText="Status">
+                            <h:outputText value="#{account.status}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
+                <p:commandButton value="Close" onclick="PF('transactionViewDialog').hide()" />
             </h:form>
         </p:dialog>
     </h:body>
