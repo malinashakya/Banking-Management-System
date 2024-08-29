@@ -2,12 +2,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Report Title</title>
+        <title>Transaction Report</title>
     </h:head>
     <h:body>
-         <ui:include src="menu.xhtml" />
-        Hello from Reports
+        <ui:include src="menu.xhtml" />
+        <h:form id="reportForm">
+            <p:panel header="Transaction Report" styleClass="ui-widget-content">
+                <p:dataTable value="#{transactionReportBean.transactions}" var="transaction" 
+                             styleClass="ui-datatable"
+                             widgetVar="transactionTable">
+                    <p:column headerText="Transaction ID" filterBy="#{transaction.id}" filterMatchMode="contains">
+                        <h:outputText value="#{transaction.id}" />
+                    </p:column>
+                    <p:column headerText="Account Number" filterBy="#{transaction.account.accountNumber} " filterMatchMode="contains">
+                        <h:outputText value="#{transaction.account.accountNumber}" />
+                    </p:column>
+                    <p:column headerText="Transaction Type" filterBy="#{transaction.transactionType}" filterMatchMode="contains">
+                        <h:outputText value="#{transaction.transactionType}" />
+                    </p:column>
+                    <p:column headerText="Amount" filterBy="#{transaction.amount}" filterMatchMode="contains">
+                        <h:outputText value="#{transaction.amount}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Date" filterBy="#{transaction.date}" filterMatchMode="contains">
+                        <h:outputText value="#{transaction.date}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
     </h:body>
 </html>

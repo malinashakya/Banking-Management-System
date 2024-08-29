@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Edit Profile</title>
+    </h:head>
+    <h:body>
+        <ui:include src="menu.xhtml" />
+        <h:form id="profileForm">
+            <p:panel header="Edit Profile" styleClass="ui-widget-content">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="username" value="Username:" />
+                    <p:inputText id="username" value="#{profileBean.loggedInCustomer.username}" />
+
+                    <p:outputLabel for="password" value="Password:" />
+                    <p:password id="password" value="#{profileBean.loggedInCustomer.password}" />
+
+                    <p:outputLabel for="firstName" value="First Name:" />
+                    <p:inputText id="firstName" value="#{profileBean.loggedInCustomer.firstName}" />
+
+                    <p:outputLabel for="lastName" value="Last Name:" />
+                    <p:inputText id="lastName" value="#{profileBean.loggedInCustomer.lastName}" />
+
+                    <p:outputLabel for="contact" value="Contact:" />
+                    <p:inputText id="contact" value="#{profileBean.loggedInCustomer.contact}" />
+
+                    <p:outputLabel for="address" value="Address:" />
+                    <p:inputText id="address" value="#{profileBean.loggedInCustomer.address}" />
+
+                    <p:commandButton value="Save"
+                                     action="#{profileBean.updateProfile()}"
+                                     update=":profileForm :growl"
+                                     oncomplete="if (!args.validationFailed) { PF('profileDialog').hide(); }"
+                                     ajax="true" />
+
+                    <p:commandButton value="Cancel" onclick="PF('profileDialog').hide();" type="button"/>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+
+        <!-- Growl for messages -->
+        <p:growl id="growl" showDetail="true" life="3000" />
+
+        <!-- Dialog for editing profile -->
+        <p:dialog header="Edit Profile" widgetVar="profileDialog" modal="true" showEffect="fade" hideEffect="fade">
+            <h:form id="profileDialogForm">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="username" value="Username:" />
+                    <p:inputText id="username" value="#{profileBean.loggedInCustomer.username}" />
+
+                    <p:outputLabel for="password" value="Password:" />
+                    <p:password id="password" value="#{profileBean.loggedInCustomer.password}" />
+
+                    <p:outputLabel for="firstName" value="First Name:" />
+                    <p:inputText id="firstName" value="#{profileBean.loggedInCustomer.firstName}" />
+
+                    <p:outputLabel for="lastName" value="Last Name:" />
+                    <p:inputText id="lastName" value="#{profileBean.loggedInCustomer.lastName}" />
+
+                    <p:outputLabel for="contact" value="Contact:" />
+                    <p:inputText id="contact" value="#{profileBean.loggedInCustomer.contact}" />
+
+                    <p:outputLabel for="address" value="Address:" />
+                    <p:inputText id="address" value="#{profileBean.loggedInCustomer.address}" />
+
+                    <p:commandButton value="Save"
+                                     action="#{profileBean.updateProfile()}"
+                                     update=":profileForm :growl"
+                                     oncomplete="if (!args.validationFailed) { PF('profileDialog').hide(); }"
+                                     ajax="true" />
+
+                    <p:commandButton value="Cancel" onclick="PF('profileDialog').hide();" type="button"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>

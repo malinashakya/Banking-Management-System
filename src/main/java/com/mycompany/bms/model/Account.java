@@ -130,4 +130,8 @@ public class Account extends BaseEntity {
                 ", status=" + status +
                 '}';
     }
+
+   public AccountTypeEnum getType() {
+        return accountType != null ? accountType.getAccountType() : null;
+    }
 }

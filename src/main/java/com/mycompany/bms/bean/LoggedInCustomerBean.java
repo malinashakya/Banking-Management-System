@@ -2,20 +2,20 @@ package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Account;
 import com.mycompany.bms.model.AccountType;
+import com.mycompany.bms.model.AccountTypeEnum;
 import com.mycompany.bms.model.Customer;
 import com.mycompany.bms.repository.AccountRepository;
 import com.mycompany.bms.repository.AccountTypeRepository;
 import com.mycompany.bms.repository.CustomerRepository;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Named("loggedInCustomerBean")
 @ViewScoped
@@ -78,4 +78,12 @@ public class LoggedInCustomerBean implements Serializable {
     public void setCustomerAccounts(List<Account> customerAccounts) {
         this.customerAccounts = customerAccounts;
     }
+
+    // In LoggedInCustomerBean.java
+    public List<Account> getCustomerSavingsAccounts() {
+        return customerAccounts.stream()
+                .filter(account -> account.getType() == AccountTypeEnum.SAVINGS)
+                .collect(Collectors.toList());
+    }
+
 }
