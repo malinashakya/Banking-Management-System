@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import org.primefaces.model.FilterMeta;
 
@@ -145,4 +144,6 @@ public class CustomerRepository extends GenericRepository<Customer, Long> implem
     public int countCustomers(Map<String, FilterMeta> filters) {
         return ((Long) entityManager.createQuery("SELECT COUNT(c) FROM Customer c").getSingleResult()).intValue();
     }
+    
+    
 }

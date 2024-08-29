@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <title>Customer Account Information</title>
+    </h:head>
+    <h:body>
+        <ui:include src="menu.xhtml" />
+        <h1>Account Information</h1>
+
+        <h:panelGroup rendered="#{not empty loggedInCustomerBean.loggedInCustomer}">
+            <h:outputText value="Customer ID: #{loggedInCustomerBean.loggedInCustomer.id}" />
+            <br />
+            <h:outputText value="Customer Name: #{loggedInCustomerBean.loggedInCustomer.firstName}" />
+            <br />
+            <h:outputText value="Customer Email: #{loggedInCustomerBean.loggedInCustomer.username}" />
+            <br />
+
+            <h:panelGroup>
+                <h:outputText value="Accounts:" />
+                <h:dataTable value="#{loggedInCustomerBean.customerAccounts}" var="account">
+                    <h:column>
+                        <f:facet name="header">Account Number</f:facet>
+                        <h:outputText value="#{account.accountNumber}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Account Type</f:facet>
+                        <h:outputText value="#{account.accountType.accountType}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Balance</f:facet>
+                        <h:outputText value="#{account.balance}" />
+                    </h:column>
+                </h:dataTable>
+            </h:panelGroup>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{empty loggedInCustomerBean.loggedInCustomer}">
+            <h:outputText value="No customer information available." />
+        </h:panelGroup>
+    </h:body>
+</html>

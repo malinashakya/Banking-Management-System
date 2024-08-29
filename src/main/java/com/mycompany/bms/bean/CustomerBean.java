@@ -41,12 +41,17 @@ public class CustomerBean implements Serializable {
     private GenericLazyDataModel<Customer> lazyCustomers;
     private boolean editMode = false;
     private List<Account> customerAccounts;
+    private Customer loggedInCustomer;
 
     @PostConstruct
-    public void init() {
+    public void init() {     
         selectedCustomer = new Customer();
         lazyCustomers = new GenericLazyDataModel<>(customerRepository, Customer.class);
         availableAccountTypes = accountTypeRepository.getAll();
+    }
+
+    public Customer getLoggedInCustomer() {
+        return loggedInCustomer;
     }
 
     // Getters and setters
