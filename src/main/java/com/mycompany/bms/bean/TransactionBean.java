@@ -107,6 +107,12 @@ public class TransactionBean implements Serializable {
                     facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));
                     return;
                 }
+             
+                //Transfer between same account cannot be done message
+                 if (account.getAccountNumber().equals(targetAccount.getAccountNumber())) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Transfer cannot be done to the same account"));
+                return;
+            }
 
                 // Create withdrawal transaction
                 Transaction withdrawalTransaction = new Transaction();
