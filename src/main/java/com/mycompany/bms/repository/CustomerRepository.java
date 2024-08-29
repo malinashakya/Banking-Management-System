@@ -89,21 +89,16 @@ public class CustomerRepository extends GenericRepository<Customer, Long> implem
 
     public Customer findByUsernameAndPassword(String username, String password) {
         try {
-            TypedQuery<Customer> query = entityManager.createQuery(
-                    "SELECT c FROM Customer c WHERE c.username = :username AND c.password = :password", Customer.class);
-            query.setParameter("username", username);
-            query.setParameter("password", password);
-            return query.getResultStream().findFirst().orElse(null);
-        } catch (Exception e) {
+            Customer customer = getByUsername(username);
+            if (customer != null) {
+                String[] parts = customer.getPassword().split(":");
+                String hashedPassword = parts[0];
+                String salt = parts[1];
+                if (hashedPassword.equals(hashPassword(password, salt))) {
+                    return customer;
+                }
+            }
             return null;
-        }
-    }
-
-    public List<Customer> getByAccountType(Long accountTypeId) {
-        try {
-            return entityManager.createQuery("SELECT c FROM Customer c WHERE c.accountType.id = :accountTypeId", Customer.class)
-                    .setParameter("accountTypeId", accountTypeId)
-                    .getResultList();
         } catch (Exception e) {
             return null;
         }
@@ -141,15 +136,13 @@ public class CustomerRepository extends GenericRepository<Customer, Long> implem
     }
 
     public List<Customer> getCustomers(int first, int pageSize) {
-        String query = "SELECT c FROM Customer c";
-        return entityManager.createQuery(query, Customer.class)
+        return entityManager.createQuery("SELECT c FROM Customer c", Customer.class)
                 .setFirstResult(first)
                 .setMaxResults(pageSize)
                 .getResultList();
     }
 
     public int countCustomers(Map<String, FilterMeta> filters) {
-        String query = "SELECT COUNT(c) FROM Customer c";
-        return ((Long) entityManager.createQuery(query).getSingleResult()).intValue();
+        return ((Long) entityManager.createQuery("SELECT COUNT(c) FROM Customer c").getSingleResult()).intValue();
     }
 }

@@ -28,7 +28,7 @@
                                      update=":customerDialogForm"
                                      ajax="true" />
                 </f:facet>
-                                
+
                 <p:column headerText="ID" filterBy="#{customer.id}" filterMatchMode="exact">
                     <h:outputText value="#{customer.id}" />
                 </p:column>
@@ -49,12 +49,17 @@
                 <p:column headerText="Address" filterBy="#{customer.address}" filterMatchMode="exact">
                     <h:outputText value="#{customer.address}" />
                 </p:column>
-                <p:column headerText="Account Type" filterBy="#{customer.accountType.accountType}" filterMatchMode="exact">
-                    <h:outputText value="#{customer.accountType.accountType}" />
-                </p:column>
 
                 <!-- Actions column with Edit and Delete buttons -->
                 <p:column headerText="Actions">
+                    <!-- Add Accounts to Customer -->
+                             <!-- Button to Add Accounts to Customer -->
+                    <p:commandButton icon="pi pi-fw pi-dollar"
+                                     style="color: white; background-color: #28a745; margin: 4px; border-color:green;"
+                                     action="#{customerBean.prepareAddAccounts(customer)}" 
+                                     oncomplete="PF('accountDialog').show()"
+                                     update=":accountDialogForm"
+                                     ajax="true" />
                     <p:commandButton icon="pi pi-fw pi-user-edit"
                                      style="color: white; background-color: gold; border-color:gold; margin: 3px;"
                                      action="#{customerBean.prepareEditCustomer(customer)}"
@@ -83,10 +88,33 @@
             </p:confirmPopup>
         </h:form>
 
+            <!-- Dialog for adding accounts -->
+        <p:dialog header="Add Accounts to #{customerBean.selectedCustomer.username}" 
+                  widgetVar="accountDialog" modal="true" showEffect="fade" hideEffect="fade">
+            <h:form id="accountDialogForm">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="accountType" value="Account Type:" />
+                    <p:selectOneMenu id="accountType" value="#{customerBean.selectedAccountType}" required="true" converter="accountTypeConverter">
+                        <f:selectItem itemLabel="Select Account Type" itemValue="" noSelectionOption="true" />
+                        <f:selectItems value="#{customerBean.availableAccountTypes}" var="type"
+                                       itemLabel="#{type.accountType},#{type.interestRate}%,#{type.timePeriod} months" itemValue="#{type}" />
+                    </p:selectOneMenu>
+
+                    <p:commandButton value="Create Account"
+                                     action="#{customerBean.createAccount()}"
+                                     update=":customerListForm :growl"
+                                     oncomplete="if (!args.validationFailed) { PF('accountDialog').hide(); }"
+                                     ajax="true" />
+
+                    <p:commandButton value="Cancel" onclick="PF('accountDialog').hide();" type="button"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+            
         <!-- Dialog for customer form -->
         <p:dialog header="Customer Form" widgetVar="customerDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="customerDialogForm">
-             
+
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="username" value="Username:" />
                     <p:inputText id="username" value="#{customerBean.selectedCustomer.username}">
@@ -108,16 +136,6 @@
 
                     <p:outputLabel for="address" value="Address:" />
                     <p:inputText id="address" value="#{customerBean.selectedCustomer.address}" />
-
-                    <p:outputLabel for="accountType" value="Account Type:" />
-                    <p:selectOneMenu id="accountType" value="#{customerBean.selectedCustomer.accountType}" >
-                        <!--This is coming from the faces-config.xml-->
-                        <f:selectItem itemLabel="Select Type" itemValue="" />
-                        <f:converter converterId="accountTypeConverter"/>
-                        <f:selectItems value="#{customerBean.accountTypes}" var="type"
-                                       itemLabel="#{type.accountType},Interest-#{type.interestRate}%,#{type.timePeriod}month"
-                                       itemValue="#{type}" />
-                    </p:selectOneMenu>
 
                     <p:commandButton value="#{customerBean.editMode ? 'Update' : 'Save'}"
                                      action="#{customerBean.saveOrUpdateCustomer()}"

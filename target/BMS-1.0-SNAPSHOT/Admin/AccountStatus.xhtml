@@ -46,12 +46,13 @@
                     <h:outputText value="#{account.status}" />
                 </p:column>
 
-
-
-                <p:column headerText="Interest Earned" filterBy="#{account.interestEarned}" filterMatchMode="exact">
+<!--                <p:column headerText="Interest Earned" filterBy="#{account.interestEarned}" filterMatchMode="exact">
                     <h:outputText value="#{account.interestEarned}" />
-                </p:column>
+                </p:column>-->
 
+                <p:column headerText="Account Type" filterBy="#{account.accountType.accountType}" filterMatchMode="exact">
+                    <h:outputText value="#{account.accountType.accountType}" />
+                </p:column>
                 <p:column headerText="Actions">
 
                     <p:commandButton icon="pi pi-fw pi-user-edit"

@@ -14,10 +14,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.faces.view.ViewScoped;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
-import javax.faces.view.ViewScoped;
 
 @Named("customerBean")
 @ViewScoped
@@ -35,24 +35,30 @@ public class CustomerBean implements Serializable {
     private AccountRepository accountRepository;
 
     private Customer selectedCustomer;
+    private AccountType selectedAccountType;
     private List<Customer> customers;
-    private List<AccountType> accountTypes;
+    private List<AccountType> availableAccountTypes;
     private GenericLazyDataModel<Customer> lazyCustomers;
     private boolean editMode = false;
 
     @PostConstruct
     public void init() {
-        if (selectedCustomer == null) {
-            selectedCustomer = new Customer();
-        }
-
-        // Initialize the GenericLazyDataModel with the customer repository
+        selectedCustomer = new Customer();
         lazyCustomers = new GenericLazyDataModel<>(customerRepository, Customer.class);
-        accountTypes = accountTypeRepository.getAll();
+        availableAccountTypes = accountTypeRepository.getAll();
     }
 
-    public List<AccountType> getAccountTypes() {
-        return accountTypes;
+    // Getters and setters for the new fields
+    public List<AccountType> getAvailableAccountTypes() {
+        return availableAccountTypes;
+    }
+
+    public AccountType getSelectedAccountType() {
+        return selectedAccountType;
+    }
+
+    public void setSelectedAccountType(AccountType selectedAccountType) {
+        this.selectedAccountType = selectedAccountType;
     }
 
     public Customer getSelectedCustomer() {
@@ -91,36 +97,12 @@ public class CustomerBean implements Serializable {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Customer updated successfully"));
             } else {
                 customerRepository.save(selectedCustomer);
-                createAccountForCustomer(selectedCustomer);
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Customer saved successfully"));
             }
             selectedCustomer = new Customer();
             editMode = false;
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to save customer"));
-        }
-    }
-
-    private void createAccountForCustomer(Customer customer) {
-        Account newAccount = new Account();
-        newAccount.setCustomer(customer);
-        newAccount.setAccountType(customer.getAccountType());
-        newAccount.setBalance(BigInteger.ZERO);
-        newAccount.setInterestEarned(BigInteger.ZERO);
-        newAccount.setPin(accountRepository.generateRandomPin());
-        newAccount.setStatus(AccountStatusEnum.ACTIVE);
-        newAccount.setAccountNumber(accountRepository.generateAccountNumber(newAccount));
-
-        accountRepository.save(newAccount);
-    }
-
-    public void deleteCustomer(Customer customer) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        try {
-            customerRepository.delete(customer.getId());
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Customer deleted successfully"));
-        } catch (Exception e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete customer"));
         }
     }
 
@@ -134,9 +116,59 @@ public class CustomerBean implements Serializable {
         this.editMode = false;
     }
 
-//    For dashboard purpose
+    public void prepareAddAccounts(Customer customer) {
+        this.selectedCustomer = customer;
+        this.selectedAccountType = null; // Reset selected account type
+    }
+
+    public void createAccount() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        try {
+            if (selectedCustomer.getId() != null && selectedAccountType != null) {
+                // Check if the customer already has an account with the same type
+                List<Account> existingAccounts = accountRepository.findByCustomerAndAccountType(selectedCustomer, selectedAccountType);
+
+                if (!existingAccounts.isEmpty()) {
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Error", "Customer already has an account of this type"));
+                    return;
+                }
+
+                // Proceed with account creation
+                Account newAccount = new Account();
+                newAccount.setCustomer(selectedCustomer);
+                newAccount.setAccountType(selectedAccountType);
+                newAccount.setBalance(BigInteger.ZERO);
+                newAccount.setInterestEarned(BigInteger.ZERO);
+                newAccount.setPin(accountRepository.generateRandomPin());
+                newAccount.setStatus(AccountStatusEnum.ACTIVE);
+                newAccount.setAccountNumber(accountRepository.generateAccountNumber(newAccount));
+
+                accountRepository.save(newAccount);
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Success", "Account created successfully"));
+            } else {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Error", "Please select an account type"));
+            }
+        } catch (Exception e) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Error", "Failed to create account"));
+        }
+    }
+
+    public void deleteCustomer(Customer customer) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        try {
+            customerRepository.delete(customer.getId());
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Customer deleted successfully"));
+        } catch (Exception e) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to delete customer"));
+        }
+    }
+
+    // For dashboard purpose
     public int getTotalCustomers() {
         return customerRepository.getAll().size();
     }
-
 }

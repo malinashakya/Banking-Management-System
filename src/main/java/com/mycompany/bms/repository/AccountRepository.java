@@ -2,6 +2,8 @@ package com.mycompany.bms.repository;
 
 import com.mycompany.bms.model.Account;
 import com.mycompany.bms.model.AccountStatusEnum;
+import com.mycompany.bms.model.AccountType;
+import com.mycompany.bms.model.Customer;
 import org.primefaces.model.FilterMeta;
 
 import javax.ejb.Stateless;
@@ -215,6 +217,15 @@ public class AccountRepository extends GenericRepository<Account, Long> {
     public List<Account> findAll() {
     TypedQuery<Account> query = getEntityManager().createQuery("SELECT a FROM Account a", Account.class);
     return query.getResultList();
+}
+
+    //For checking the duplicate account type of one customer
+    public List<Account> findByCustomerAndAccountType(Customer customer, AccountType accountType) {
+
+    return entityManager.createQuery("SELECT a FROM Account a WHERE a.customer = :customer AND a.accountType = :accountType", Account.class)
+                        .setParameter("customer", customer)
+                        .setParameter("accountType", accountType)
+                        .getResultList();
 }
 
 }

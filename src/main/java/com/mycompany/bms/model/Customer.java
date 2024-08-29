@@ -1,15 +1,11 @@
 package com.mycompany.bms.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "customer")
@@ -22,7 +18,7 @@ public class Customer extends BaseEntity {
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
-    @Size(min = 2, max = 20, message = "First name should be at least 2 characters")
+    @Size(min = 2, max = 20, message = "Last name should be at least 2 characters")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name should be a valid string")
     @NotEmpty(message = "Last Name cannot be empty")
     private String lastName;
@@ -32,7 +28,7 @@ public class Customer extends BaseEntity {
     private String address;
 
     @Column(name = "contact", nullable = false, unique = true)
-    @Size(min=10, max=10, message="Contact number should be 10 digits")
+    @Size(min = 10, max = 10, message = "Contact number should be 10 digits")
     @NotEmpty(message = "Contact cannot be empty")
     private String contact;
 
@@ -46,26 +42,24 @@ public class Customer extends BaseEntity {
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "account_type_id", nullable = false)
-    @NotNull(message = "Account Type cannot be empty")
-    private AccountType accountType;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Account> accounts; // Updated from accountTypes to accounts
 
     // Constructors
     public Customer() {
     }
 
-    public Customer(String firstName, String lastName, String address, String contact, String username, String password, AccountType accountType) {
+    public Customer(String firstName, String lastName, String address, String contact, String username, String password, List<Account> accounts) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.contact = contact;
         this.username = username;
         this.password = password;
-        if (accountType == null) {
-            throw new IllegalArgumentException("AccountType must not be null");
+        if (accounts == null) {
+            throw new IllegalArgumentException("Accounts must not be null");
         }
-        this.accountType = accountType;
+        this.accounts = accounts;
     }
 
     public String getFirstName() {
@@ -116,12 +110,12 @@ public class Customer extends BaseEntity {
         this.password = password;
     }
 
-    public AccountType getAccountType() {
-        return accountType;
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
-    public void setAccountType(AccountType accountType) {
-        this.accountType = accountType;
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     @Override
@@ -145,6 +139,4 @@ public class Customer extends BaseEntity {
     public int hashCode() {
         return getId() != null ? getId().hashCode() : 0;
     }
-    
-
 }

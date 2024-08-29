@@ -1,11 +1,12 @@
 package com.mycompany.bms.model;
 
 import java.math.BigInteger;
+import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "Account")
+@Table(name = "account")
 public class Account extends BaseEntity {
 
     @ManyToOne
@@ -14,13 +15,13 @@ public class Account extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "account_type_id", nullable = false)
-    public AccountType accountType;
+    private AccountType accountType;
 
     @Column(name = "balance", nullable = false)
-    private BigInteger balance; // Default to zero
+    private BigInteger balance = BigInteger.ZERO; // Default to zero
 
     @Column(name = "interest_earned", nullable = false)
-    private BigInteger interestEarned; // Default to zero
+    private BigInteger interestEarned = BigInteger.ZERO; // Default to zero
 
     @Column(name = "account_number", unique = true, nullable = false)
     private String accountNumber;
@@ -33,10 +34,11 @@ public class Account extends BaseEntity {
     @Size(min = 4, max = 4, message = "PIN must be 4 digits")
     private String pin;
 
-    // Constructors
+    // Default constructor
     public Account() {
     }
 
+    // Parameterized constructor
     public Account(Customer customer, AccountType accountType, String accountNumber, String pin, AccountStatusEnum status) {
         this.customer = customer;
         this.accountType = accountType;
@@ -111,20 +113,21 @@ public class Account extends BaseEntity {
             return false;
         }
         Account account = (Account) obj;
-        return accountNumber != null ? accountNumber.equals(account.accountNumber) : account.accountNumber == null;
+        return Objects.equals(accountNumber, account.accountNumber);
     }
 
     @Override
     public int hashCode() {
-        return accountNumber != null ? accountNumber.hashCode() : 0;
+        return Objects.hash(accountNumber);
     }
 
     @Override
     public String toString() {
-        return "Account{"
-                + "accountNumber='" + accountNumber + '\''
-                + ", balance=" + balance
-                + '}';
+        return "Account{" +
+                "accountNumber='" + accountNumber + '\'' +
+                ", balance=" + balance +
+                ", interestEarned=" + interestEarned +
+                ", status=" + status +
+                '}';
     }
-
 }
