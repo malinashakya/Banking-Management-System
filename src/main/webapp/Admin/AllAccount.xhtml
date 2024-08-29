@@ -28,28 +28,28 @@
                                      update=":customerDialogForm"
                                      ajax="true" />
                 </f:facet>
-
-                <p:column headerText="ID">
+                                
+                <p:column headerText="ID" filterBy="#{customer.id}" filterMatchMode="exact">
                     <h:outputText value="#{customer.id}" />
                 </p:column>
 
-                <p:column headerText="Username">
+                <p:column headerText="Username" filterBy="#{customer.username}" filterMatchMode="exact">
                     <h:outputText value="#{customer.username}" />
                 </p:column>
 
-                <p:column headerText="First Name">
+                <p:column headerText="First Name" filterBy="#{customer.firstName}" filterMatchMode="exact">
                     <h:outputText value="#{customer.firstName}" />
                 </p:column>
-                <p:column headerText="Last Name">
+                <p:column headerText="Last Name" filterBy="#{customer.lastName}" filterMatchMode="exact">
                     <h:outputText value="#{customer.lastName}" />
                 </p:column>
-                <p:column headerText="Contact">
+                <p:column headerText="Contact" filterBy="#{customer.contact}" filterMatchMode="exact">
                     <h:outputText value="#{customer.contact}" />
                 </p:column>
-                <p:column headerText="Address">
+                <p:column headerText="Address" filterBy="#{customer.address}" filterMatchMode="exact">
                     <h:outputText value="#{customer.address}" />
                 </p:column>
-                <p:column headerText="Account Type">
+                <p:column headerText="Account Type" filterBy="#{customer.accountType.accountType}" filterMatchMode="exact">
                     <h:outputText value="#{customer.accountType.accountType}" />
                 </p:column>
 
