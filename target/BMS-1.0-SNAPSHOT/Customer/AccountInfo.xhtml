@@ -7,22 +7,58 @@
 
     <h:head>
         <title>Customer Account Information</title>
+        <style>
+          
+            .content {
+                display: inline-block;
+                text-align: left;
+                margin-top: 50px;
+                margin-bottom: 50px;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+               margin-left: 35%;
+               font-family: Arial, sans-serif;
+            }
+            h1 {
+                margin-bottom: 40px;
+            }
+            .spacing {
+                margin-bottom: 30px;
+            }
+            .ui-datatable {
+                margin-top: 20px;
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .ui-datatable th, .ui-datatable td {
+                padding: 10px;
+                text-align: left;
+            }
+            .ui-datatable th {
+                background-color: #f4f4f4;
+            }
+        </style>
     </h:head>
     <h:body>
         <ui:include src="menu.xhtml" />
-        <h1>Account Information</h1>
+        
 
-        <h:panelGroup rendered="#{not empty loggedInCustomerBean.loggedInCustomer}">
-            <h:outputText value="Customer ID: #{loggedInCustomerBean.loggedInCustomer.id}" />
-            <br />
-            <h:outputText value="Customer Name: #{loggedInCustomerBean.loggedInCustomer.firstName}" />
-            <br />
-            <h:outputText value="Customer Email: #{loggedInCustomerBean.loggedInCustomer.username}" />
-            <br />
-
+        <h:panelGroup layout="block" styleClass="content" rendered="#{not empty loggedInCustomerBean.loggedInCustomer}">
+            <h1>Account Information</h1>
+            <h:outputText value="ID: #{loggedInCustomerBean.loggedInCustomer.id}"  />
+            <br/>
+            <h:outputText value="Name: #{loggedInCustomerBean.loggedInCustomer.firstName} #{loggedInCustomerBean.loggedInCustomer.lastName}" />
+            <br/>
+            <h:outputText value="Email: #{loggedInCustomerBean.loggedInCustomer.username}"  />
+            <br/>
+            <h:outputText value="Address: #{loggedInCustomerBean.loggedInCustomer.address}"  />
+            <br/>
+            <h:outputText value="Contact: #{loggedInCustomerBean.loggedInCustomer.contact}"  />
+            <br/>
             <h:panelGroup>
-                <h:outputText value="Accounts:" />
-                <h:dataTable value="#{loggedInCustomerBean.customerAccounts}" var="account">
+                <h:dataTable value="#{loggedInCustomerBean.customerAccounts}" var="account" styleClass="ui-datatable">
                     <h:column>
                         <f:facet name="header">Account Number</f:facet>
                         <h:outputText value="#{account.accountNumber}" />
