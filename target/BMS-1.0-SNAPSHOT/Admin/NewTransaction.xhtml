@@ -54,7 +54,6 @@
                 </p:column>
 
                 <p:column headerText="Actions">
-
                     <!-- View Button -->
                     <p:commandButton icon="pi pi-fw pi-eye"
                                      style="color: white; background-color: #28a745; border-color: #28a745; margin: 3px;"
@@ -63,15 +62,15 @@
                                      update=":transactionViewDialogForm"
                                      ajax="true" />
 
-                    <!--Edit Button-->
+                    <!-- Edit Button -->
                     <p:commandButton icon="pi pi-fw pi-user-edit"
-                                     style="color: white; background-color: gold; border-color:gold; margin: 3px;"
+                                     style="color: white; background-color: gold; border-color: gold; margin: 3px;"
                                      action="#{transactionBean.prepareEditEntity(transaction)}"
                                      oncomplete="PF('transactionDialog').show()"
                                      update=":transactionDialogForm"
                                      ajax="true" />
 
-                    <!--Delete Button-->
+                    <!-- Delete Button -->
                     <p:commandButton  
                         update=":transactionListForm:transactions" 
                         action="#{transactionBean.deleteEntity(transaction)}"
@@ -93,7 +92,6 @@
         </h:form>
 
         <!-- Dialog Box to add transactions -->
-
         <p:dialog header="Transaction Form" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="transactionDialogForm">
                 <p:messages id="messages" showSummary="true" />
@@ -104,26 +102,31 @@
                         <f:selectItems value="#{transactionBean.activeAccountList}" var="account" itemValue="#{account}" itemLabel="#{account.accountNumber}-#{account.customer.firstName} #{account.customer.lastName} #{account.status}" />
                     </p:selectOneMenu>
 
-                    <p:outputLabel for="type" value="Transaction Type" />
-                    <p:selectOneMenu id="type" value="#{transactionBean.selectedEntity.transactionType}" converter="transactionTypeEnumConverter">
-                        <f:selectItems value="#{transactionBean.transactionTypeList}" var="type" itemValue="#{type}" itemLabel="#{type}" />
-                    </p:selectOneMenu>
-
                     <p:outputLabel for="amount" value="Amount:" />
                     <p:inputText id="amount" value="#{transactionBean.selectedEntity.amount}" required="true">
                         <f:convertNumber type="number" />
                     </p:inputText>
-
-                    <p:outputLabel for="targetAccNum" value="Target Account Number:" />
-                    <p:selectOneMenu id="targetAccNum" value="#{transactionBean.targetAccountNumber}">
-                        <f:selectItems value="#{transactionBean.activeAccountList}" var="account" itemValue="#{account.accountNumber}" itemLabel="#{account.accountNumber}-#{account.customer.firstName} #{account.customer.lastName} #{account.status} " />
+                    <p:outputLabel/>
+                    
+                    <!-- Transaction Type Dropdown -->
+                    <p:outputLabel for="type" value="Transaction Type" />
+                    <p:selectOneMenu id="type" value="#{transactionBean.selectedEntity.transactionType}" converter="transactionTypeEnumConverter">
+                        <f:selectItems value="#{transactionBean.transactionTypeList}" var="type" itemValue="#{type}" itemLabel="#{type}" />
+                        <!-- Use the full client ID of the target panel -->
+                        <f:ajax event="change" render=":transactionDialogForm" />
                     </p:selectOneMenu>
 
-
+                    <!-- Target Account Number (only for Transfer type) -->
+                    <h:panelGroup id="targetAccountPanel" rendered="#{transactionBean.selectedEntity.transactionType == 'TRANSFER'}">
+                        <p:outputLabel for="targetAccNum" value="Target Account Number:" />
+                        <p:selectOneMenu id="targetAccNum" value="#{transactionBean.targetAccountNumber}">
+                            <f:selectItems value="#{transactionBean.activeAccountList}" var="account" itemValue="#{account.accountNumber}" itemLabel="#{account.accountNumber}-#{account.customer.firstName} #{account.customer.lastName} #{account.status}" />
+                        </p:selectOneMenu>
+                    </h:panelGroup>
                 </h:panelGrid>
 
                 <p:commandButton value="Save" action="#{transactionBean.saveOrUpdateEntity()}"
-                                 update=":growl :transactions" process="@form"
+                                 update=":growl :transactionListForm:transactions" process="@form"
                                  oncomplete="PF('transactionDialog').hide()" />
                 <p:commandButton value="Cancel" onclick="PF('transactionDialog').hide()" />
             </h:form>
@@ -153,13 +156,11 @@
 
                     <p:outputLabel value="Transaction Time:" />
                     <h:outputText value="#{transactionBean.selectedEntity.transactionTime}" />
-
                 </h:panelGrid>
 
                 <p:commandButton value="Close" onclick="PF('transactionViewDialog').hide()" />
             </h:form>
         </p:dialog>
-
 
     </h:body>
 </html>

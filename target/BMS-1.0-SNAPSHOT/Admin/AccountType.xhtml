@@ -81,15 +81,22 @@
                     <p:outputLabel for="interestRate" value="Interest Rate:" />
                     <p:inputText id="interestRate" value="#{accountTypeBean.selectedEntity.interestRate}" required="true" />
 
-                    <p:outputLabel for="timePeriod" value="Time Period:" />
-                    <p:inputText id="timePeriod" value="#{accountTypeBean.selectedEntity.timePeriod}" required="true" />
-
                     <p:outputLabel for="accountType" value="Account Type:" />
-                    <p:selectOneMenu id="accountType" value="#{accountTypeBean.selectedEntity.accountType}" required="true" >
+                    <p:selectOneMenu id="accountType" value="#{accountTypeBean.selectedEntity.accountType}" required="true">
                         <f:selectItem itemLabel="Select Type" itemValue="" />
                         <f:selectItems value="#{accountTypeBean.accountTypeEnums}" var="type"
                                        itemLabel="#{type}" itemValue="#{type}" />
+                        <!-- Trigger change event to re-render the timePeriodPanel -->
+                        <f:ajax event="change" render="accountTypeDialogForm" />
                     </p:selectOneMenu>
+                    
+                    <p:outputLabel/>
+                    <!-- Conditionally rendered Time Period field -->
+                    <h:panelGroup id="timePeriodPanel" layout="block"
+                                  rendered="#{accountTypeBean.selectedEntity.accountType eq 'FIXED'}">
+                        <p:outputLabel for="timePeriod" value="Time Period:" />
+                        <p:inputText id="timePeriod" value="#{accountTypeBean.selectedEntity.timePeriod}" required="true" />
+                    </h:panelGroup>
                 </h:panelGrid>
 
                 <p:commandButton value="#{accountTypeBean.editMode ? 'Update' : 'Save'}"
