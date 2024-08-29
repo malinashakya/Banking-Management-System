@@ -5,10 +5,10 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        
+
         <title>Dashboard</title>
         <link rel="stylesheet" type="text/css" href="Admin/CSS/styles.css" />
-        
+
         <style>
             .menu-logo {
                 font-weight: bold;
@@ -41,15 +41,15 @@
             .card-content {
                 display: flex;
                 align-items: center;
-            }       
+            }
             #p_chartid{
                 width:100%;
             }
-</style>
+        </style>
     </h:head>
     <h:body>
         <!--Including the menu-->
-         <ui:include src="menu.xhtml" />
+        <ui:include src="menu.xhtml" />
 
         <!-- Dashboard -->
         <div class="dashboard">
@@ -58,8 +58,7 @@
                     <p:card title="User Count" styleClass="card">
                         <div class="card-content">
                             <i class="pi pi-user card-icon" style="font-size: 80px;"></i> 
-                            
-                            <span class="card-text" style="font-size: 60px;">100+</span>
+                            <span class="card-text" style="font-size: 60px;">#{customerBean.totalCustomers}</span>
                         </div>
                     </p:card>
                 </div>
@@ -67,22 +66,23 @@
                     <p:card title="Total Balance" styleClass="card">
                         <div class="card-content">
                             <i class="pi pi-money-bill card-icon" style="font-size: 80px;"></i>
-                            <span class="card-text" style="font-size: 60px;"> $50M+</span>
+                            <span class="card-text" style="font-size: 60px;">#{transactionBean.totalTransactionAmount}</span>
                         </div>
                     </p:card>
                 </div>
             </div>
 
-           <div class="dashboard-right">
-                    <p:dataTable value="#{dashboardBean.transactions}" var="transaction" styleClass="card">
-                        <p:column headerText="User">
-                            <h:outputText value="#{transaction.user}" />
-                        </p:column>
-                        <p:column headerText="Amount">
-                            <h:outputText value="#{transaction.amount}" />
-                        </p:column>
-                    </p:dataTable>
-                </div>
+            <div class="dashboard-right">
+                <p:dataTable value="#{accountBean.topCustomersByBalance}" var="account" styleClass="card">
+                    <p:column headerText="User">
+                        <h:outputText value="#{account.customer.firstName} #{account.customer.lastName} " />
+                    </p:column>
+                    <p:column headerText="Balance">
+                        <h:outputText value="#{account.balance}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+
         </div>
     </h:body>
 </html>

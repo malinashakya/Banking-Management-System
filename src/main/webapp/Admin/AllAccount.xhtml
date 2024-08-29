@@ -86,32 +86,31 @@
         <!-- Dialog for customer form -->
         <p:dialog header="Customer Form" widgetVar="customerDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="customerDialogForm">
-                <p:messages id="messages" showSummary="true" />
-
+             
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="username" value="Username:" />
-                    <p:inputText id="username" value="#{customerBean.selectedCustomer.username}" required="true" >
+                    <p:inputText id="username" value="#{customerBean.selectedCustomer.username}">
                         <p:ajax update="@this" process="@this"/>  
                     </p:inputText>
                     <h:outputLabel />
                     <!-- Conditionally show password field only when adding a new customer -->
                     <p:outputLabel for="password" value="Password:" rendered="#{customerBean.editMode == false}" />
-                    <p:password id="password" value="#{customerBean.selectedCustomer.password}" rendered="#{customerBean.editMode == false}" required="true" />
+                    <p:password id="password" value="#{customerBean.selectedCustomer.password}" rendered="#{customerBean.editMode == false}" />
 
                     <p:outputLabel for="firstName" value="First Name:" />
-                    <p:inputText id="firstName" value="#{customerBean.selectedCustomer.firstName}" required="true" />
+                    <p:inputText id="firstName" value="#{customerBean.selectedCustomer.firstName}" />
 
                     <p:outputLabel for="lastName" value="Last Name:" />
-                    <p:inputText id="lastName" value="#{customerBean.selectedCustomer.lastName}" required="true"  />
+                    <p:inputText id="lastName" value="#{customerBean.selectedCustomer.lastName}" />
 
                     <p:outputLabel for="contact" value="Contact:" />
-                    <p:inputText id="contact" value="#{customerBean.selectedCustomer.contact}" required="true" />
+                    <p:inputText id="contact" value="#{customerBean.selectedCustomer.contact}" />
 
                     <p:outputLabel for="address" value="Address:" />
-                    <p:inputText id="address" value="#{customerBean.selectedCustomer.address}" required="true"  />
+                    <p:inputText id="address" value="#{customerBean.selectedCustomer.address}" />
 
                     <p:outputLabel for="accountType" value="Account Type:" />
-                    <p:selectOneMenu id="accountType" value="#{customerBean.selectedCustomer.accountType}" required="true" >
+                    <p:selectOneMenu id="accountType" value="#{customerBean.selectedCustomer.accountType}" >
                         <!--This is coming from the faces-config.xml-->
                         <f:selectItem itemLabel="Select Type" itemValue="" />
                         <f:converter converterId="accountTypeConverter"/>

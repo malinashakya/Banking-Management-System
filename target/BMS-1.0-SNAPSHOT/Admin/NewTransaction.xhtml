@@ -94,8 +94,7 @@
         <!-- Dialog Box to add transactions -->
         <p:dialog header="Transaction Form" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="transactionDialogForm">
-                <p:messages id="messages" showSummary="true" />
-
+                
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="acc_num" value="Account Number:" />
                     <p:selectOneMenu id="acc_num" value="#{transactionBean.selectedEntity.account}" converter="accountConverter">
@@ -103,7 +102,7 @@
                     </p:selectOneMenu>
 
                     <p:outputLabel for="amount" value="Amount:" />
-                    <p:inputText id="amount" value="#{transactionBean.selectedEntity.amount}" required="true">
+                    <p:inputText id="amount" value="#{transactionBean.selectedEntity.amount}">
                         <f:convertNumber type="number" />
                     </p:inputText>
                     <p:outputLabel/>

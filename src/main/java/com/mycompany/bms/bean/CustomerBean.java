@@ -30,15 +30,15 @@ public class CustomerBean implements Serializable {
 
     @Inject
     private AccountTypeRepository accountTypeRepository;
-    
+
     @Inject
     private AccountRepository accountRepository;
 
     private Customer selectedCustomer;
     private List<Customer> customers;
-     private List<AccountType> accountTypes;
+    private List<AccountType> accountTypes;
     private GenericLazyDataModel<Customer> lazyCustomers;
-    private boolean editMode = false;   
+    private boolean editMode = false;
 
     @PostConstruct
     public void init() {
@@ -48,13 +48,13 @@ public class CustomerBean implements Serializable {
 
         // Initialize the GenericLazyDataModel with the customer repository
         lazyCustomers = new GenericLazyDataModel<>(customerRepository, Customer.class);
-          accountTypes = accountTypeRepository.getAll();
+        accountTypes = accountTypeRepository.getAll();
     }
 
-       public List<AccountType> getAccountTypes() {
+    public List<AccountType> getAccountTypes() {
         return accountTypes;
     }
-       
+
     public Customer getSelectedCustomer() {
         return selectedCustomer;
     }
@@ -62,11 +62,11 @@ public class CustomerBean implements Serializable {
     public void setSelectedCustomer(Customer selectedCustomer) {
         this.selectedCustomer = selectedCustomer;
     }
-    
+
     public List<Customer> getCustomers() {
         return customers;
     }
-    
+
     public boolean isEditMode() {
         return editMode;
     }
@@ -133,4 +133,10 @@ public class CustomerBean implements Serializable {
         this.selectedCustomer = new Customer();
         this.editMode = false;
     }
+
+//    For dashboard purpose
+    public int getTotalCustomers() {
+        return customerRepository.getAll().size();
+    }
+
 }

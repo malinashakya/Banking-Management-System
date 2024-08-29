@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -33,6 +34,7 @@ public class Transaction extends BaseEntity {
     private Date transactionTime;
 
     @Column(name = "amount", nullable = false)
+    @NotNull(message = "Amount cannot be empty")
     private BigInteger amount;
 
     @Temporal(TemporalType.DATE)

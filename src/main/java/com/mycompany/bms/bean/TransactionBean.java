@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -221,16 +222,25 @@ public class TransactionBean implements Serializable {
     }
 
     //Getter for Account List having active status only
-      public List<Account> getActiveAccountList() {
+    public List<Account> getActiveAccountList() {
         return accountList.stream()
                 .filter(account -> account.getStatus() == AccountStatusEnum.ACTIVE)
                 .collect(Collectors.toList());
     }
+
     // Method to prepare for viewing a transaction
     public void prepareViewEntity(Transaction transaction) {
         // Set the selected transaction to the one passed as parameter
         this.selectedEntity = transaction;
     }
 
-    
+    //For Dashboard purpose
+    public BigInteger getTotalTransactionAmount() {
+        BigInteger totalAmount = BigInteger.ZERO;
+        for (Transaction transaction : transactionRepository.getAll()) {
+            totalAmount = totalAmount.add(transaction.getAmount());
+        }
+        return totalAmount;
+    }
+
 }

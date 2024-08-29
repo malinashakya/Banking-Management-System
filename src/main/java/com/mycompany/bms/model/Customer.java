@@ -18,13 +18,13 @@ public class Customer extends BaseEntity {
     @Column(name = "first_name", nullable = false)
     @Size(min = 2, max = 20, message = "First name should be at least 2 characters")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name should be a valid string")
-    @NotNull(message = "First Name cannot be empty")
+    @NotEmpty(message = "First Name cannot be empty")
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
     @Size(min = 2, max = 20, message = "First name should be at least 2 characters")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name should be a valid string")
-    @NotNull(message = "Last Name cannot be empty")
+    @NotEmpty(message = "Last Name cannot be empty")
     private String lastName;
 
     @Column(name = "address", nullable = false)
@@ -42,7 +42,7 @@ public class Customer extends BaseEntity {
     private String username;
 
     @Column(name = "password", nullable = false)
-    @NotNull(message = "Password cannot be empty")
+    @NotEmpty(message = "Password cannot be empty")
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 

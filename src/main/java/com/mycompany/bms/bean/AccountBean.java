@@ -12,7 +12,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Named("accountBean")
 @ViewScoped
@@ -132,4 +134,11 @@ public class AccountBean implements Serializable {
         this.lazyDataModel = lazyDataModel;
     }
 
- }
+    //For Dashboard purpose
+    public List<Account> getTopCustomersByBalance() {
+        return accountRepository.findAll().stream()
+                .sorted(Comparator.comparing(Account::getBalance).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
+    }
+}

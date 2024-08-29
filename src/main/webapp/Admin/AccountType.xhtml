@@ -75,8 +75,6 @@
         <!-- Dialog for accountType form -->
         <p:dialog header="Account Type Form" widgetVar="accountTypeDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="accountTypeDialogForm">
-                <p:messages id="messages" showSummary="true" />
-
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="interestRate" value="Interest Rate:" />
                     <p:inputText id="interestRate" value="#{accountTypeBean.selectedEntity.interestRate}" required="true" />
@@ -89,7 +87,7 @@
                         <!-- Trigger change event to re-render the timePeriodPanel -->
                         <f:ajax event="change" render="accountTypeDialogForm" />
                     </p:selectOneMenu>
-                    
+
                     <p:outputLabel/>
                     <!-- Conditionally rendered Time Period field -->
                     <h:panelGroup id="timePeriodPanel" layout="block"
