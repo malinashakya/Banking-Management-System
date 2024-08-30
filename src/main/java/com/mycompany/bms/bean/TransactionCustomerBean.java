@@ -10,6 +10,7 @@ import com.mycompany.bms.repository.TransactionRepository;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -32,6 +33,7 @@ public class TransactionCustomerBean implements Serializable {
 
     private Transaction selectedEntity;
     private String targetAccountNumber;
+    private String targetAccountFullName;
     private BigInteger amount = BigInteger.ZERO;
     private List<Account> accountList; // List for source and target accounts
     private String enteredPin;
@@ -50,7 +52,22 @@ public class TransactionCustomerBean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             Account sourceAccount = selectedEntity.getAccount();
-            Account targetAccount = accountRepository.findByAccountNumber(targetAccountNumber);
+
+            // Validate target account
+            Optional<Account> optionalTargetAccount = accountRepository.findAll().stream()
+                    .filter(account -> account.getType() == AccountTypeEnum.SAVINGS
+                    && account.getStatus() == AccountStatusEnum.ACTIVE
+                    && account.getAccountNumber().equals(targetAccountNumber)
+                    && (account.getCustomer().getFirstName() + " " + account.getCustomer().getLastName()).equals(targetAccountFullName))
+                    .findFirst();
+
+            if (!optionalTargetAccount.isPresent()) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account number or full name does not match"));
+                return;
+            }
+
+            Account targetAccount = optionalTargetAccount.get();
+
             System.err.println("Target acc:" + targetAccount);
             if (targetAccount == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));
@@ -68,16 +85,16 @@ public class TransactionCustomerBean implements Serializable {
                 return;
             }
 
-                       // Perform the transfer
+            // Perform the transfer
             sourceAccount.setBalance(sourceAccount.getBalance().subtract(amount));
             targetAccount.setBalance(targetAccount.getBalance().add(amount));
 
-             //Transfer between same account cannot be done message
+            //Transfer between same account cannot be done message
             if (sourceAccount.getAccountNumber().equals(targetAccount.getAccountNumber())) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Transfer cannot be done to the same account"));
                 return;
             }
-            
+
             // Save transactions
             Transaction withdrawalTransaction = new Transaction();
             withdrawalTransaction.setAccount(sourceAccount);
@@ -122,6 +139,15 @@ public class TransactionCustomerBean implements Serializable {
         this.targetAccountNumber = targetAccountNumber;
     }
 
+    public String getTargetAccountFullName() {
+        return targetAccountFullName;
+    }
+
+    public void setTargetAccountFullName(String targetAccountFullName) {
+        this.targetAccountFullName = targetAccountFullName;
+    }
+
+    
     public BigInteger getAmount() {
         return amount;
     }
