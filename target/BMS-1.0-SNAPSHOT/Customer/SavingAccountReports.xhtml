@@ -12,7 +12,7 @@
         <ui:include src="menu.xhtml" />
         <h:form id="reportForm">
             <p:panel header="Transaction Report" styleClass="ui-widget-content">
-                <p:dataTable value="#{transactionReportBean.transactions}" var="transaction" 
+                <p:dataTable value="#{transactionReportBean.savingsTransactions}" var="transaction" 
                              styleClass="ui-datatable"
                              widgetVar="transactionTable">
                     <p:column headerText="Account Number" filterBy="#{transaction.account.accountNumber} " filterMatchMode="contains">

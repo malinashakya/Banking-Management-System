@@ -47,18 +47,21 @@
                     <p:menuitem value="Transactions" icon="pi pi-wallet" outcome="NewTransaction"/>
 
                     <!--Reports-->
-                    <p:menuitem value="Reports" icon="pi pi-list" outcome="Reports"/>
+                    <p:submenu label="Reports" icon="pi pi-list" styleClass="menu-item">
+                        <p:menuitem value="Fixed Account" icon="pi pi-dollar" outcome="FixedAccountReports"/>
+                        <p:menuitem value="Saving Account" icon="pi pi-dollar" outcome="SavingAccountReports"/>
+                    </p:submenu>
 
 
-                    <!--Right Menu Items--> 
-                    <f:facet name="options">
-                        <p:menubar styleClass="right-menu">
-                            <p:submenu label="Customer" icon="pi pi-user" styleClass="right-menu-item">
-                                 <p:menuitem value="Edit Profile" icon="pi pi-cog" styleClass="right-menu-item" outcome="EditProfile"/>
-                                <p:menuitem value="Logout" icon="pi pi-sign-out" styleClass="right-menu-item" outcome="CustomerLogin"/>
-                            </p:submenu>
-                        </p:menubar>
-                    </f:facet>
+                        <!--Right Menu Items--> 
+                        <f:facet name="options">
+                            <p:menubar styleClass="right-menu">
+                                <p:submenu label="Customer" icon="pi pi-user" styleClass="right-menu-item">
+                                    <p:menuitem value="Edit Profile" icon="pi pi-cog" styleClass="right-menu-item" outcome="EditProfile"/>
+                                    <p:menuitem value="Logout" icon="pi pi-sign-out" styleClass="right-menu-item" outcome="CustomerLogin"/>
+                                </p:submenu>
+                            </p:menubar>
+                        </f:facet>
                 </p:menubar>
             </h:form>
         </div>

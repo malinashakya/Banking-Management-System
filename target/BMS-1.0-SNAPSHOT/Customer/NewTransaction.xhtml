@@ -25,13 +25,13 @@
                         <f:convertNumber type="number" />
                     </p:inputText>
 
-                     <p:outputLabel for="targetAccountNumber" value="Target Account Number:" />
+                    <p:outputLabel for="targetAccountNumber" value="Target Account Number:" />
                     <p:inputText id="targetAccountNumber" value="#{transactionCustomerBean.targetAccountNumber}" />
 
                     <p:outputLabel for="targetAccountFullName" value="Target Account Full Name:" />
                     <p:inputText id="targetAccountFullName" value="#{transactionCustomerBean.targetAccountFullName}" />
                 </h:panelGrid>
-             
+
                 <p:commandButton value="Transfer" onclick="PF('pinDialog').show();" type="button" style="margin-right: 10px;" />
                 <p:commandButton value="Cancel" onclick="PF('transferDialog').hide()" type="button" />
             </p:panel>
@@ -42,7 +42,7 @@
                     <p:outputLabel for="pin" value="Enter PIN:" />
                     <p:password id="pin" value="#{transactionCustomerBean.enteredPin}" required="true"
                                 feedback="false" label="PIN" maxlength="4" />
-                    
+
                     <p:outputLabel/>
                     <!-- Process the entire form including the panel data -->
                     <p:commandButton value="Confirm" action="#{transactionCustomerBean.saveOrUpdateEntity()}"

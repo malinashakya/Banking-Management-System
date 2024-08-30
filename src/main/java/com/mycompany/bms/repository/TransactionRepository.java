@@ -45,6 +45,7 @@ public class TransactionRepository extends GenericRepository<Transaction, Long> 
         return query.getResultList();
     }
 
+    //To get transactions done by particular id of customer
      public List<Transaction> getTransactionsByCustomerId(Long customerId) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Transaction> cq = cb.createQuery(Transaction.class);

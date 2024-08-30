@@ -2,9 +2,11 @@ package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Customer;
 import com.mycompany.bms.model.Transaction;
+import com.mycompany.bms.model.AccountTypeEnum;
 import com.mycompany.bms.repository.TransactionRepository;
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ExternalContext;
@@ -21,7 +23,9 @@ public class TransactionReportBean implements Serializable {
     @Inject
     private TransactionRepository transactionRepository;
 
-    private List<Transaction> transactions;
+    private List<Transaction> allTransactions;
+    private List<Transaction> savingsTransactions;
+    private List<Transaction> fixedTransactions;
 
     @PostConstruct
     public void init() {
@@ -30,15 +34,37 @@ public class TransactionReportBean implements Serializable {
         Customer loggedInCustomer = (Customer) externalContext.getSessionMap().get("loggedInCustomer");
 
         if (loggedInCustomer != null) {
-            transactions = transactionRepository.getTransactionsByCustomerId(loggedInCustomer.getId());
+            allTransactions = transactionRepository.getTransactionsByCustomerId(loggedInCustomer.getId());
+            filterTransactionsByAccountType();
         }
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+    private void filterTransactionsByAccountType() {
+        if (allTransactions != null) {
+            savingsTransactions = allTransactions.stream()
+                .filter(t -> t.getAccount().getType() == AccountTypeEnum.SAVINGS)
+                .collect(Collectors.toList());
+
+            fixedTransactions = allTransactions.stream()
+                .filter(t -> t.getAccount().getType() == AccountTypeEnum.FIXED)
+                .collect(Collectors.toList());
+        }
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
+    // Getters for savingsTransactions and fixedTransactions
+    public List<Transaction> getSavingsTransactions() {
+        return savingsTransactions;
+    }
+
+    public void setSavingsTransactions(List<Transaction> savingsTransactions) {
+        this.savingsTransactions = savingsTransactions;
+    }
+
+    public List<Transaction> getFixedTransactions() {
+        return fixedTransactions;
+    }
+
+    public void setFixedTransactions(List<Transaction> fixedTransactions) {
+        this.fixedTransactions = fixedTransactions;
     }
 }
