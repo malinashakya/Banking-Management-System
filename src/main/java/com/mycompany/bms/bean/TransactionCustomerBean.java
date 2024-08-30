@@ -51,7 +51,7 @@ public class TransactionCustomerBean implements Serializable {
         try {
             Account sourceAccount = selectedEntity.getAccount();
             Account targetAccount = accountRepository.findByAccountNumber(targetAccountNumber);
-            System.err.println("Target acc:"+targetAccount);
+            System.err.println("Target acc:" + targetAccount);
             if (targetAccount == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));
                 return;
@@ -68,10 +68,16 @@ public class TransactionCustomerBean implements Serializable {
                 return;
             }
 
-            // Perform the transfer
+                       // Perform the transfer
             sourceAccount.setBalance(sourceAccount.getBalance().subtract(amount));
             targetAccount.setBalance(targetAccount.getBalance().add(amount));
 
+             //Transfer between same account cannot be done message
+            if (sourceAccount.getAccountNumber().equals(targetAccount.getAccountNumber())) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Transfer cannot be done to the same account"));
+                return;
+            }
+            
             // Save transactions
             Transaction withdrawalTransaction = new Transaction();
             withdrawalTransaction.setAccount(sourceAccount);
@@ -140,7 +146,7 @@ public class TransactionCustomerBean implements Serializable {
         this.enteredPin = enteredPin;
     }
 
-     // Method to prepare for viewing a transaction
+    // Method to prepare for viewing a transaction
     public void prepareViewEntity(Transaction transaction) {
         // Set the selected transaction to the one passed as parameter
         this.selectedEntity = transaction;

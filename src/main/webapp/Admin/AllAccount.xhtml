@@ -37,12 +37,10 @@
                     <h:outputText value="#{customer.username}" />
                 </p:column>
 
-                <p:column headerText="First Name" filterBy="#{customer.firstName}" filterMatchMode="exact">
-                    <h:outputText value="#{customer.firstName}" />
+                <p:column headerText="Full Name" filterBy="#{customer.firstName}" filterMatchMode="exact">
+                    <h:outputText value="#{customer.firstName} #{customer.lastName}" />
                 </p:column>
-                <p:column headerText="Last Name" filterBy="#{customer.lastName}" filterMatchMode="exact">
-                    <h:outputText value="#{customer.lastName}" />
-                </p:column>
+
                 <p:column headerText="Contact" filterBy="#{customer.contact}" filterMatchMode="exact">
                     <h:outputText value="#{customer.contact}" />
                 </p:column>
