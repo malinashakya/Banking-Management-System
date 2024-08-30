@@ -1,21 +1,9 @@
 package com.mycompany.bms.repository;
 
-import com.mycompany.bms.model.AccountTypeEnum;
-import com.mycompany.bms.model.AccountType_;
 import com.mycompany.bms.model.AccountType;
-import java.util.ArrayList;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-import org.primefaces.model.FilterMeta;
 
 @Stateless
 public class AccountTypeRepository extends GenericRepository<AccountType, Long> {

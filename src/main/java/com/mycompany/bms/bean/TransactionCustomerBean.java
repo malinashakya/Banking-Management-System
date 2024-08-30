@@ -140,4 +140,9 @@ public class TransactionCustomerBean implements Serializable {
         this.enteredPin = enteredPin;
     }
 
+     // Method to prepare for viewing a transaction
+    public void prepareViewEntity(Transaction transaction) {
+        // Set the selected transaction to the one passed as parameter
+        this.selectedEntity = transaction;
+    }
 }

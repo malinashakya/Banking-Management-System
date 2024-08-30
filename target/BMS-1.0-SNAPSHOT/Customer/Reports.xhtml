@@ -15,9 +15,6 @@
                 <p:dataTable value="#{transactionReportBean.transactions}" var="transaction" 
                              styleClass="ui-datatable"
                              widgetVar="transactionTable">
-                    <p:column headerText="Transaction ID" filterBy="#{transaction.id}" filterMatchMode="contains">
-                        <h:outputText value="#{transaction.id}" />
-                    </p:column>
                     <p:column headerText="Account Number" filterBy="#{transaction.account.accountNumber} " filterMatchMode="contains">
                         <h:outputText value="#{transaction.account.accountNumber}" />
                     </p:column>
@@ -34,8 +31,44 @@
                             <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                         </h:outputText>
                     </p:column>
+                    <p:column headerText="Actions">
+                        <!-- View Button -->
+                        <p:commandButton icon="pi pi-fw pi-eye"
+                                         style="color: white; margin: 3px;"
+                                         action="#{transactionCustomerBean.prepareViewEntity(transaction)}"
+                                         oncomplete="PF('transactionViewDialog').show()"
+                                         update=":transactionViewDialogForm"
+                                         ajax="true" />
+                    </p:column>
                 </p:dataTable>
             </p:panel>
         </h:form>
+        <!-- Dialog Box to view transaction details -->
+        <p:dialog header="Transaction Details" widgetVar="transactionViewDialog" modal="true" showEffect="fade" hideEffect="fade">
+            <h:form id="transactionViewDialogForm">
+                <h:panelGrid columns="2" cellpadding="5">
+
+                    <p:outputLabel value="Account Number:" />
+                    <h:outputText value="#{transactionCustomerBean.selectedEntity.account.accountNumber}" />
+
+                    <p:outputLabel value="Customer Name:" />
+                    <h:outputText value="#{transactionCustomerBean.selectedEntity.account.customer.firstName} #{transactionCustomerBean.selectedEntity.account.customer.lastName}" />
+
+                    <p:outputLabel value="Transaction Type:" />
+                    <h:outputText value="#{transactionCustomerBean.selectedEntity.transactionType}" />
+
+                    <p:outputLabel value="Amount:" />
+                    <h:outputText value="#{transactionCustomerBean.selectedEntity.amount}" />
+
+                    <p:outputLabel value="Date:" />
+                    <h:outputText value="#{transactionCustomerBean.selectedEntity.date}" />
+
+                    <p:outputLabel value="Transaction Time:" />
+                    <h:outputText value="#{transactionCustomerBean.selectedEntity.transactionTime}" />
+                </h:panelGrid>
+
+                <p:commandButton value="Close" onclick="PF('transactionViewDialog').hide()" />
+            </h:form>
+        </p:dialog>
     </h:body>
 </html>
