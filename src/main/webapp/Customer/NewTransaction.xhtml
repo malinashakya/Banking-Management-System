@@ -10,15 +10,15 @@
     <h:body>
         <p:growl id="growl" showDetail="true" />
         <ui:include src="menu.xhtml" />
-        <h:form id="transactionForm">
-            <p:panel header="Transfer Money" styleClass="ui-widget-content">
+
+        <!-- Single form encapsulating both panels -->
+        <h:form id="mainForm">
+            <p:panel header="Transfer Money" styleClass="ui-widget-content" id="detailsid">
                 <h:panelGrid columns="2" cellpadding="5">
-                    
                     <p:outputLabel for="sourceAccount" value="Source Account:" />
                     <p:selectOneMenu id="sourceAccount" value="#{transactionCustomerBean.selectedEntity.account}" converter="accountConverter">
                         <f:selectItems value="#{loggedInCustomerBean.customerSavingsAccounts}" var="account" itemValue="#{account}" itemLabel="#{account.accountNumber} - #{account.customer.firstName} #{account.customer.lastName}" />
                     </p:selectOneMenu>
-
 
                     <p:outputLabel for="amount" value="Amount:" />
                     <p:inputText id="amount" value="#{transactionCustomerBean.amount}">
@@ -31,10 +31,24 @@
                     </p:selectOneMenu>
                 </h:panelGrid>
 
-                <p:commandButton value="Transfer" action="#{transactionCustomerBean.saveOrUpdateEntity()}"
-                                 update=":growl :transactionForm" process="@form" />
-                <p:commandButton value="Cancel" onclick="PF('transferDialog').hide()" />
+                <p:commandButton value="Transfer" onclick="PF('pinDialog').show();" type="button" />
+                <p:commandButton value="Cancel" onclick="PF('transferDialog').hide()" type="button" />
             </p:panel>
+
+            <!-- Dialog to ask for PIN -->
+            <p:dialog id="pinDialog" header="Enter PIN" widgetVar="pinDialog" modal="true" closable="false" resizable="false">
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="pin" value="Enter PIN:" />
+                    <p:password id="pin" value="#{transactionCustomerBean.enteredPin}" required="true"
+                                feedback="false" label="PIN" maxlength="4" />
+
+                    <!-- Process the entire form including the panel data -->
+                    <p:commandButton value="Confirm" action="#{transactionCustomerBean.saveOrUpdateEntity()}"
+                                     update=":growl :mainForm" process="@form" 
+                                     oncomplete="PF('pinDialog').hide();" />
+                    <p:commandButton value="Cancel" onclick="PF('pinDialog').hide()" type="button" />
+                </h:panelGrid>
+            </p:dialog>
         </h:form>
     </h:body>
 </html>

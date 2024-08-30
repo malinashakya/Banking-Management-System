@@ -34,6 +34,7 @@ public class TransactionCustomerBean implements Serializable {
     private String targetAccountNumber;
     private BigInteger amount = BigInteger.ZERO;
     private List<Account> accountList; // List for source and target accounts
+    private String enteredPin;
 
     @PostConstruct
     public void init() {
@@ -41,17 +42,16 @@ public class TransactionCustomerBean implements Serializable {
         // Initialize accountList with only savings accounts
         accountList = accountRepository.findAll().stream()
                 .filter(account -> account.getStatus() == AccountStatusEnum.ACTIVE
-                        && account.getType() == AccountTypeEnum.SAVINGS)
+                && account.getType() == AccountTypeEnum.SAVINGS)
                 .collect(Collectors.toList());
     }
 
     public void saveOrUpdateEntity() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
-         
             Account sourceAccount = selectedEntity.getAccount();
             Account targetAccount = accountRepository.findByAccountNumber(targetAccountNumber);
-
+            System.err.println("Target acc:"+targetAccount);
             if (targetAccount == null) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));
                 return;
@@ -59,6 +59,12 @@ public class TransactionCustomerBean implements Serializable {
 
             if (sourceAccount.getBalance().compareTo(amount) < 0) {
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Insufficient balance"));
+                return;
+            }
+
+            // Check if the entered PIN matches the source account's PIN
+            if (!sourceAccount.getPin().equals(enteredPin)) {
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Invalid PIN"));
                 return;
             }
 
@@ -86,6 +92,7 @@ public class TransactionCustomerBean implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Transfer completed successfully"));
 
             selectedEntity = new Transaction(); // Reset the form
+            enteredPin = ""; // Reset the entered PIN
 
         } catch (Exception e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to complete transfer: " + e.getMessage()));
@@ -124,4 +131,13 @@ public class TransactionCustomerBean implements Serializable {
     public void setAccountList(List<Account> accountList) {
         this.accountList = accountList;
     }
+
+    public String getEnteredPin() {
+        return enteredPin;
+    }
+
+    public void setEnteredPin(String enteredPin) {
+        this.enteredPin = enteredPin;
+    }
+
 }
