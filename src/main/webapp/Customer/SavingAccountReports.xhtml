@@ -37,10 +37,8 @@
                             <f:convertNumber type="currency" currencySymbol="$" />
                         </h:outputText>
                     </p:column>
-                    <p:column headerText="Date" filterBy="#{transactionTime}" filterMatchMode="contains">
-                        <h:outputText value="#{transaction.transactionTime}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                        </h:outputText>
+                    <p:column headerText="Date" filterBy="#{transaction.transactionTime}" filterMatchMode="contains">
+                        <h:outputText value="#{transaction.transactionTime}" converter="localDateTimeConverter" />
                     </p:column>
                     <p:column headerText="Actions">
                         <!-- View Button -->
@@ -55,7 +53,7 @@
 
                 <!-- No transactions message -->
                 <h:panelGroup rendered="#{empty transactionReportBean.savingsTransactions}">
-                  
+                    <h:outputText value="No transactions found." />
                 </h:panelGroup>
             </p:panel>
         </h:form>
@@ -80,7 +78,7 @@
                     <h:outputText value="#{transactionCustomerBean.selectedEntity.date}" />
 
                     <p:outputLabel value="Transaction Time:" />
-                    <h:outputText value="#{transactionCustomerBean.selectedEntity.transactionTime}" />
+                    <h:outputText value="#{transactionCustomerBean.selectedEntity.transactionTime}" converter="localDateTimeConverter" />
                 </h:panelGrid>
 
                 <p:commandButton value="Close" onclick="PF('transactionViewDialog').hide()" />

@@ -1,7 +1,8 @@
 package com.mycompany.bms.model;
 
 import java.math.BigInteger;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,8 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -29,28 +28,25 @@ public class Transaction extends BaseEntity {
     @Column(name = "transaction_type", nullable = false)
     private TransactionTypeEnum transactionType;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "transaction_time", nullable = false)
-    private Date transactionTime;
+    private LocalDateTime transactionTime;
 
     @Column(name = "amount", nullable = false)
     @NotNull(message = "Amount cannot be empty")
     private BigInteger amount;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "date", nullable = false)
-    private Date date;
+    private LocalDate date;
 
     // Default constructor
     public Transaction() {
-    Date now = new Date();
-    this.transactionTime = now;
-    this.date = now;
-}
-
+        LocalDateTime now = LocalDateTime.now();
+        this.transactionTime = now;
+        this.date = now.toLocalDate();
+    }
 
     // Constructor with parameters
-    public Transaction(Account account, TransactionTypeEnum transactionType, Date transactionTime, BigInteger amount, Date date) {
+    public Transaction(Account account, TransactionTypeEnum transactionType, LocalDateTime transactionTime, BigInteger amount, LocalDate date) {
         this.account = account;
         this.transactionType = transactionType;
         this.transactionTime = transactionTime;
@@ -66,11 +62,11 @@ public class Transaction extends BaseEntity {
         this.transactionType = transactionType;
     }
 
-    public Date getTransactionTime() {
+    public LocalDateTime getTransactionTime() {
         return transactionTime;
     }
 
-    public void setTransactionTime(Date transactionTime) {
+    public void setTransactionTime(LocalDateTime transactionTime) {
         this.transactionTime = transactionTime;
     }
 
@@ -82,11 +78,11 @@ public class Transaction extends BaseEntity {
         this.amount = amount;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

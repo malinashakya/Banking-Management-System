@@ -5,7 +5,7 @@ import com.mycompany.bms.model.Transaction;
 import com.mycompany.bms.model.AccountTypeEnum;
 import com.mycompany.bms.repository.TransactionRepository;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -28,8 +28,8 @@ public class TransactionReportBean implements Serializable {
     private List<Transaction> savingsTransactions;
     private List<Transaction> fixedTransactions;
 
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @PostConstruct
     public void init() {
@@ -60,9 +60,12 @@ public class TransactionReportBean implements Serializable {
     public void filterrTransactionsBydate() {
         if (startDate != null && endDate != null) {
             savingsTransactions = savingsTransactions.stream()
-                    .filter(t -> !t.getDate().before(startDate) && !t.getDate().after(endDate) || t.getDate().equals(endDate))
+                    .filter(t -> !t.getDate().isBefore(startDate) && !t.getDate().isAfter(endDate))
                     .collect(Collectors.toList());
 
+            fixedTransactions = fixedTransactions.stream()
+                    .filter(t -> !t.getDate().isBefore(startDate) && !t.getDate().isAfter(endDate))
+                    .collect(Collectors.toList());
         }
     }
 
@@ -83,20 +86,19 @@ public class TransactionReportBean implements Serializable {
         this.fixedTransactions = fixedTransactions;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
-
 }

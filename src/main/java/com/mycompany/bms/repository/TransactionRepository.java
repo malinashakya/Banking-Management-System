@@ -4,7 +4,6 @@
  */
 package com.mycompany.bms.repository;
 
-import com.mycompany.bms.model.Customer;
 import com.mycompany.bms.model.Transaction;
 import java.io.Serializable;
 import java.util.List;
@@ -13,7 +12,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 /**
