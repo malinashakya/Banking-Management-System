@@ -5,6 +5,7 @@ import com.mycompany.bms.model.Transaction;
 import com.mycompany.bms.model.AccountTypeEnum;
 import com.mycompany.bms.repository.TransactionRepository;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -27,6 +28,9 @@ public class TransactionReportBean implements Serializable {
     private List<Transaction> savingsTransactions;
     private List<Transaction> fixedTransactions;
 
+    private Date startDate;
+    private Date endDate;
+    
     @PostConstruct
     public void init() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -51,6 +55,15 @@ public class TransactionReportBean implements Serializable {
         }
     }
 
+    public void filterrTransactionsBydate()
+    {
+        if(startDate!=null && endDate!=null)
+        {
+            savingsTransactions=savingsTransactions.stream().
+                    filter(t->!t.getDate().before(startDate)&& !t.getDate().after(endDate))
+                    .collect(Collectors.toList());
+        }
+    }
     // Getters for savingsTransactions and fixedTransactions
     public List<Transaction> getSavingsTransactions() {
         return savingsTransactions;
@@ -67,4 +80,22 @@ public class TransactionReportBean implements Serializable {
     public void setFixedTransactions(List<Transaction> fixedTransactions) {
         this.fixedTransactions = fixedTransactions;
     }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+    
+    
 }

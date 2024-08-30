@@ -12,10 +12,21 @@
         <ui:include src="menu.xhtml" />
         <h:form id="reportForm">
             <p:panel header="Transaction Report" styleClass="ui-widget-content">
-                <p:dataTable value="#{transactionReportBean.savingsTransactions}" var="transaction" 
+                <!-- Date Range Filtering -->
+                <h:panelGrid columns="4" cellpadding="5">
+                    <p:outputLabel for="startDate" value="Start Date:" />
+                    <p:calendar id="startDate" value="#{transactionReportBean.startDate}" pattern="MM/dd/yyyy" showOn="button" />
+
+                    <p:outputLabel for="endDate" value="End Date:" />
+                    <p:calendar id="endDate" value="#{transactionReportBean.endDate}" pattern="MM/dd/yyyy" showOn="button" />
+
+                    <p:commandButton value="Search" action="#{transactionReportBean.filterrTransactionsBydate()}" update="transactionTable" />
+                </h:panelGrid>
+
+                <p:dataTable id="transactionTable" value="#{transactionReportBean.savingsTransactions}" var="transaction" 
                              styleClass="ui-datatable"
                              widgetVar="transactionTable">
-                    <p:column headerText="Account Number" filterBy="#{transaction.account.accountNumber} " filterMatchMode="contains">
+                    <p:column headerText="Account Number" filterBy="#{transaction.account.accountNumber}" filterMatchMode="contains">
                         <h:outputText value="#{transaction.account.accountNumber}" />
                     </p:column>
                     <p:column headerText="Transaction Type" filterBy="#{transaction.transactionType}" filterMatchMode="contains">
@@ -41,13 +52,18 @@
                                          ajax="true" />
                     </p:column>
                 </p:dataTable>
+
+                <!-- No transactions message -->
+                <h:panelGroup rendered="#{empty transactionReportBean.savingsTransactions}">
+                  
+                </h:panelGroup>
             </p:panel>
         </h:form>
+
         <!-- Dialog Box to view transaction details -->
         <p:dialog header="Transaction Details" widgetVar="transactionViewDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="transactionViewDialogForm">
                 <h:panelGrid columns="2" cellpadding="5">
-
                     <p:outputLabel value="Account Number:" />
                     <h:outputText value="#{transactionCustomerBean.selectedEntity.account.accountNumber}" />
 

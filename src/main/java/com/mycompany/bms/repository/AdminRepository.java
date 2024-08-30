@@ -18,6 +18,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import org.primefaces.model.FilterMeta;
 
 /**
@@ -35,6 +36,33 @@ public class AdminRepository extends GenericRepository<Admin, Long> {
      */
     public AdminRepository() {
         super(Admin.class);
+    }
+
+    @Transactional
+    @Override
+    public void update(Admin admin) {
+        if (admin.getPassword() != null && !admin.getPassword().isEmpty()) {
+            String salt = generateSalt();
+            String hashedPassword = hashPassword(admin.getPassword(), salt);
+            admin.setPassword(hashedPassword + ":" + salt);
+        }
+        entityManager.merge(admin);
+    }
+
+    @Transactional
+    @Override
+    public void save(Admin admin) {
+        if (admin.getPassword() != null && !admin.getPassword().isEmpty()) {
+            String salt = generateSalt();
+            String hashedPassword = hashPassword(admin.getPassword(), salt);
+            admin.setPassword(hashedPassword + ":" + salt);
+        }
+
+        if (admin.getId() == null) {
+            entityManager.persist(admin); // New entity, so persist
+        } else {
+            entityManager.merge(admin); // Existing entity, so merge
+        }
     }
 
     /**
