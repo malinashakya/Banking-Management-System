@@ -13,7 +13,7 @@
         <h:form id="reportForm">
             <p:panel header="Transaction Report" styleClass="ui-widget-content">
                 <!-- Date Range Filtering -->
-                <h:panelGrid columns="4" cellpadding="5">
+                <h:panelGrid columns="5" cellpadding="30">
                     <p:outputLabel for="startDate" value="Start Date:" />
                     <p:calendar id="startDate" value="#{transactionReportBean.startDate}" pattern="MM/dd/yyyy" showOn="button" />
 
@@ -37,8 +37,8 @@
                             <f:convertNumber type="currency" currencySymbol="$" />
                         </h:outputText>
                     </p:column>
-                    <p:column headerText="Date" filterBy="#{transaction.date}" filterMatchMode="contains">
-                        <h:outputText value="#{transaction.date}">
+                    <p:column headerText="Date" filterBy="#{transactionTime}" filterMatchMode="contains">
+                        <h:outputText value="#{transaction.transactionTime}">
                             <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                         </h:outputText>
                     </p:column>
