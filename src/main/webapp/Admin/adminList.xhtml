@@ -15,7 +15,8 @@
                          paginator="true" rows="5" lazy="true"
                          rowKey="#{admin.id}" paginatorPosition="bottom"
                          rowsPerPageTemplate="5,10,15"
-                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+                         {NextPageLink} {LastPageLink}" currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords}">
 
                 <!--For lazyTable we have added paginator="true" rows="3" lazy="true" Here rows=3 that means three data will be shown at once in the table-->
                 <f:facet name="header">

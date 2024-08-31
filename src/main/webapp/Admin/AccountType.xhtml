@@ -16,7 +16,9 @@
                          paginator="true" rows="5" lazy="true"
                          rowKey="#{accountType.id}" paginatorPosition="bottom"
                          rowsPerPageTemplate="5,10,15"
-                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+                         {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords}">
 
                 <f:facet name="header">
                     Account Type List

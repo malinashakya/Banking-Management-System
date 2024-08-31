@@ -19,7 +19,9 @@
                          value="#{accountBean.lazyDataModel}" paginator="true"
                          rows="5" rowsPerPageTemplate="5,10,15"
                          lazy="true" style="margin-top:20px"
-                         paginatorPosition="bottom">
+                         paginatorPosition="bottom"  paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+                         {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords}">
 
                 <p:column headerText="Account Number" filterBy="#{account.accountNumber}" filterMatchMode="exact">
                     <h:outputText value="#{account.accountNumber}" />

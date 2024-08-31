@@ -1,7 +1,8 @@
 package com.mycompany.bms.model;
 
 import java.math.BigInteger;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -11,9 +12,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class Transaction_ extends com.mycompany.bms.model.BaseEntity_ {
 
 	public static volatile SingularAttribute<Transaction, TransactionTypeEnum> transactionType;
-	public static volatile SingularAttribute<Transaction, Date> date;
+	public static volatile SingularAttribute<Transaction, LocalDate> date;
 	public static volatile SingularAttribute<Transaction, BigInteger> amount;
-	public static volatile SingularAttribute<Transaction, Date> transactionTime;
+	public static volatile SingularAttribute<Transaction, LocalDateTime> transactionTime;
 	public static volatile SingularAttribute<Transaction, Account> account;
 
 	public static final String TRANSACTION_TYPE = "transactionType";
