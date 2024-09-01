@@ -4,13 +4,12 @@
  */
 package com.mycompany.bms.repository;
 
-import com.mycompany.bms.model.AccountTypeEnum;
 import com.mycompany.bms.model.Transaction;
+import com.mycompany.bms.model.TransactionTypeEnum;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -58,38 +57,7 @@ public class TransactionRepository extends GenericRepository<Transaction, Long> 
         TypedQuery<Transaction> query = getEntityManager().createQuery(cq);
         return query.getResultList();
     }
-    // Fetch the opening balance at the start of the current month
 
-    public BigInteger getOpeningBalanceForMonth(Long customerId) {
-        // Define the start of the current month
-        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
-
-        // Fetch the earliest balance after or on the start of the month
-        return entityManager.createQuery(
-                "SELECT t.amount FROM Transaction t WHERE t.account.customer.id = :customerId "
-                + "AND t.date >= :startOfMonth ORDER BY t.date ASC", BigInteger.class)
-                .setParameter("customerId", customerId)
-                .setParameter("startOfMonth", startOfMonth)
-                .setMaxResults(1)
-                .getSingleResult();
-    }
-
-    // Fetch the closing balance as of the end of the current month
-    public BigInteger getBalanceAsOfToday(Long customerId) {
-        try {
-            return entityManager.createQuery(
-                    "SELECT a.balance FROM Account a WHERE a.customer.id = :customerId AND a.type = :accountType",
-                    BigInteger.class)
-                    .setParameter("customerId", customerId)
-//                    .setParameter("accountType", AccountTypeEnum.SAVINGS) // Ensure to fetch only savings accounts
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            // Handle the case where there is no account for the given customerId
-            return BigInteger.ONE; // Return zero if no account is found
-        }
-    }
-
-    // Fetch the latest transaction of the customer
     // Fetch the top 3 latest transactions of the customer
     public List<Transaction> getLatestTransactionByCustomer(Long customerId) {
         return entityManager.createQuery(
@@ -98,4 +66,65 @@ public class TransactionRepository extends GenericRepository<Transaction, Long> 
                 .setMaxResults(3) // Fetch the top 3 latest transactions
                 .getResultList();
     }
+
+    public BigInteger getOpeningBalanceForMonth(Long customerId) {
+        // Define the start of the current month
+        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
+
+        // Query to sum deposits and withdrawals separately
+        String depositQuery = "SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t "
+                + "WHERE t.account.customer.id = :customerId AND t.date < :startOfMonth "
+                + "AND t.transactionType = :depositType";
+
+        String withdrawalQuery = "SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t "
+                + "WHERE t.account.customer.id = :customerId AND t.date < :startOfMonth "
+                + "AND t.transactionType = :withdrawalType";
+
+        BigInteger depositTotal = entityManager.createQuery(depositQuery, BigInteger.class)
+                .setParameter("customerId", customerId)
+                .setParameter("startOfMonth", startOfMonth)
+                .setParameter("depositType", TransactionTypeEnum.DEPOSIT) // Assuming ENUM for deposit
+                .getSingleResult();
+
+        BigInteger withdrawalTotal = entityManager.createQuery(withdrawalQuery, BigInteger.class)
+                .setParameter("customerId", customerId)
+                .setParameter("startOfMonth", startOfMonth)
+                .setParameter("withdrawalType", TransactionTypeEnum.WITHDRAW) // Assuming ENUM for withdrawal
+                .getSingleResult();
+
+        // Calculate the opening balance by subtracting withdrawals from deposits
+        return depositTotal.subtract(withdrawalTotal);
+    }
+
+    public BigInteger getBalanceAsOfToday(Long customerId) {
+        // Define the end of today
+        LocalDate endOfToday = LocalDate.now();
+
+        // Query to sum deposits and withdrawals separately up to today
+        String depositQuery = "SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t "
+                + "WHERE t.account.customer.id = :customerId AND t.date <= :endOfToday "
+                + "AND t.transactionType = :depositType";
+
+        String withdrawalQuery = "SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t "
+                + "WHERE t.account.customer.id = :customerId AND t.date <= :endOfToday "
+                + "AND t.transactionType = :withdrawalType";
+
+        // Execute deposit query
+        BigInteger depositTotal = entityManager.createQuery(depositQuery, BigInteger.class)
+                .setParameter("customerId", customerId)
+                .setParameter("endOfToday", endOfToday)
+                .setParameter("depositType", TransactionTypeEnum.DEPOSIT) // Assuming ENUM for deposit
+                .getSingleResult();
+
+        // Execute withdrawal query
+        BigInteger withdrawalTotal = entityManager.createQuery(withdrawalQuery, BigInteger.class)
+                .setParameter("customerId", customerId)
+                .setParameter("endOfToday", endOfToday)
+                .setParameter("withdrawalType", TransactionTypeEnum.WITHDRAW) // Assuming ENUM for withdrawal
+                .getSingleResult();
+
+        // Calculate the balance by adding deposits and subtracting withdrawals
+        return depositTotal.subtract(withdrawalTotal);
+    }
+
 }
