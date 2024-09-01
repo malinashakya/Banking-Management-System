@@ -3,17 +3,18 @@ package com.mycompany.bms.bean;
 import com.mycompany.bms.model.*;
 import com.mycompany.bms.repository.AccountRepository;
 import com.mycompany.bms.repository.TransactionRepository;
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Named("transactionCustomerBean")
 @ViewScoped
@@ -41,18 +42,31 @@ public class TransactionCustomerBean implements Serializable {
     private BigInteger openingBalance = BigInteger.ZERO;
     private BigInteger closingBalance = BigInteger.ZERO;
     private List<Transaction> latestTransactions;
+    private boolean loggedIn;
 
     @PostConstruct
     public void init() {
-        selectedEntity = new Transaction();
-        // Initialize account list with only active savings accounts
-        accountList = accountRepository.findAll().stream()
-                .filter(account -> account.getStatus() == AccountStatusEnum.ACTIVE
-                        && account.getType() == AccountTypeEnum.SAVINGS)
-                .collect(Collectors.toList());
-        loadOpeningBalance();
-        loadClosingBalance();
-        loadLatestTransactions();
+        // Check if the user is logged in using PageAccessBean
+        PageAccessBean pageAccessBean = new PageAccessBean();
+        loggedIn = pageAccessBean.isLoggedIn();
+
+        if (loggedIn) {
+            selectedEntity = new Transaction();
+            // Initialize account list with only active savings accounts
+            accountList = accountRepository.findAll().stream()
+                    .filter(account -> account.getStatus() == AccountStatusEnum.ACTIVE
+                            && account.getType() == AccountTypeEnum.SAVINGS)
+                    .collect(Collectors.toList());
+            loadOpeningBalance();
+            loadClosingBalance();
+            loadLatestTransactions();
+        } else {
+            // Redirect to login page if not logged in
+            pageAccessBean.checkLoginStatus();
+            // Initialize empty lists to avoid null pointers
+            accountList = List.of();
+            latestTransactions = List.of();
+        }
     }
 
     // Load Opening Balance at the start of the current month
@@ -75,7 +89,7 @@ public class TransactionCustomerBean implements Serializable {
         }
     }
 
-    // Load the latest  three transactions for the customer
+    // Load the latest three transactions for the customer
     private void loadLatestTransactions() {
         Long loggedInCustomerId = getLoggedInCustomerId();
         latestTransactions = transactionRepository.getLatestTransactionByCustomer(loggedInCustomerId);
@@ -83,11 +97,10 @@ public class TransactionCustomerBean implements Serializable {
 
     // Mock method to get logged-in customer ID, replace with actual implementation
     private Long getLoggedInCustomerId() {
-    // Retrieve the logged-in customer from the session
-    Customer loggedInCustomer = (Customer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInCustomer");
-    return loggedInCustomer != null ? loggedInCustomer.getId() : null;
-}
-
+        // Retrieve the logged-in customer from the session
+        Customer loggedInCustomer = (Customer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInCustomer");
+        return loggedInCustomer != null ? loggedInCustomer.getId() : null;
+    }
 
     public void saveOrUpdateEntity() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -130,10 +143,10 @@ public class TransactionCustomerBean implements Serializable {
                 if (invalidPinCount >= 3) {
                     showChangePinDialog = true;
                 }
-            
+                return;
             }
 
-                      // Perform the transfer
+            // Perform the transfer
             sourceAccount.setBalance(sourceAccount.getBalance().subtract(amount));
             targetAccount.setBalance(targetAccount.getBalance().add(amount));
 
@@ -272,5 +285,9 @@ public class TransactionCustomerBean implements Serializable {
 
     public List<Transaction> getLatestTransactions() {
         return latestTransactions;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 }

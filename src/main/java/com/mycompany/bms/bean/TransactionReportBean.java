@@ -32,15 +32,31 @@ public class TransactionReportBean implements Serializable {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    private boolean loggedIn;
+
     @PostConstruct
     public void init() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        Customer loggedInCustomer = (Customer) externalContext.getSessionMap().get("loggedInCustomer");
+        // Check if the user is logged in using PageAccessBean
+        PageAccessBean pageAccessBean = new PageAccessBean();
+        loggedIn = pageAccessBean.isLoggedIn();
 
-        if (loggedInCustomer != null) {
-            allTransactions = transactionRepository.getTransactionsByCustomerId(loggedInCustomer.getId());
-            filterTransactionsByAccountType();
+        if (loggedIn) {
+            // Retrieve logged-in customer from session
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            Customer loggedInCustomer = (Customer) facesContext.getExternalContext().getSessionMap().get("loggedInCustomer");
+
+            if (loggedInCustomer != null) {
+                // Fetch transactions for the logged-in customer
+                allTransactions = transactionRepository.getTransactionsByCustomerId(loggedInCustomer.getId());
+                filterTransactionsByAccountType();
+            }
+        } else {
+            // Redirect to login page if not logged in
+            pageAccessBean.checkLoginStatus();
+            // Initialize empty lists to avoid null pointers
+            allTransactions = List.of();
+            savingsTransactions = List.of();
+            fixedTransactions = List.of();
         }
     }
 
@@ -107,5 +123,9 @@ public class TransactionReportBean implements Serializable {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 }

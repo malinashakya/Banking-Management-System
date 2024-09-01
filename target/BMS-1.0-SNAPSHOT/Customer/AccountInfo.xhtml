@@ -8,7 +8,6 @@
     <h:head>
         <title>Customer Account Information</title>
         <style>
-          
             .content {
                 display: inline-block;
                 text-align: left;
@@ -18,8 +17,8 @@
                 border: 1px solid #ddd;
                 border-radius: 8px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-               margin-left: 35%;
-               font-family: Arial, sans-serif;
+                margin-left: 35%;
+                font-family: Arial, sans-serif;
             }
             h1 {
                 margin-bottom: 40px;
@@ -44,39 +43,40 @@
     <h:body>
         <ui:include src="menu.xhtml" />
         
-
-        <h:panelGroup layout="block" styleClass="content" rendered="#{not empty loggedInCustomerBean.loggedInCustomer}">
-            <h1>Account Information</h1>
-            <h:outputText value="ID: #{loggedInCustomerBean.loggedInCustomer.id}"  />
-            <br/>
-            <h:outputText value="Name: #{loggedInCustomerBean.loggedInCustomer.firstName} #{loggedInCustomerBean.loggedInCustomer.lastName}" />
-            <br/>
-            <h:outputText value="Email: #{loggedInCustomerBean.loggedInCustomer.username}"  />
-            <br/>
-            <h:outputText value="Address: #{loggedInCustomerBean.loggedInCustomer.address}"  />
-            <br/>
-            <h:outputText value="Contact: #{loggedInCustomerBean.loggedInCustomer.contact}"  />
-            <br/>
-            <h:panelGroup>
-                <h:dataTable value="#{loggedInCustomerBean.customerAccounts}" var="account" styleClass="ui-datatable">
-                    <h:column>
-                        <f:facet name="header">Account Number</f:facet>
-                        <h:outputText value="#{account.accountNumber}" />
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Account Type</f:facet>
-                        <h:outputText value="#{account.accountType.accountType}" />
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Balance</f:facet>
-                        <h:outputText value="#{account.balance}" />
-                    </h:column>
-                </h:dataTable>
+        <h:form>
+            <h:panelGroup layout="block" styleClass="content" rendered="#{not empty loggedInCustomerBean.loggedInCustomer}">
+                <h1>Account Information</h1>
+                <h:outputText value="ID: #{loggedInCustomerBean.loggedInCustomer.id}"  />
+                <br/>
+                <h:outputText value="Name: #{loggedInCustomerBean.loggedInCustomer.firstName} #{loggedInCustomerBean.loggedInCustomer.lastName}" />
+                <br/>
+                <h:outputText value="Email: #{loggedInCustomerBean.loggedInCustomer.username}"  />
+                <br/>
+                <h:outputText value="Address: #{loggedInCustomerBean.loggedInCustomer.address}"  />
+                <br/>
+                <h:outputText value="Contact: #{loggedInCustomerBean.loggedInCustomer.contact}"  />
+                <br/>
+                <h:panelGroup>
+                    <h:dataTable value="#{loggedInCustomerBean.customerAccounts}" var="account" styleClass="ui-datatable">
+                        <h:column>
+                            <f:facet name="header">Account Number</f:facet>
+                            <h:outputText value="#{account.accountNumber}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Account Type</f:facet>
+                            <h:outputText value="#{account.accountType.accountType}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Balance</f:facet>
+                            <h:outputText value="#{account.balance}" />
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
             </h:panelGroup>
-        </h:panelGroup>
 
-        <h:panelGroup rendered="#{empty loggedInCustomerBean.loggedInCustomer}">
-            <h:outputText value="No customer information available." />
-        </h:panelGroup>
+            <h:panelGroup rendered="#{empty loggedInCustomerBean.loggedInCustomer}">
+                <h:outputText value="No customer information available." />
+            </h:panelGroup>
+        </h:form>
     </h:body>
 </html>

@@ -6,13 +6,13 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
-@StaticMetamodel(Session.class)
+@StaticMetamodel(Session_Customer.class)
 public abstract class Session_ {
 
-	public static volatile SingularAttribute<Session, Date> logoutTime;
-	public static volatile SingularAttribute<Session, Date> loginTime;
-	public static volatile SingularAttribute<Session, Long> id;
-	public static volatile SingularAttribute<Session, Customer> customer;
+	public static volatile SingularAttribute<Session_Customer, Date> logoutTime;
+	public static volatile SingularAttribute<Session_Customer, Date> loginTime;
+	public static volatile SingularAttribute<Session_Customer, Long> id;
+	public static volatile SingularAttribute<Session_Customer, Customer> customer;
 
 	public static final String LOGOUT_TIME = "logoutTime";
 	public static final String LOGIN_TIME = "loginTime";

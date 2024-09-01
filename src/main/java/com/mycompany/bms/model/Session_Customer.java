@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "session")
-public class Session {
+public class Session_Customer {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +32,10 @@ public class Session {
     private Date logoutTime;
 
     // Default constructor
-    public Session() {}
+    public Session_Customer() {}
 
     // Parameterized constructor
-    public Session(Customer customer, Date loginTime, Date logoutTime) {
+    public Session_Customer(Customer customer, Date loginTime, Date logoutTime) {
         this.customer = customer;
         this.loginTime = loginTime;
         this.logoutTime = logoutTime;

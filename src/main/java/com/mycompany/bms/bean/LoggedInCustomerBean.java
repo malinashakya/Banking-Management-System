@@ -14,6 +14,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,15 +37,32 @@ public class LoggedInCustomerBean implements Serializable {
     private AccountType selectedAccountType;
     private List<AccountType> availableAccountTypes;
     private List<Account> customerAccounts;
+    private boolean loggedIn;
 
     @PostConstruct
     public void init() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        loggedInCustomer = (Customer) facesContext.getExternalContext().getSessionMap().get("loggedInCustomer");
-        if (loggedInCustomer != null) {
+        PageAccessBean pageAccessBean = new PageAccessBean();
+
+        // Check if the user is logged in
+        loggedIn = pageAccessBean.isLoggedIn();
+        if (loggedIn) {
+            // Retrieve the logged-in customer from the session
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            loggedInCustomer = (Customer) facesContext.getExternalContext().getSessionMap().get("loggedInCustomer");
+
+            // Initialize account types and customer accounts if logged in
             availableAccountTypes = accountTypeRepository.getAll();
             customerAccounts = accountRepository.findByCustomerId(loggedInCustomer.getId());
+        } else {
+            // Redirect to login page if not logged in
+            pageAccessBean.checkLoginStatus();
+            availableAccountTypes = new ArrayList<>();
+            customerAccounts = new ArrayList<>();
         }
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 
     public Customer getLoggedInCustomer() {
@@ -79,11 +97,10 @@ public class LoggedInCustomerBean implements Serializable {
         this.customerAccounts = customerAccounts;
     }
 
-    // In LoggedInCustomerBean.java
+    // Method to retrieve only savings accounts for the logged-in customer
     public List<Account> getCustomerSavingsAccounts() {
         return customerAccounts.stream()
                 .filter(account -> account.getType() == AccountTypeEnum.SAVINGS)
                 .collect(Collectors.toList());
     }
-
 }

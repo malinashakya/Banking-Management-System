@@ -1,13 +1,11 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-
         <title>Dashboard</title>
-
         <style>
             .menu-logo {
                 font-weight: bold;
@@ -51,44 +49,51 @@
         <ui:include src="menu.xhtml" />
 
         <!-- Dashboard -->
-        <div class="dashboard">
-            <div class="dashboard-left">
-                <!-- Display Opening Balance of Current Month -->
-                <div class="left-left">
-                    <p:card title="Opening Balance" styleClass="card">
-                        <div class="card-content">
-                            <i class="pi pi-calendar card-icon" style="font-size: 50px; margin-right: 40px;"></i>
-                            <span class="card-text" style="font-size: 50px;">#{transactionCustomerBean.openingBalance}</span>
+        <h:form id="dashboardForm">
+            <h:panelGroup rendered="#{dashboardBean.loggedIn}">
+                <div class="dashboard">
+                    <div class="dashboard-left">
+                        <!-- Display Opening Balance of Current Month -->
+                        <div class="left-left">
+                            <p:card title="Opening Balance" styleClass="card">
+                                <div class="card-content">
+                                    <i class="pi pi-calendar card-icon" style="font-size: 50px; margin-right: 40px;"></i>
+                                    <span class="card-text" style="font-size: 50px;">#{transactionCustomerBean.openingBalance}</span>
+                                </div>
+                            </p:card>
                         </div>
-                    </p:card>
-                </div>
 
-                <!-- Display Closing Balance of Current Month -->
-                <div class="left-right">
-                    <p:card title="Closing Balance " styleClass="card">
-                        <div class="card-content">
-                            <i class="pi pi-calendar-times card-icon" style="font-size: 50px; margin-right: 40px;"></i>
-                            <span class="card-text" style="font-size: 50px;">#{transactionCustomerBean.closingBalance}</span>
+                        <!-- Display Closing Balance of Current Month -->
+                        <div class="left-right">
+                            <p:card title="Closing Balance " styleClass="card">
+                                <div class="card-content">
+                                    <i class="pi pi-calendar-times card-icon" style="font-size: 50px; margin-right: 40px;"></i>
+                                    <span class="card-text" style="font-size: 50px;">#{transactionCustomerBean.closingBalance}</span>
+                                </div>
+                            </p:card>
                         </div>
-                    </p:card>
-                </div>
-            </div>
+                    </div>
 
-            <!-- Display the latest transaction of the customer -->
-            <div class="dashboard-right">
-                <p:dataTable value="#{transactionCustomerBean.latestTransactions}" var="transaction" styleClass="card">
-                    <p:column headerText="Date">
-                        <h:outputText value="#{transaction.date}" />
-                    </p:column>
-                    <p:column headerText="Type">
-                        <h:outputText value="#{transaction.transactionType}" />
-                    </p:column>
-                    <p:column headerText="Amount">
-                        <h:outputText value="#{transaction.amount}" />
-                    </p:column>
-                </p:dataTable>
-            </div>
-        </div>
+                    <!-- Display the latest transaction of the customer -->
+                    <div class="dashboard-right">
+                        <p:dataTable value="#{transactionCustomerBean.latestTransactions}" var="transaction" styleClass="card">
+                            <p:column headerText="Date">
+                                <h:outputText value="#{transaction.date}" />
+                            </p:column>
+                            <p:column headerText="Type">
+                                <h:outputText value="#{transaction.transactionType}" />
+                            </p:column>
+                            <p:column headerText="Amount">
+                                <h:outputText value="#{transaction.amount}" />
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{!dashboardBean.loggedIn}">
+                <!--<h:message summary="You need to log in to access this page." />-->
+                <h:link value="Go to Login" outcome="login" />
+            </h:panelGroup>
+        </h:form>
     </h:body>
-
 </html>
