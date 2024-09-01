@@ -27,13 +27,20 @@ public class AccountTypeBean implements Serializable {
     private GenericLazyDataModel<AccountType> lazyDataModel;
     private AccountTypeEnum accountTypeEnumFilter;
 
-    @PostConstruct
+  @PostConstruct
     public void init() {
-        if (selectedEntity == null) {
-            selectedEntity = new AccountType();
+        // Check if the user is logged in using PageAccessAdminBean
+        PageAccessAdminBean pageAccessAdminBean = new PageAccessAdminBean();
+        if (pageAccessAdminBean.isLoggedIn()) {
+            // Initialize account type-related data
+            if (selectedEntity == null) {
+                selectedEntity = new AccountType();
+            }
+            lazyDataModel = new GenericLazyDataModel<>(accountTypeRepository, AccountType.class);
+        } else {
+            // Redirect to login page if not logged in
+            pageAccessAdminBean.checkLoginStatus();
         }
-        lazyDataModel = new GenericLazyDataModel<>(accountTypeRepository, AccountType.class);
-
     }
 
     public void saveOrUpdateEntity() {

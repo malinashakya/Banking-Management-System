@@ -32,6 +32,9 @@ public class TransactionBean implements Serializable {
     @Inject
     private AccountRepository accountRepository;
 
+    @Inject
+    private PageAccessAdminBean pageAccessAdminBean;
+
     private GenericLazyDataModel<Transaction> lazyDataModel;
     private TransactionTypeEnum transactionType;
     private boolean editMode = false;
@@ -44,12 +47,18 @@ public class TransactionBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        if (selectedEntity == null) {
-            selectedEntity = new Transaction();
+        if (pageAccessAdminBean.isLoggedIn()) {
+            // Initialize data only if the user is logged in
+            if (selectedEntity == null) {
+                selectedEntity = new Transaction();
+            }
+            lazyDataModel = new GenericLazyDataModel<>(transactionRepository, Transaction.class);
+            accountList = accountRepository.findAll();
+            System.out.println("Account list initialized: " + accountList);
+        }else {
+            // Redirect to login page if not logged in
+            pageAccessAdminBean.checkLoginStatus();
         }
-        lazyDataModel = new GenericLazyDataModel<>(transactionRepository, Transaction.class);
-        accountList = accountRepository.findAll();
-        System.out.println("Account list initialized: " + accountList);
     }
 
     public GenericLazyDataModel<Transaction> getLazyDataModel() {
@@ -106,12 +115,12 @@ public class TransactionBean implements Serializable {
                     facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Target account not found"));
                     return;
                 }
-             
+
                 //Transfer between same account cannot be done message
-                 if (account.getAccountNumber().equals(targetAccount.getAccountNumber())) {
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Transfer cannot be done to the same account"));
-                return;
-            }
+                if (account.getAccountNumber().equals(targetAccount.getAccountNumber())) {
+                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Transfer cannot be done to the same account"));
+                    return;
+                }
 
                 // Create withdrawal transaction
                 Transaction withdrawalTransaction = new Transaction();

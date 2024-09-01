@@ -4,19 +4,19 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-public class PageAccessBean {
+public class PageAccessAdminBean {
 
     // Check if the user is logged in and redirect if not
     public void checkLoginStatus() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(false);
         
-        // Check if there is a logged-in customer in the session
-        Object loggedInCustomer = session != null ? session.getAttribute("loggedInCustomer") : null;
+        // Check if there is a logged-in admin in the session
+        Object loggedInAdmin = session != null ? session.getAttribute("loggedInAdmin") : null;
 
-        if (loggedInCustomer == null) {
+        if (loggedInAdmin == null) {
             try {
-                facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Customer/CustomerLogin.xhtml");
+                facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Admin/loginpage.xhtml");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -28,8 +28,8 @@ public class PageAccessBean {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(false);
         
-        // Check if there is a logged-in customer in the session
-        Object loggedInCustomer = session != null ? session.getAttribute("loggedInCustomer") : null;
-        return loggedInCustomer != null;
+        // Check if there is a logged-in admin in the session
+        Object loggedInAdmin = session != null ? session.getAttribute("loggedInAdmin") : null;
+        return loggedInAdmin != null;
     }
 }

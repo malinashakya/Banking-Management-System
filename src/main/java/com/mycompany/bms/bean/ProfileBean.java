@@ -24,8 +24,8 @@ public class ProfileBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Check if the user is logged in using PageAccessBean
-        PageAccessBean pageAccessBean = new PageAccessBean();
+        // Check if the user is logged in using PageAccessCustomerBean
+        PageAccessCustomerBean pageAccessBean = new PageAccessCustomerBean();
         if (pageAccessBean.isLoggedIn()) {
             // Retrieve logged-in customer from session
             FacesContext facesContext = FacesContext.getCurrentInstance();

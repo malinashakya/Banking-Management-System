@@ -33,11 +33,19 @@ public class AccountBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        if (selectedEntity == null) {
-            selectedEntity = new Account();
+        // Check if the user is logged in using PageAccessBean
+        PageAccessAdminBean pageAccessBean = new PageAccessAdminBean();
+        if (pageAccessBean.isLoggedIn()) {
+            // Initialize account-related data
+            if (selectedEntity == null) {
+                selectedEntity = new Account();
+            }
+            lazyDataModel = new GenericLazyDataModel<>(accountRepository, Account.class);
+            statusOptions = Arrays.asList(AccountStatusEnum.values());
+        } else {
+            // Redirect to login page if not logged in
+            pageAccessBean.checkLoginStatus();
         }
-        lazyDataModel = new GenericLazyDataModel<>(accountRepository, Account.class);
-        statusOptions = Arrays.asList(AccountStatusEnum.values());
     }
 
     public List<AccountStatusEnum> getStatusOptions() {

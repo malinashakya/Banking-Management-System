@@ -46,8 +46,8 @@ public class TransactionCustomerBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Check if the user is logged in using PageAccessBean
-        PageAccessBean pageAccessBean = new PageAccessBean();
+        // Check if the user is logged in using PageAccessCustomerBean
+        PageAccessCustomerBean pageAccessBean = new PageAccessCustomerBean();
         loggedIn = pageAccessBean.isLoggedIn();
 
         if (loggedIn) {

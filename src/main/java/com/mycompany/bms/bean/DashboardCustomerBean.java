@@ -8,13 +8,13 @@ import java.util.List;
 
 @ManagedBean(name = "dashboardBean")
 @ViewScoped
-public class DashboardBean implements Serializable {
+public class DashboardCustomerBean implements Serializable {
     private List<Transaction> transactions;
     private boolean loggedIn;
 
-    public DashboardBean() {
-        // Create an instance of PageAccessBean to handle login checks
-        PageAccessBean pageAccessBean = new PageAccessBean();
+    public DashboardCustomerBean() {
+        // Create an instance of PageAccessCustomerBean to handle login checks
+        PageAccessCustomerBean pageAccessBean = new PageAccessCustomerBean();
 
         // Check if the user is logged in
         loggedIn = pageAccessBean.isLoggedIn();

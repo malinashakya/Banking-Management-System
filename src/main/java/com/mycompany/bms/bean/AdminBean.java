@@ -25,14 +25,20 @@ public class AdminBean implements Serializable {
     private boolean editMode = false;
     private GenericLazyDataModel<Admin> lazyDataModel;
 
-    @PostConstruct
+       @PostConstruct
     public void init() {
-        if (selectedAdmin == null) {
-            selectedAdmin = new Admin();
+        // Check if the user is logged in using PageAccessAdminBean
+        PageAccessAdminBean pageAccessAdminBean = new PageAccessAdminBean();
+        if (pageAccessAdminBean.isLoggedIn()) {
+            // Initialize admin-related data
+            if (selectedAdmin == null) {
+                selectedAdmin = new Admin();
+            }
+            lazyDataModel = new GenericLazyDataModel<>(adminRepository, Admin.class);
+        } else {
+            // Redirect to login page if not logged in
+            pageAccessAdminBean.checkLoginStatus();
         }
-
-        lazyDataModel = new GenericLazyDataModel<>(adminRepository, Admin.class);
-
     }
 
     public void saveOrUpdateEntity() {

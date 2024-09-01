@@ -43,12 +43,21 @@ public class CustomerBean implements Serializable {
     private List<Account> customerAccounts;
     private Customer loggedInCustomer;
 
-    @PostConstruct
+   @PostConstruct
     public void init() {     
-        selectedCustomer = new Customer();
-        lazyCustomers = new GenericLazyDataModel<>(customerRepository, Customer.class);
-        availableAccountTypes = accountTypeRepository.getAll();
+        // Check if the user is logged in using PageAccessAdminBean
+        PageAccessAdminBean pageAccessAdminBean = new PageAccessAdminBean();
+        if (pageAccessAdminBean.isLoggedIn()) {
+            // Initialize customer-related data
+            selectedCustomer = new Customer();
+            lazyCustomers = new GenericLazyDataModel<>(customerRepository, Customer.class);
+            availableAccountTypes = accountTypeRepository.getAll();
+        } else {
+            // Redirect to login page if not logged in
+            pageAccessAdminBean.checkLoginStatus();
+        }
     }
+
 
     public Customer getLoggedInCustomer() {
         return loggedInCustomer;
