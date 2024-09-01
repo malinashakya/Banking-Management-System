@@ -6,6 +6,7 @@ import com.mycompany.bms.model.AccountTypeEnum;
 import com.mycompany.bms.repository.TransactionRepository;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -57,14 +58,20 @@ public class TransactionReportBean implements Serializable {
         }
     }
 
-    public void filterrTransactionsBydate() {
+    public void filterTransactionsByDate() {
         if (startDate != null && endDate != null) {
+            // Filter and sort savings transactions
             savingsTransactions = savingsTransactions.stream()
-                    .filter(t -> !t.getDate().isBefore(startDate) && !t.getDate().isAfter(endDate))
+                    .filter(t -> !t.getTransactionTime().toLocalDate().isBefore(startDate)
+                    && !t.getTransactionTime().toLocalDate().isAfter(endDate))
+                    .sorted(Comparator.comparing(Transaction::getTransactionTime).reversed())
                     .collect(Collectors.toList());
 
+            // Filter and sort fixed transactions
             fixedTransactions = fixedTransactions.stream()
-                    .filter(t -> !t.getDate().isBefore(startDate) && !t.getDate().isAfter(endDate))
+                    .filter(t -> !t.getTransactionTime().toLocalDate().isBefore(startDate)
+                    && !t.getTransactionTime().toLocalDate().isAfter(endDate))
+                    .sorted(Comparator.comparing(Transaction::getTransactionTime).reversed())
                     .collect(Collectors.toList());
         }
     }

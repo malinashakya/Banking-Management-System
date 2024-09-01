@@ -83,9 +83,11 @@ public class TransactionCustomerBean implements Serializable {
 
     // Mock method to get logged-in customer ID, replace with actual implementation
     private Long getLoggedInCustomerId() {
-        // Retrieve the customer ID from the session or login context
-        return 1L; // Replace with actual logic to get logged-in customer ID
-    }
+    // Retrieve the logged-in customer from the session
+    Customer loggedInCustomer = (Customer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInCustomer");
+    return loggedInCustomer != null ? loggedInCustomer.getId() : null;
+}
+
 
     public void saveOrUpdateEntity() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -128,14 +130,10 @@ public class TransactionCustomerBean implements Serializable {
                 if (invalidPinCount >= 3) {
                     showChangePinDialog = true;
                 }
-                return;
+            
             }
 
-            // Reset invalid PIN count and flag if correct
-            invalidPinCount = 0;
-            showChangePinDialog = false;
-
-            // Perform the transfer
+                      // Perform the transfer
             sourceAccount.setBalance(sourceAccount.getBalance().subtract(amount));
             targetAccount.setBalance(targetAccount.getBalance().add(amount));
 

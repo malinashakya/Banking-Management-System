@@ -92,20 +92,34 @@ public class Transaction extends BaseEntity {
 
     public void setAccount(Account account) {
         this.account = account;
-    }   
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Transaction that = (Transaction) o;
 
-        if (!account.equals(that.account)) return false;
-        if (transactionType != that.transactionType) return false;
-        if (!transactionTime.equals(that.transactionTime)) return false;
-        if (!amount.equals(that.amount)) return false;
+        if (!account.equals(that.account)) {
+            return false;
+        }
+        if (transactionType != that.transactionType) {
+            return false;
+        }
+        if (!transactionTime.equals(that.transactionTime)) {
+            return false;
+        }
+        if (!amount.equals(that.amount)) {
+            return false;
+        }
         return date.equals(that.date);
     }
 
@@ -119,4 +133,5 @@ public class Transaction extends BaseEntity {
         result = 31 * result + date.hashCode();
         return result;
     }
+
 }

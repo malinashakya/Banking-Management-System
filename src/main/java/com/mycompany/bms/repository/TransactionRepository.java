@@ -126,5 +126,4 @@ public class TransactionRepository extends GenericRepository<Transaction, Long> 
         // Calculate the balance by adding deposits and subtracting withdrawals
         return depositTotal.subtract(withdrawalTotal);
     }
-
 }
