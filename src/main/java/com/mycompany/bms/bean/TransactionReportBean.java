@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ExternalContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -49,6 +48,9 @@ public class TransactionReportBean implements Serializable {
                 // Fetch transactions for the logged-in customer
                 allTransactions = transactionRepository.getTransactionsByCustomerId(loggedInCustomer.getId());
                 filterTransactionsByAccountType();
+
+                // Sort transactions initially
+                sortTransactions();
             }
         } else {
             // Redirect to login page if not logged in
@@ -88,6 +90,20 @@ public class TransactionReportBean implements Serializable {
                     .filter(t -> !t.getTransactionTime().toLocalDate().isBefore(startDate)
                     && !t.getTransactionTime().toLocalDate().isAfter(endDate))
                     .sorted(Comparator.comparing(Transaction::getTransactionTime).reversed())
+                    .collect(Collectors.toList());
+        }
+    }
+
+    private void sortTransactions() {
+        if (savingsTransactions != null) {
+            savingsTransactions = savingsTransactions.stream()
+                    .sorted((t1, t2) -> t2.getTransactionTime().compareTo(t1.getTransactionTime())) // Sort by date descending
+                    .collect(Collectors.toList());
+        }
+
+        if (fixedTransactions != null) {
+            fixedTransactions = fixedTransactions.stream()
+                    .sorted((t1, t2) -> t2.getTransactionTime().compareTo(t1.getTransactionTime())) // Sort by date descending
                     .collect(Collectors.toList());
         }
     }

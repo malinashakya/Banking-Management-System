@@ -20,7 +20,7 @@
                     <p:outputLabel for="endDate" value="End Date:" />
                     <p:calendar id="endDate" value="#{transactionReportBean.endDate}" pattern="MM/dd/yyyy" showOn="button" />
 
-                    <p:commandButton value="Search" action="#{transactionReportBean.filterrTransactionsBydate()}" update="transactionTable" />
+                    <p:commandButton value="Search" action="#{transactionReportBean.filterTransactionsByDate()}" update="transactionTable" />
                 </h:panelGrid>
 
                 <p:dataTable id="transactionTable" value="#{transactionReportBean.savingsTransactions}" var="transaction" 

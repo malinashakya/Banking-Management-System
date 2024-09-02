@@ -11,13 +11,13 @@
         <p:growl id="growl" showDetail="true" />
         <ui:include src="menu.xhtml" />
         <h:form id="transactionListForm">
-            <p:dataTable id="transactions" value="#{transactionBean.lazyDataModel}" var="transaction"
-                         paginator="true" rows="5" lazy="true"
+
+            <p:dataTable id="transactions" value="#{transactionBean.transactions}" var="transaction"
+                         paginator="true" rows="5" lazy="false"
                          rowKey="#{transaction.id}" paginatorPosition="bottom"
                          rowsPerPageTemplate="5,10,15"
                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords}">
-
                 <f:facet name="header">
                     Transactions List
 
@@ -95,7 +95,7 @@
         <!-- Dialog Box to add transactions -->
         <p:dialog header="Transaction Form" widgetVar="transactionDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="transactionDialogForm">
-                
+
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="acc_num" value="Account Number:" />
                     <p:selectOneMenu id="acc_num" value="#{transactionBean.selectedEntity.account}" converter="accountConverter">
@@ -107,7 +107,7 @@
                         <f:convertNumber type="number" />
                     </p:inputText>
                     <p:outputLabel/>
-                    
+
                     <!-- Transaction Type Dropdown -->
                     <p:outputLabel for="type" value="Transaction Type" />
                     <p:selectOneMenu id="type" value="#{transactionBean.selectedEntity.transactionType}" converter="transactionTypeEnumConverter">

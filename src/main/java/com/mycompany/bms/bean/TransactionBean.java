@@ -5,6 +5,7 @@ import com.mycompany.bms.model.AccountStatusEnum;
 import com.mycompany.bms.model.GenericLazyDataModel;
 import com.mycompany.bms.model.Transaction;
 import com.mycompany.bms.model.TransactionTypeEnum;
+import com.mycompany.bms.model.TransactionWrapper;
 import com.mycompany.bms.repository.AccountRepository;
 import com.mycompany.bms.repository.TransactionRepository;
 
@@ -44,6 +45,8 @@ public class TransactionBean implements Serializable {
     private BigInteger amount = BigInteger.ZERO;
 
     private List<Account> accountList;
+    private List<Transaction> transactions;
+    private TransactionWrapper transactionWrapper;
 
     @PostConstruct
     public void init() {
@@ -55,10 +58,18 @@ public class TransactionBean implements Serializable {
             lazyDataModel = new GenericLazyDataModel<>(transactionRepository, Transaction.class);
             accountList = accountRepository.findAll();
             System.out.println("Account list initialized: " + accountList);
-        }else {
+
+            List<Transaction> transactionList = transactionRepository.getAll();
+            //Transaction Wrapper to find the latest data of the transaction
+            transactionWrapper = new TransactionWrapper(transactionList);
+        } else {
             // Redirect to login page if not logged in
             pageAccessAdminBean.checkLoginStatus();
         }
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactionWrapper.getTransactions();
     }
 
     public GenericLazyDataModel<Transaction> getLazyDataModel() {

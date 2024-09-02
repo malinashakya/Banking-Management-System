@@ -28,7 +28,7 @@ public class TransactionCustomerBean implements Serializable {
 
     @Inject
     private AccountRepository accountRepository;
-    
+
     @Inject
     private LoggedInCustomerBean loggedInCustomerBean;
 
@@ -110,7 +110,7 @@ public class TransactionCustomerBean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             Account sourceAccount = selectedEntity.getAccount();
-               System.err.println("Source Account:"+sourceAccount);
+            System.err.println("Source Account:" + sourceAccount);
             // Validate target account
             Optional<Account> optionalTargetAccount = accountRepository.findAll().stream()
                     .filter(account -> account.getType() == AccountTypeEnum.SAVINGS
@@ -146,7 +146,7 @@ public class TransactionCustomerBean implements Serializable {
                 // Redirect to the PIN change page if 3 invalid attempts
                 if (invalidPinCount >= 3) {
                     invalidPinCount = 0; // Reset the invalid PIN attempt counter
-                     facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Customer/PINChange.xhtml");
+                    facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Customer/PINChange.xhtml");
                     return;
                 }
                 return;
@@ -194,7 +194,7 @@ public class TransactionCustomerBean implements Serializable {
     public void changePin() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Account sourceAccount = (Account) loggedInCustomerBean.getCustomerSavingsAccounts().getFirst();
-        System.err.println("Source Account:"+sourceAccount);
+        System.err.println("Source Account:" + sourceAccount);
 
         if (newPin == null || confirmNewPin == null || !newPin.equals(confirmNewPin)) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "PINs do not match or are empty"));
@@ -209,7 +209,7 @@ public class TransactionCustomerBean implements Serializable {
 
         // Redirect to home page or another appropriate page after successful PIN change
         try {
-             facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Customer/CustomerDashboard.xhtml");
+            facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Customer/CustomerDashboard.xhtml");
         } catch (IOException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to redirect after PIN change."));
         }
