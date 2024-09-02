@@ -3,8 +3,10 @@ package com.mycompany.bms.bean;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class PageAccessAdminBean {
+public class PageAccessAdminBean implements Serializable {
+       private static final long serialVersionUID = 1L;
 
     // Check if the user is logged in and redirect if not
     public void checkLoginStatus() {

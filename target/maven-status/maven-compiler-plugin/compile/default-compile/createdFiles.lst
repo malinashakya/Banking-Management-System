@@ -1,10 +1,10 @@
 com/mycompany/bms/bean/ProfileBean.class
 com/mycompany/bms/repository/AccountTypeRepository.class
 com/mycompany/bms/bean/AccountTypeBean.class
-com/mycompany/bms/bean/DashboardBean.class
 com/mycompany/bms/bean/TransactionBean.class
 com/mycompany/bms/model/Account_.class
 com/mycompany/bms/model/BaseEntity.class
+com/mycompany/bms/model/Session_Customer_.class
 com/mycompany/bms/bean/AccountBean.class
 com/mycompany/bms/converter/TransactionTypeEnumConverter.class
 com/mycompany/bms/model/AccountType_.class
@@ -23,8 +23,8 @@ com/mycompany/bms/model/GenericLazyDataModel.class
 com/mycompany/bms/repository/GenericRepository$CriteriaContext.class
 com/mycompany/bms/bean/LoginCustomerBean.class
 com/mycompany/bms/model/Customer.class
+com/mycompany/bms/model/Session_Admin_.class
 com/mycompany/bms/model/Customer_.class
-com/mycompany/bms/model/Session.class
 com/mycompany/bms/model/AccountType.class
 com/mycompany/bms/model/Transaction_.class
 com/mycompany/bms/model/Session_.class
@@ -34,7 +34,6 @@ com/mycompany/bms/bean/TransactionReportBean.class
 com/mycompany/bms/model/Account.class
 com/mycompany/bms/repository/TransactionRepository.class
 com/mycompany/bms/model/Admin.class
-com/mycompany/bms/bean/DashboardBean$Transaction.class
 com/mycompany/bms/model/AccountTypeEnum.class
 DatabaseConnection.class
 com/mycompany/bms/test/PersistenceTest.class
