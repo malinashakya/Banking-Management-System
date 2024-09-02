@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Change PIN</title>
+</h:head>
+<h:body>
+    <!-- Ensure the form is in the right scope -->
+    <h:form id="pinChangeForm">
+        <!-- Define growl component with a unique and easily referenceable ID -->
+        <p:growl id="pinChangeGrowl" showDetail="true" />
+
+        <p:panel header="Change PIN" styleClass="ui-widget-content">
+            <h:panelGrid columns="2" cellpadding="5">
+                <p:outputLabel for="newPin" value="New PIN:" />
+                <p:password id="newPin" value="#{transactionCustomerBean.newPin}" 
+                            required="true" feedback="false" label="New PIN" maxlength="4" />
+
+                <p:outputLabel for="confirmNewPin" value="Confirm New PIN:" />
+                <p:password id="confirmNewPin" value="#{transactionCustomerBean.confirmNewPin}" 
+                            required="true" feedback="false" label="Confirm New PIN" maxlength="4" />
+
+                <h:outputLabel />
+                <!-- Ensure the correct update reference for the growl component -->
+                <p:commandButton value="Change PIN" action="#{transactionCustomerBean.changePin()}" 
+                                 update="pinChangeGrowl" process="@form" />
+
+                <!-- Optional cancel button to redirect or clear the form -->
+                <p:commandButton value="Cancel" action="home.xhtml" immediate="true" />
+            </h:panelGrid>
+        </p:panel>
+    </h:form>
+</h:body>
+</html>

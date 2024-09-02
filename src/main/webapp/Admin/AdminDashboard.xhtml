@@ -72,6 +72,7 @@
             </div>
 
             <div class="dashboard-right">
+                <h2>Top Customers by Balance </h2>
                 <p:dataTable value="#{accountBean.topCustomersByBalance}" var="account" styleClass="card">
                     <p:column headerText="User">
                         <h:outputText value="#{account.customer.firstName} #{account.customer.lastName} " />

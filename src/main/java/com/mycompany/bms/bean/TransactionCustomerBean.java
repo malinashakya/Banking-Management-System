@@ -3,6 +3,7 @@ package com.mycompany.bms.bean;
 import com.mycompany.bms.model.*;
 import com.mycompany.bms.repository.AccountRepository;
 import com.mycompany.bms.repository.TransactionRepository;
+import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -27,6 +28,9 @@ public class TransactionCustomerBean implements Serializable {
 
     @Inject
     private AccountRepository accountRepository;
+    
+    @Inject
+    private LoggedInCustomerBean loggedInCustomerBean;
 
     private Transaction selectedEntity;
     private String targetAccountNumber;
@@ -55,7 +59,7 @@ public class TransactionCustomerBean implements Serializable {
             // Initialize account list with only active savings accounts
             accountList = accountRepository.findAll().stream()
                     .filter(account -> account.getStatus() == AccountStatusEnum.ACTIVE
-                            && account.getType() == AccountTypeEnum.SAVINGS)
+                    && account.getType() == AccountTypeEnum.SAVINGS)
                     .collect(Collectors.toList());
             loadOpeningBalance();
             loadClosingBalance();
@@ -106,13 +110,13 @@ public class TransactionCustomerBean implements Serializable {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         try {
             Account sourceAccount = selectedEntity.getAccount();
-
+               System.err.println("Source Account:"+sourceAccount);
             // Validate target account
             Optional<Account> optionalTargetAccount = accountRepository.findAll().stream()
                     .filter(account -> account.getType() == AccountTypeEnum.SAVINGS
-                            && account.getStatus() == AccountStatusEnum.ACTIVE
-                            && account.getAccountNumber().equals(targetAccountNumber)
-                            && (account.getCustomer().getFirstName() + " " + account.getCustomer().getLastName()).equals(targetAccountFullName))
+                    && account.getStatus() == AccountStatusEnum.ACTIVE
+                    && account.getAccountNumber().equals(targetAccountNumber)
+                    && (account.getCustomer().getFirstName() + " " + account.getCustomer().getLastName()).equals(targetAccountFullName))
                     .findFirst();
 
             if (!optionalTargetAccount.isPresent()) {
@@ -139,12 +143,18 @@ public class TransactionCustomerBean implements Serializable {
                 invalidPinCount++;
                 facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Invalid PIN. Attempt #" + invalidPinCount));
 
-                // Show change PIN dialog if 3 invalid attempts
+                // Redirect to the PIN change page if 3 invalid attempts
                 if (invalidPinCount >= 3) {
-                    showChangePinDialog = true;
+                    invalidPinCount = 0; // Reset the invalid PIN attempt counter
+                     facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Customer/PINChange.xhtml");
+                    return;
                 }
                 return;
             }
+
+            // Reset invalid pin count on correct entry
+            invalidPinCount = 0;
+            showChangePinDialog = false;
 
             // Perform the transfer
             sourceAccount.setBalance(sourceAccount.getBalance().subtract(amount));
@@ -180,10 +190,11 @@ public class TransactionCustomerBean implements Serializable {
         }
     }
 
-    // Method to handle the PIN change process
+// Method to handle the PIN change process
     public void changePin() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        Account sourceAccount = selectedEntity.getAccount();
+        Account sourceAccount = (Account) loggedInCustomerBean.getCustomerSavingsAccounts().getFirst();
+        System.err.println("Source Account:"+sourceAccount);
 
         if (newPin == null || confirmNewPin == null || !newPin.equals(confirmNewPin)) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "PINs do not match or are empty"));
@@ -195,6 +206,13 @@ public class TransactionCustomerBean implements Serializable {
         facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "PIN changed successfully"));
         invalidPinCount = 0; // Reset invalid PIN attempt counter
         showChangePinDialog = false; // Reset flag after PIN change
+
+        // Redirect to home page or another appropriate page after successful PIN change
+        try {
+             facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Customer/CustomerDashboard.xhtml");
+        } catch (IOException e) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to redirect after PIN change."));
+        }
     }
 
     // Method to prepare for viewing a transaction

@@ -22,7 +22,7 @@ public class Transaction extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    public Account account;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false)

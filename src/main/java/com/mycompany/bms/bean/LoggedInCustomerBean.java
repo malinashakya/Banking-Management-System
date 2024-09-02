@@ -42,6 +42,7 @@ public class LoggedInCustomerBean implements Serializable {
     @PostConstruct
     public void init() {
         PageAccessCustomerBean pageAccessBean = new PageAccessCustomerBean();
+        System.out.println("LoggedInCustomerBean");
 
         // Check if the user is logged in
         loggedIn = pageAccessBean.isLoggedIn();
