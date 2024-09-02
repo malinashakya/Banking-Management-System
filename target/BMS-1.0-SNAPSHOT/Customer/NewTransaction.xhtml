@@ -17,7 +17,7 @@
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="sourceAccount" value="Source Account:" />
                     <p:selectOneMenu id="sourceAccount" value="#{transactionCustomerBean.selectedEntity.account}" converter="accountConverter">
-                        <f:selectItems value="#{loggedInCustomerBean.customerSavingsAccounts}" var="account" itemValue="#{account}" itemLabel="#{account.accountNumber} - #{account.customer.firstName} #{account.customer.lastName}" />
+                        <f:selectItems value="#{accountInfoCustomerBean.customerSavingsAccounts}" var="account" itemValue="#{account}" itemLabel="#{account.accountNumber} - #{account.customer.firstName} #{account.customer.lastName}" />
                     </p:selectOneMenu>
 
                     <p:outputLabel for="amount" value="Amount:" />

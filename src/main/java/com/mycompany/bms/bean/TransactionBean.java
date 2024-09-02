@@ -34,7 +34,7 @@ public class TransactionBean implements Serializable {
     private AccountRepository accountRepository;
 
     @Inject
-    private PageAccessAdminBean pageAccessAdminBean;
+    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
 
     private GenericLazyDataModel<Transaction> lazyDataModel;
     private TransactionTypeEnum transactionType;
@@ -50,22 +50,24 @@ public class TransactionBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        if (pageAccessAdminBean.isLoggedIn()) {
-            // Initialize data only if the user is logged in
-            if (selectedEntity == null) {
-                selectedEntity = new Transaction();
-            }
-            lazyDataModel = new GenericLazyDataModel<>(transactionRepository, Transaction.class);
-            accountList = accountRepository.findAll();
-            System.out.println("Account list initialized: " + accountList);
-
-            List<Transaction> transactionList = transactionRepository.getAll();
-            //Transaction Wrapper to find the latest data of the transaction
-            transactionWrapper = new TransactionWrapper(transactionList);
-        } else {
-            // Redirect to login page if not logged in
-            pageAccessAdminBean.checkLoginStatus();
+        // Check if the user is logged in using SessionAdminBean
+        if (sessionAdminBean.getCurrentAdmin() == null) {
+            // Redirect to login if not logged in
+            sessionAdminBean.checkSession();
+            return; // Exit early to prevent further initialization
         }
+
+        // Initialize data only if the user is logged in
+        if (selectedEntity == null) {
+            selectedEntity = new Transaction();
+        }
+        lazyDataModel = new GenericLazyDataModel<>(transactionRepository, Transaction.class);
+        accountList = accountRepository.findAll();
+        System.out.println("Account list initialized: " + accountList);
+
+        List<Transaction> transactionList = transactionRepository.getAll();
+        //Transaction Wrapper to find the latest data of the transaction
+        transactionWrapper = new TransactionWrapper(transactionList);
     }
 
     public List<Transaction> getTransactions() {

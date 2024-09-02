@@ -24,6 +24,9 @@ public class TransactionReportBean implements Serializable {
     @Inject
     private TransactionRepository transactionRepository;
 
+    @Inject
+    private SessionCustomerBean sessionCustomerBean;
+
     private List<Transaction> allTransactions;
     private List<Transaction> savingsTransactions;
     private List<Transaction> fixedTransactions;
@@ -32,33 +35,29 @@ public class TransactionReportBean implements Serializable {
     private LocalDate endDate;
 
     private boolean loggedIn;
+    private Customer loggedInCustomer;
 
     @PostConstruct
     public void init() {
-        // Check if the user is logged in using PageAccessCustomerBean
-        PageAccessCustomerBean pageAccessBean = new PageAccessCustomerBean();
-        loggedIn = pageAccessBean.isLoggedIn();
+        // Injected SessionCustomerBean
+        loggedInCustomer = sessionCustomerBean.getCurrentCustomer();
 
-        if (loggedIn) {
-            // Retrieve logged-in customer from session
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            Customer loggedInCustomer = (Customer) facesContext.getExternalContext().getSessionMap().get("loggedInCustomer");
+        if (loggedInCustomer != null) {
+            // Retrieve transactions for the logged-in customer
+            allTransactions = transactionRepository.getTransactionsByCustomerId(loggedInCustomer.getId());
+            filterTransactionsByAccountType();
 
-            if (loggedInCustomer != null) {
-                // Fetch transactions for the logged-in customer
-                allTransactions = transactionRepository.getTransactionsByCustomerId(loggedInCustomer.getId());
-                filterTransactionsByAccountType();
-
-                // Sort transactions initially
-                sortTransactions();
-            }
+            // Sort transactions initially
+            sortTransactions();
         } else {
             // Redirect to login page if not logged in
-            pageAccessBean.checkLoginStatus();
+            sessionCustomerBean.checkSession();
+
             // Initialize empty lists to avoid null pointers
             allTransactions = List.of();
             savingsTransactions = List.of();
             fixedTransactions = List.of();
+
         }
     }
 

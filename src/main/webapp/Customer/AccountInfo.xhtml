@@ -44,20 +44,20 @@
         <ui:include src="menu.xhtml" />
         
         <h:form>
-            <h:panelGroup layout="block" styleClass="content" rendered="#{not empty loggedInCustomerBean.loggedInCustomer}">
+            <h:panelGroup layout="block" styleClass="content" rendered="#{not empty accountInfoCustomerBean.loggedInCustomer}">
                 <h1>Account Information</h1>
-                <h:outputText value="ID: #{loggedInCustomerBean.loggedInCustomer.id}"  />
+                <h:outputText value="ID: #{accountInfoCustomerBean.loggedInCustomer.id}"  />
                 <br/>
-                <h:outputText value="Name: #{loggedInCustomerBean.loggedInCustomer.firstName} #{loggedInCustomerBean.loggedInCustomer.lastName}" />
+                <h:outputText value="Name: #{accountInfoCustomerBean.loggedInCustomer.firstName} #{accountInfoCustomerBean.loggedInCustomer.lastName}" />
                 <br/>
-                <h:outputText value="Email: #{loggedInCustomerBean.loggedInCustomer.username}"  />
+                <h:outputText value="Email: #{accountInfoCustomerBean.loggedInCustomer.username}"  />
                 <br/>
-                <h:outputText value="Address: #{loggedInCustomerBean.loggedInCustomer.address}"  />
+                <h:outputText value="Address: #{accountInfoCustomerBean.loggedInCustomer.address}"  />
                 <br/>
-                <h:outputText value="Contact: #{loggedInCustomerBean.loggedInCustomer.contact}"  />
+                <h:outputText value="Contact: #{accountInfoCustomerBean.loggedInCustomer.contact}"  />
                 <br/>
                 <h:panelGroup>
-                    <h:dataTable value="#{loggedInCustomerBean.customerAccounts}" var="account" styleClass="ui-datatable">
+                    <h:dataTable value="#{accountInfoCustomerBean.customerAccounts}" var="account" styleClass="ui-datatable">
                         <h:column>
                             <f:facet name="header">Account Number</f:facet>
                             <h:outputText value="#{account.accountNumber}" />
@@ -74,7 +74,7 @@
                 </h:panelGroup>
             </h:panelGroup>
 
-            <h:panelGroup rendered="#{empty loggedInCustomerBean.loggedInCustomer}">
+            <h:panelGroup rendered="#{empty accountInfoCustomerBean.loggedInCustomer}">
                 <h:outputText value="No customer information available." />
             </h:panelGroup>
         </h:form>

@@ -20,20 +20,18 @@ public class ProfileBean implements Serializable {
     @Inject
     private CustomerRepository customerRepository;
 
+    @Inject
+    private SessionCustomerBean sessionCustomerBean;
+
     private Customer loggedInCustomer;
 
     @PostConstruct
     public void init() {
-        // Check if the user is logged in using PageAccessCustomerBean
-        PageAccessCustomerBean pageAccessBean = new PageAccessCustomerBean();
-        if (pageAccessBean.isLoggedIn()) {
-            // Retrieve logged-in customer from session
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = facesContext.getExternalContext();
-            loggedInCustomer = (Customer) externalContext.getSessionMap().get("loggedInCustomer");
-        } else {
-            // Redirect to login page if not logged in
-            pageAccessBean.checkLoginStatus();
+        loggedInCustomer = sessionCustomerBean.getCurrentCustomer();
+        if (loggedInCustomer == null) {
+            // Redirect to login if not logged in
+            sessionCustomerBean.checkSession();
+            return; // Exit early to prevent further initialization
         }
     }
 

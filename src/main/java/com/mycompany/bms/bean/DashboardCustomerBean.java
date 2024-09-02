@@ -1,34 +1,53 @@
 package com.mycompany.bms.bean;
 
+import com.mycompany.bms.model.Transaction;  // Ensure this import matches your project structure
+import com.mycompany.bms.repository.TransactionRepository;
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Bean for managing the customer dashboard, including displaying transactions.
+ */
 @ManagedBean(name = "dashboardBean")
 @ViewScoped
 public class DashboardCustomerBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private List<Transaction> transactions;
     private boolean loggedIn;
 
-    public DashboardCustomerBean() {
-        // Create an instance of PageAccessCustomerBean to handle login checks
-        PageAccessCustomerBean pageAccessBean = new PageAccessCustomerBean();
+    @Inject
+    private SessionCustomerBean sessionCustomerBean;
 
-        // Check if the user is logged in
-        loggedIn = pageAccessBean.isLoggedIn();
+    @Inject
+    private TransactionRepository transactionRepository;
+
+    @PostConstruct
+    public void init() {
+        // Check if the user is logged in using SessionCustomerBean
+        loggedIn = sessionCustomerBean.getCurrentCustomer() != null;
+
         if (loggedIn) {
             // Initialize transactions if logged in
             transactions = new ArrayList<>();
-            transactions.add(new Transaction("User1", 500));
-            transactions.add(new Transaction("User2", 1000));
-            transactions.add(new Transaction("User3", 2000));
+            loadTransactions();
         } else {
             // Redirect to the login page if not logged in
-            pageAccessBean.checkLoginStatus();
+            sessionCustomerBean.checkSession();
             transactions = new ArrayList<>(); // Initialize an empty list to avoid null pointer issues
         }
+    }
+
+    // Load transactions from the repository for the logged-in customer
+    private void loadTransactions() {
+        Long loggedInCustomerId = sessionCustomerBean.getCurrentCustomer().getId();
+        transactions = transactionRepository.getTransactionsByCustomerId(loggedInCustomerId);
     }
 
     public boolean isLoggedIn() {
@@ -37,32 +56,5 @@ public class DashboardCustomerBean implements Serializable {
 
     public List<Transaction> getTransactions() {
         return transactions;
-    }
-
-    // Inner class for transactions
-    public static class Transaction {
-        private String user;
-        private int amount;
-
-        public Transaction(String user, int amount) {
-            this.user = user;
-            this.amount = amount;
-        }
-
-        public String getUser() {
-            return user;
-        }
-
-        public void setUser(String user) {
-            this.user = user;
-        }
-
-        public int getAmount() {
-            return amount;
-        }
-
-        public void setAmount(int amount) {
-            this.amount = amount;
-        }
     }
 }

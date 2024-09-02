@@ -1,22 +1,28 @@
 package com.mycompany.bms.bean;
 
-import com.mycompany.bms.model.*;
+import com.mycompany.bms.model.Account;
+import com.mycompany.bms.model.AccountStatusEnum;
+import com.mycompany.bms.model.AccountTypeEnum;
+import com.mycompany.bms.model.Transaction;
+import com.mycompany.bms.model.TransactionTypeEnum;
 import com.mycompany.bms.repository.AccountRepository;
 import com.mycompany.bms.repository.TransactionRepository;
-import java.io.IOException;
-
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.faces.view.ViewScoped;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Bean for managing customer transactions, including transfers and PIN changes.
+ */
 @Named("transactionCustomerBean")
 @ViewScoped
 public class TransactionCustomerBean implements Serializable {
@@ -30,7 +36,10 @@ public class TransactionCustomerBean implements Serializable {
     private AccountRepository accountRepository;
 
     @Inject
-    private LoggedInCustomerBean loggedInCustomerBean;
+    private SessionCustomerBean sessionCustomerBean;
+
+    @Inject
+    private AccountInfoCustomerBean accountInfoCustomerBean;
 
     private Transaction selectedEntity;
     private String targetAccountNumber;
@@ -50,9 +59,8 @@ public class TransactionCustomerBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Check if the user is logged in using PageAccessCustomerBean
-        PageAccessCustomerBean pageAccessBean = new PageAccessCustomerBean();
-        loggedIn = pageAccessBean.isLoggedIn();
+        // Check if the user is logged in using SessionCustomerBean
+        loggedIn = sessionCustomerBean.getCurrentCustomer() != null;
 
         if (loggedIn) {
             selectedEntity = new Transaction();
@@ -66,7 +74,7 @@ public class TransactionCustomerBean implements Serializable {
             loadLatestTransactions();
         } else {
             // Redirect to login page if not logged in
-            pageAccessBean.checkLoginStatus();
+            sessionCustomerBean.checkSession();
             // Initialize empty lists to avoid null pointers
             accountList = List.of();
             latestTransactions = List.of();
@@ -99,11 +107,9 @@ public class TransactionCustomerBean implements Serializable {
         latestTransactions = transactionRepository.getLatestTransactionByCustomer(loggedInCustomerId);
     }
 
-    // Mock method to get logged-in customer ID, replace with actual implementation
+    // Method to get logged-in customer ID
     private Long getLoggedInCustomerId() {
-        // Retrieve the logged-in customer from the session
-        Customer loggedInCustomer = (Customer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInCustomer");
-        return loggedInCustomer != null ? loggedInCustomer.getId() : null;
+        return sessionCustomerBean.getCurrentCustomer() != null ? sessionCustomerBean.getCurrentCustomer().getId() : null;
     }
 
     public void saveOrUpdateEntity() {
@@ -190,11 +196,12 @@ public class TransactionCustomerBean implements Serializable {
         }
     }
 
-// Method to handle the PIN change process
+    // Method to handle the PIN change process
     public void changePin() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        Account sourceAccount = (Account) loggedInCustomerBean.getCustomerSavingsAccounts().getFirst();
-        System.err.println("Source Account:" + sourceAccount);
+
+        Account sourceAccount = accountInfoCustomerBean.getCustomerSavingsAccounts().getFirst();
+        System.err.println("Source Account2:" + sourceAccount);
 
         if (newPin == null || confirmNewPin == null || !newPin.equals(confirmNewPin)) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "PINs do not match or are empty"));
@@ -269,6 +276,14 @@ public class TransactionCustomerBean implements Serializable {
         this.enteredPin = enteredPin;
     }
 
+    public int getInvalidPinCount() {
+        return invalidPinCount;
+    }
+
+    public void setInvalidPinCount(int invalidPinCount) {
+        this.invalidPinCount = invalidPinCount;
+    }
+
     public String getNewPin() {
         return newPin;
     }
@@ -297,12 +312,24 @@ public class TransactionCustomerBean implements Serializable {
         return openingBalance;
     }
 
+    public void setOpeningBalance(BigInteger openingBalance) {
+        this.openingBalance = openingBalance;
+    }
+
     public BigInteger getClosingBalance() {
         return closingBalance;
     }
 
+    public void setClosingBalance(BigInteger closingBalance) {
+        this.closingBalance = closingBalance;
+    }
+
     public List<Transaction> getLatestTransactions() {
         return latestTransactions;
+    }
+
+    public void setLatestTransactions(List<Transaction> latestTransactions) {
+        this.latestTransactions = latestTransactions;
     }
 
     public boolean isLoggedIn() {

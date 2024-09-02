@@ -25,6 +25,9 @@ public class AccountBean implements Serializable {
     @Inject
     private AccountRepository accountRepository;
 
+    @Inject
+    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
+
     private Account selectedEntity;
     private boolean editMode = false;
     private GenericLazyDataModel<Account> lazyDataModel;
@@ -33,19 +36,18 @@ public class AccountBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Check if the user is logged in using PageAccessBean
-        PageAccessAdminBean pageAccessBean = new PageAccessAdminBean();
-        if (pageAccessBean.isLoggedIn()) {
-            // Initialize account-related data
-            if (selectedEntity == null) {
-                selectedEntity = new Account();
-            }
-            lazyDataModel = new GenericLazyDataModel<>(accountRepository, Account.class);
-            statusOptions = Arrays.asList(AccountStatusEnum.values());
-        } else {
-            // Redirect to login page if not logged in
-            pageAccessBean.checkLoginStatus();
+        // Check if the user is logged in using SessionAdminBean
+        if (sessionAdminBean.getCurrentAdmin() == null) {
+            sessionAdminBean.checkSession(); // Redirect to login if not logged in
+            return; // Exit early to prevent further initialization
         }
+
+        // Initialize account-related data
+        if (selectedEntity == null) {
+            selectedEntity = new Account();
+        }
+        lazyDataModel = new GenericLazyDataModel<>(accountRepository, Account.class);
+        statusOptions = Arrays.asList(AccountStatusEnum.values());
     }
 
     public List<AccountStatusEnum> getStatusOptions() {

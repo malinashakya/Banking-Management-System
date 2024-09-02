@@ -22,25 +22,27 @@ public class AccountTypeBean implements Serializable {
     @Inject
     private AccountTypeRepository accountTypeRepository;
 
+    @Inject
+    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
+
     private AccountType selectedEntity;
     private boolean editMode = false;
     private GenericLazyDataModel<AccountType> lazyDataModel;
     private AccountTypeEnum accountTypeEnumFilter;
 
-  @PostConstruct
+    @PostConstruct
     public void init() {
-        // Check if the user is logged in using PageAccessAdminBean
-        PageAccessAdminBean pageAccessAdminBean = new PageAccessAdminBean();
-        if (pageAccessAdminBean.isLoggedIn()) {
-            // Initialize account type-related data
-            if (selectedEntity == null) {
-                selectedEntity = new AccountType();
-            }
-            lazyDataModel = new GenericLazyDataModel<>(accountTypeRepository, AccountType.class);
-        } else {
-            // Redirect to login page if not logged in
-            pageAccessAdminBean.checkLoginStatus();
+        // Check if the user is logged in using SessionAdminBean
+        if (sessionAdminBean.getCurrentAdmin() == null) {
+            sessionAdminBean.checkSession(); // Redirect to login if not logged in
+            return; // Exit early to prevent further initialization
         }
+
+        // Initialize account type-related data
+        if (selectedEntity == null) {
+            selectedEntity = new AccountType();
+        }
+        lazyDataModel = new GenericLazyDataModel<>(accountTypeRepository, AccountType.class);
     }
 
     public void saveOrUpdateEntity() {

@@ -9,7 +9,6 @@ import com.mycompany.bms.repository.AccountTypeRepository;
 import com.mycompany.bms.repository.CustomerRepository;
 
 import javax.annotation.PostConstruct;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -18,20 +17,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Named("loggedInCustomerBean")
+@Named("accountInfoCustomerBean")
 @ViewScoped
-public class LoggedInCustomerBean implements Serializable {
+public class AccountInfoCustomerBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @Inject
-    private CustomerRepository customerRepository;
 
     @Inject
     private AccountTypeRepository accountTypeRepository;
 
     @Inject
     private AccountRepository accountRepository;
+
+    @Inject
+    private SessionCustomerBean sessionCustomerBean;
 
     private Customer loggedInCustomer;
     private AccountType selectedAccountType;
@@ -41,22 +40,19 @@ public class LoggedInCustomerBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        PageAccessCustomerBean pageAccessBean = new PageAccessCustomerBean();
-        System.out.println("LoggedInCustomerBean");
+        // Check if the user is logged in using SessionCustomerBean
+        loggedIn = sessionCustomerBean.getCurrentCustomer() != null;
 
-        // Check if the user is logged in
-        loggedIn = pageAccessBean.isLoggedIn();
         if (loggedIn) {
             // Retrieve the logged-in customer from the session
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            loggedInCustomer = (Customer) facesContext.getExternalContext().getSessionMap().get("loggedInCustomer");
+            loggedInCustomer = sessionCustomerBean.getCurrentCustomer();
 
             // Initialize account types and customer accounts if logged in
             availableAccountTypes = accountTypeRepository.getAll();
             customerAccounts = accountRepository.findByCustomerId(loggedInCustomer.getId());
         } else {
             // Redirect to login page if not logged in
-            pageAccessBean.checkLoginStatus();
+            sessionCustomerBean.checkSession(); // Ensure the session is valid
             availableAccountTypes = new ArrayList<>();
             customerAccounts = new ArrayList<>();
         }
