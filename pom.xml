@@ -57,6 +57,23 @@
             <version>3.14</version> 
         </dependency>
         
+        <!--Mockito for Testing-->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.1.0</version>
+            <scope>test</scope>
+        </dependency> 
+        
+        <!-- JAX-RS API -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        
     </dependencies>
     
     <build>
