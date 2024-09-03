@@ -71,6 +71,6 @@ public class Admin extends BaseEntity {
     
     @Override
     public String toString() {
-        return "Employee{" + "id=" + getId() + ", name=" + name + ", username=" + username + ",password=" + password + '}';
+        return "Admin{" + "id=" + getId() + ", name=" + name + ", username=" + username+ '}';
     }
 }

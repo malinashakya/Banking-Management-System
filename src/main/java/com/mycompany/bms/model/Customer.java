@@ -139,4 +139,10 @@ public class Customer extends BaseEntity {
     public int hashCode() {
         return getId() != null ? getId().hashCode() : 0;
     }
+    
+      @Override
+    public String toString() {
+        return "Customer{" + "id=" + getId() + ", firstname=" + firstName +  ", lastname=" + lastName + ", address=" + address+
+                ", contact=" + contact+ ", username=" + username+   '}';
+    }
 }
