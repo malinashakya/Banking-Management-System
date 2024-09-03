@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 /**
  * Bean for managing the customer dashboard, including displaying transactions.
@@ -28,9 +30,11 @@ public class DashboardCustomerBean implements Serializable {
     @Inject
     private TransactionRepository transactionRepository;
 
-    @PostConstruct
+@PostConstruct
     public void init() {
-        // Check if the user is logged in using SessionCustomerBean
+        FacesContext context = FacesContext.getCurrentInstance();
+        
+        // Check if the user is logged in
         loggedIn = sessionCustomerBean.getCurrentCustomer() != null;
 
         if (loggedIn) {
@@ -38,9 +42,12 @@ public class DashboardCustomerBean implements Serializable {
             transactions = new ArrayList<>();
             loadTransactions();
         } else {
-            // Redirect to the login page if not logged in
-            sessionCustomerBean.checkSession();
-            transactions = new ArrayList<>(); // Initialize an empty list to avoid null pointer issues
+            // Initialize an empty list to avoid null pointer issues
+            transactions = new ArrayList<>();
+            
+            // Optional: Inform the user if necessary
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    "Session Expired", "Please log in again to access this page."));
         }
     }
 

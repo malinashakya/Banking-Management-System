@@ -45,6 +45,26 @@
             120
         </session-timeout>
     </session-config>
+    
+    <!--     AdminSessionFilter 
+    <filter>
+        <filter-name>AdminSessionFilter</filter-name>
+        <filter-class>com.mycompany.bms.filter.AdminSessionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdminSessionFilter</filter-name>
+        <url-pattern>/Admin/*</url-pattern>
+    </filter-mapping>-->
+
+    <!--     CustomerSessionFilter 
+    <filter>
+        <filter-name>CustomerSessionFilter</filter-name>
+        <filter-class>com.mycompany.bms.filter.CustomerSessionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CustomerSessionFilter</filter-name>
+        <url-pattern>/Customer/*</url-pattern>
+    </filter-mapping>-->
 
     <!-- Welcome File Configuration -->
     <welcome-file-list>

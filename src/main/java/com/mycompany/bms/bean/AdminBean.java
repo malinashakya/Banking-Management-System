@@ -21,8 +21,8 @@ public class AdminBean implements Serializable {
     @Inject
     private AdminRepository adminRepository;
 
-    @Inject
-    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
+//    @Inject
+//    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
 
     private Admin selectedAdmin;
     private boolean editMode = false;
@@ -30,19 +30,16 @@ public class AdminBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Injected SessionAdminBean for session management
-        if (sessionAdminBean.getCurrentAdmin() == null) {
-            // Redirect to login if not logged in
-            sessionAdminBean.checkSession();
-            return; // Exit early to prevent further initialization
-        }
-
         // Initialize admin-related data
         if (selectedAdmin == null) {
             selectedAdmin = new Admin();
         }
         lazyDataModel = new GenericLazyDataModel<>(adminRepository, Admin.class);
     }
+
+//    public void checkSession(ComponentSystemEvent event) {
+//        sessionAdminBean.checkSession();
+//    }
 
     public void saveOrUpdateEntity() {
         FacesContext facesContext = FacesContext.getCurrentInstance();

@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import java.io.Serializable;
+import javax.faces.event.ComponentSystemEvent;
 
 @Named("accountTypeBean")
 @ViewScoped
@@ -22,8 +23,8 @@ public class AccountTypeBean implements Serializable {
     @Inject
     private AccountTypeRepository accountTypeRepository;
 
-    @Inject
-    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
+//    @Inject
+//    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
 
     private AccountType selectedEntity;
     private boolean editMode = false;
@@ -32,18 +33,16 @@ public class AccountTypeBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Check if the user is logged in using SessionAdminBean
-        if (sessionAdminBean.getCurrentAdmin() == null) {
-            sessionAdminBean.checkSession(); // Redirect to login if not logged in
-            return; // Exit early to prevent further initialization
-        }
-
         // Initialize account type-related data
         if (selectedEntity == null) {
             selectedEntity = new AccountType();
         }
         lazyDataModel = new GenericLazyDataModel<>(accountTypeRepository, AccountType.class);
     }
+
+//    public void checkSession(ComponentSystemEvent event) {
+//        sessionAdminBean.checkSession();
+//    }
 
     public void saveOrUpdateEntity() {
         FacesContext facesContext = FacesContext.getCurrentInstance();

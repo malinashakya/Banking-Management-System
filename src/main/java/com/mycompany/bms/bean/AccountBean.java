@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.faces.event.ComponentSystemEvent;
 
 @Named("accountBean")
 @ViewScoped
@@ -25,8 +26,8 @@ public class AccountBean implements Serializable {
     @Inject
     private AccountRepository accountRepository;
 
-    @Inject
-    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
+//    @Inject
+//    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
 
     private Account selectedEntity;
     private boolean editMode = false;
@@ -36,20 +37,18 @@ public class AccountBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Check if the user is logged in using SessionAdminBean
-        if (sessionAdminBean.getCurrentAdmin() == null) {
-            sessionAdminBean.checkSession(); // Redirect to login if not logged in
-            return; // Exit early to prevent further initialization
-        }
-
-        // Initialize account-related data
+           // Initialize account-related data
         if (selectedEntity == null) {
             selectedEntity = new Account();
         }
         lazyDataModel = new GenericLazyDataModel<>(accountRepository, Account.class);
         statusOptions = Arrays.asList(AccountStatusEnum.values());
     }
-
+    
+//     public void checkSession(ComponentSystemEvent event) {
+//        sessionAdminBean.checkSession();
+//    }
+//     
     public List<AccountStatusEnum> getStatusOptions() {
         return statusOptions;
     }

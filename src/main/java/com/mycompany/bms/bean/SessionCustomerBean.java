@@ -18,22 +18,6 @@ import javax.servlet.http.HttpSession;
 public class SessionCustomerBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Checks if the session is valid and if an customer is logged in. If not,
-     * redirects to the login page.
-     */
-    public void checkSession() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-
-        if (session == null || session.getAttribute("loggedInCustomer") == null) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-                    "Please log in first", "You need to log in to access this page."));
-            redirectToLogin();
-        }
-    }
-
     /**
      * Retrieves the currently logged-in customer from the session.
      *
@@ -73,7 +57,7 @@ public class SessionCustomerBean implements Serializable {
     /**
      * Redirects to the login page.
      */
-    private void redirectToLogin() {
+    void redirectToLogin() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
             context.getExternalContext().redirect(context.getExternalContext().getRequestContextPath() + "/Customer/CustomerLogin.xhtml");

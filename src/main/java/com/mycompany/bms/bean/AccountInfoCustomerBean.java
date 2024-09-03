@@ -6,7 +6,6 @@ import com.mycompany.bms.model.AccountTypeEnum;
 import com.mycompany.bms.model.Customer;
 import com.mycompany.bms.repository.AccountRepository;
 import com.mycompany.bms.repository.AccountTypeRepository;
-import com.mycompany.bms.repository.CustomerRepository;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -51,8 +50,6 @@ public class AccountInfoCustomerBean implements Serializable {
             availableAccountTypes = accountTypeRepository.getAll();
             customerAccounts = accountRepository.findByCustomerId(loggedInCustomer.getId());
         } else {
-            // Redirect to login page if not logged in
-            sessionCustomerBean.checkSession(); // Ensure the session is valid
             availableAccountTypes = new ArrayList<>();
             customerAccounts = new ArrayList<>();
         }

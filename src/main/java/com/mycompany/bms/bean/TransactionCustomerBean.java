@@ -73,8 +73,6 @@ public class TransactionCustomerBean implements Serializable {
             loadClosingBalance();
             loadLatestTransactions();
         } else {
-            // Redirect to login page if not logged in
-            sessionCustomerBean.checkSession();
             // Initialize empty lists to avoid null pointers
             accountList = List.of();
             latestTransactions = List.of();

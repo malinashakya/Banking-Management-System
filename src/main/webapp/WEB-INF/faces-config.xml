@@ -1,4 +1,4 @@
-<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+<!--<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
               version="2.3">
@@ -8,4 +8,19 @@
         <converter-class>com.mycompany.bms.converter.AccountTypeConverter</converter-class>
     </converter>
 
+</faces-config>-->
+
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                                  http://xmlns.jcp.org/xml/ns/javaee/faces-config_4_0.xsd"
+              version="4.0">
+    <lifecycle>
+    <phase-listener>com.mycompany.bms.listener.AdminPhaseListener</phase-listener>
+    
+    </lifecycle>
+    <lifecycle>
+    <phase-listener>com.mycompany.bms.listener.CustomerPhaseListener</phase-listener>
+    </lifecycle>
 </faces-config>
+    

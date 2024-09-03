@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.faces.event.ComponentSystemEvent;
 
 @Named("transactionBean")
 @ViewScoped
@@ -33,8 +34,8 @@ public class TransactionBean implements Serializable {
     @Inject
     private AccountRepository accountRepository;
 
-    @Inject
-    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
+//    @Inject
+//    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
 
     private GenericLazyDataModel<Transaction> lazyDataModel;
     private TransactionTypeEnum transactionType;
@@ -50,14 +51,6 @@ public class TransactionBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Check if the user is logged in using SessionAdminBean
-        if (sessionAdminBean.getCurrentAdmin() == null) {
-            // Redirect to login if not logged in
-            sessionAdminBean.checkSession();
-            return; // Exit early to prevent further initialization
-        }
-
-        // Initialize data only if the user is logged in
         if (selectedEntity == null) {
             selectedEntity = new Transaction();
         }
@@ -69,6 +62,10 @@ public class TransactionBean implements Serializable {
         //Transaction Wrapper to find the latest data of the transaction
         transactionWrapper = new TransactionWrapper(transactionList);
     }
+
+//    public void checkSession(ComponentSystemEvent event) {
+//        sessionAdminBean.checkSession();
+//    }
 
     public List<Transaction> getTransactions() {
         return transactionWrapper.getTransactions();

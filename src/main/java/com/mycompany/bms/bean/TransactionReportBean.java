@@ -50,8 +50,6 @@ public class TransactionReportBean implements Serializable {
             // Sort transactions initially
             sortTransactions();
         } else {
-            // Redirect to login page if not logged in
-            sessionCustomerBean.checkSession();
 
             // Initialize empty lists to avoid null pointers
             allTransactions = List.of();

@@ -27,16 +27,17 @@
                     <h:outputText value="#{account.accountNumber}" />
                 </p:column>
 
-                <p:column headerText="First Name" filterBy="#{account.customer.firstName}" filterMatchMode="exact" >
+                <p:column headerText="First Name" filterBy="#{account.customer.firstName}" filterMatchMode="contains">
                     <h:outputText value="#{account.customer.firstName}" />
                 </p:column>
+
                 <p:column headerText="Last Name" filterBy="#{account.customer.lastName}" filterMatchMode="exact">
                     <h:outputText value="#{account.customer.lastName}" />
                 </p:column>
                 <p:column headerText="Balance" filterBy="#{account.balance}" filterMatchMode="exact">
                     <h:outputText value="#{account.balance}" />
                 </p:column>
-    
+
                 <p:column headerText="Status" filterBy="#{status}" filterMatchMode="exact">
                     <f:facet name="filter">
                         <p:selectOneMenu onchange="PF('accountTable').filter()" value="#{accountBean.selectedStatus}">
@@ -94,5 +95,7 @@
                                  type="button" />
             </h:form>
         </p:dialog>
+
+
     </h:body>
 </html>

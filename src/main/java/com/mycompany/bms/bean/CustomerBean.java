@@ -18,6 +18,7 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
+import javax.faces.event.ComponentSystemEvent;
 
 @Named("customerBean")
 @ViewScoped
@@ -34,8 +35,8 @@ public class CustomerBean implements Serializable {
     @Inject
     private AccountRepository accountRepository;
 
-    @Inject
-    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
+//    @Inject
+//    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
 
     private Customer selectedCustomer;
     private AccountType selectedAccountType;
@@ -48,18 +49,15 @@ public class CustomerBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        // Injected SessionAdminBean for session management
-        if (sessionAdminBean.getCurrentAdmin() == null) {
-            // Redirect to login if not logged in
-            sessionAdminBean.checkSession();
-            return; // Exit early to prevent further initialization
-        }
-
         // Initialize customer-related data
         selectedCustomer = new Customer();
         lazyCustomers = new GenericLazyDataModel<>(customerRepository, Customer.class);
         availableAccountTypes = accountTypeRepository.getAll();
     }
+
+//    public void checkSession(ComponentSystemEvent event) {
+//        sessionAdminBean.checkSession();
+//    }
 
     public Customer getLoggedInCustomer() {
         return loggedInCustomer;

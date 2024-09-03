@@ -20,20 +20,6 @@ public class SessionAdminBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Checks if the session is valid and if an admin is logged in. If not, redirects to the login page.
-     */
-    public void checkSession() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-
-        if (session == null || session.getAttribute("loggedInAdmin") == null) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, 
-                    "Please log in first", "You need to log in to access this page."));
-            redirectToLogin();
-        }
-    }
-
-    /**
      * Retrieves the currently logged-in admin from the session.
      * @return The current admin, or null if no admin is logged in.
      */
