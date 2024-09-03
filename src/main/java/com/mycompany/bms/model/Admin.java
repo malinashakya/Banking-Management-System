@@ -68,5 +68,9 @@ public class Admin extends BaseEntity {
     public void setPassword(String password) {
         this.password = password;
     }
-
+    
+    @Override
+    public String toString() {
+        return "Employee{" + "id=" + getId() + ", name=" + name + ", username=" + username + ",password=" + password + '}';
+    }
 }

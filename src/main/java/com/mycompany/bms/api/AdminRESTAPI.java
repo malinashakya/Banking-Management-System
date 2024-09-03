@@ -18,18 +18,26 @@ public class AdminRESTAPI {
 
     @GET
     public Response getAllAdmins() {
-        List<Admin> admins = adminRepository.getAll();
-        return Response.ok(admins).build();
+        try {
+            List<Admin> admins = adminRepository.getAll();
+            return RestResponse.responseBuilder("true", "200", "Admins retrieved successfully", admins.toString());
+        } catch (Exception e) {
+            return RestResponse.responseBuilder("false", "500", "An error occurred", e.getMessage());
+        }
     }
 
     @GET
     @Path("/{id}")
     public Response getAdminById(@PathParam("id") Long id) {
-        Admin admin = adminRepository.getById(id);
-        if (admin != null) {
-            return Response.ok(admin).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try {
+            Admin admin = adminRepository.getById(id);
+            if (admin != null) {
+                return RestResponse.responseBuilder("true", "200", "Admin found", admin.toString());
+            } else {
+                return RestResponse.responseBuilder("false", "404", "Admin not found", null);
+            }
+        } catch (Exception e) {
+            return RestResponse.responseBuilder("false", "500", "An error occurred", e.getMessage());
         }
     }
 
@@ -37,34 +45,42 @@ public class AdminRESTAPI {
     public Response createAdmin(Admin admin) {
         try {
             adminRepository.save(admin);
-            return Response.status(Response.Status.CREATED).entity(admin).build();
+            return RestResponse.responseBuilder("true", "201", "Admin created successfully", admin.toString());
         } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return RestResponse.responseBuilder("false", "400", "Failed to create admin", e.getMessage());
         }
     }
 
     @PUT
     @Path("/{id}")
     public Response updateAdmin(@PathParam("id") Long id, Admin admin) {
-        Admin existingAdmin = adminRepository.getById(id);
-        if (existingAdmin != null) {
-            admin.setId(id);
-            adminRepository.update(admin);
-            return Response.ok(admin).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try {
+            Admin existingAdmin = adminRepository.getById(id);
+            if (existingAdmin != null) {
+                admin.setId(id);
+                adminRepository.update(admin);
+                return RestResponse.responseBuilder("true", "200", "Admin updated successfully", admin.toString());
+            } else {
+                return RestResponse.responseBuilder("false", "404", "Admin not found", null);
+            }
+        } catch (Exception e) {
+            return RestResponse.responseBuilder("false", "500", "An error occurred", e.getMessage());
         }
     }
 
     @DELETE
     @Path("/{id}")
     public Response deleteAdmin(@PathParam("id") Long id) {
-        Admin admin = adminRepository.getById(id);
-        if (admin != null) {
-            adminRepository.delete(id);
-            return Response.noContent().build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try {
+            Admin admin = adminRepository.getById(id);
+            if (admin != null) {
+                adminRepository.delete(id);
+                return RestResponse.responseBuilder("true", "204", "Admin deleted successfully", null);
+            } else {
+                return RestResponse.responseBuilder("false", "404", "Admin not found", null);
+            }
+        } catch (Exception e) {
+            return RestResponse.responseBuilder("false", "500", "An error occurred", e.getMessage());
         }
     }
 }
