@@ -9,8 +9,10 @@ package com.mycompany.bms.api;
  * @author malina
  */
 
+import com.mycompany.bms.model.Account;
 import com.mycompany.bms.model.Customer;
 import com.mycompany.bms.repository.CustomerRepository;
+import java.util.ArrayList;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -61,21 +63,57 @@ public class CustomerRESTAPI {
     }
 
     @PUT
-    @Path("/{id}")
-    public Response updateCustomer(@PathParam("id") Long id, Customer customer) {
-        try {
-            Customer existingCustomer = customerRepository.getById(id);
-            if (existingCustomer != null) {
-                customer.setId(id);
-                customerRepository.update(customer);
-                return RestResponse.responseBuilder("true", "200", "Customer updated successfully", customer.toString());
-            } else {
-                return RestResponse.responseBuilder("false", "404", "Customer not found", null);
+@Path("/{id}")
+public Response updateCustomer(@PathParam("id") Long id, Customer customer) {
+    try {
+        // Retrieve the existing customer from the repository
+        Customer existingCustomer = customerRepository.getById(id);
+        if (existingCustomer != null) {
+            // Ensure the existing accounts list is not null
+            if (existingCustomer.getAccounts() == null) {
+                existingCustomer.setAccounts(new ArrayList<>()); // Initialize if null
             }
-        } catch (Exception e) {
-            return RestResponse.responseBuilder("false", "500", "An error occurred", e.getMessage());
+
+            // Detach existing accounts
+            List<Account> detachedAccounts = new ArrayList<>(existingCustomer.getAccounts());
+            existingCustomer.getAccounts().clear();
+
+            // Update customer details
+            existingCustomer.setFirstName(customer.getFirstName());
+            existingCustomer.setLastName(customer.getLastName());
+            existingCustomer.setAddress(customer.getAddress());
+            existingCustomer.setContact(customer.getContact());
+            existingCustomer.setUsername(customer.getUsername());
+            existingCustomer.setPassword(customer.getPassword());
+
+            // Ensure the incoming accounts list is not null
+            if (customer.getAccounts() != null) {
+                for (Account account : customer.getAccounts()) {
+                    // If the account is already in detachedAccounts, update its details
+                    if (detachedAccounts.contains(account)) {
+                        Account existingAccount = detachedAccounts.get(detachedAccounts.indexOf(account));
+                        existingAccount.setAccountType(account.getAccountType());
+                        existingAccount.setBalance(account.getBalance());
+                        // Set any other account fields that need to be updated
+                        existingCustomer.getAccounts().add(existingAccount);
+                    } else {
+                        // If it's a new account, add it and set the customer association
+                        account.setCustomer(existingCustomer);
+                        existingCustomer.getAccounts().add(account);
+                    }
+                }
+            }
+
+            // Persist the updated customer entity
+            customerRepository.update(existingCustomer);
+            return RestResponse.responseBuilder("true", "200", "Customer updated successfully", existingCustomer.toString());
+        } else {
+            return RestResponse.responseBuilder("false", "404", "Customer not found", null);
         }
+    } catch (Exception e) {
+        return RestResponse.responseBuilder("false", "500", "An error occurred", e.getMessage());
     }
+}
 
     @DELETE
     @Path("/{id}")

@@ -1,5 +1,6 @@
 package com.mycompany.bms.model;
 
+import java.util.ArrayList;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -42,8 +43,10 @@ public class Customer extends BaseEntity {
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Account> accounts; // Updated from accountTypes to accounts
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+
+    private List<Account> accounts = new ArrayList<>(); // Initialize to prevent null issues
+    // Updated from accountTypes to accounts
 
     // Constructors
     public Customer() {
@@ -139,10 +142,19 @@ public class Customer extends BaseEntity {
     public int hashCode() {
         return getId() != null ? getId().hashCode() : 0;
     }
-    
-      @Override
+
+    //For proper display in the API
+    @Override
     public String toString() {
-        return "Customer{" + "id=" + getId() + ", firstname=" + firstName +  ", lastname=" + lastName + ", address=" + address+
-                ", contact=" + contact+ ", username=" + username+   '}';
+        return "Customer{"
+                + "id=" + getId()
+                + ", firstname=" + firstName
+                + ", lastname=" + lastName
+                + ", address=" + address
+                + ", contact=" + contact
+                + ", username=" + username
+                + ", accounts=" + accounts
+                + '}';
     }
+
 }

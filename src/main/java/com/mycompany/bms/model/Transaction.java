@@ -134,4 +134,17 @@ public class Transaction extends BaseEntity {
         return result;
     }
 
+    //For proper display in the API
+    @Override
+    public String toString() {
+        return "Transaction{"
+                + "id=" + getId()
+                + ", account=" + (account != null ? account.getId() : "null")
+                + ", transactionType=" + transactionType
+                + ", transactionTime=" + transactionTime
+                + ", amount=" + amount
+                + ", date=" + date
+                + '}';
+    }
+
 }

@@ -90,9 +90,16 @@ public class AccountType extends BaseEntity {
     @Override
     public String toString() {
         return "AccountType{" +
-                "accountType=" + accountType +
+                "id="+getId()+
+                ",accountType=" + accountType +
                 ", interestRate=" + interestRate +
                 ", timePeriod=" + timePeriod +
                 '}';
     }
 }
+
+//{
+//  "accountType":"FIXED",
+//  "interestRate":"8.0", 
+//  "timePeriod":"5"
+//}
