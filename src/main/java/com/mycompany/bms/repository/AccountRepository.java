@@ -113,7 +113,6 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         CriteriaQuery<Account> cq = cb.createQuery(Account.class);
         Root<Account> root = cq.from(Account.class);
         Join<Account, Customer> customerJoin = root.join("customer", javax.persistence.criteria.JoinType.LEFT);
-        Join<Account, AccountType> accountTypeJoin = root.join("accountType", javax.persistence.criteria.JoinType.LEFT);
 
         // Apply filters
         List<Predicate> predicates = new ArrayList<>();
@@ -122,7 +121,7 @@ public class AccountRepository extends GenericRepository<Account, Long> {
             FilterMeta filter = entry.getValue();
 
             if (filter.getFilterValue() != null && !filter.getFilterValue().toString().isEmpty()) {
-                predicates.add(createPredicate(cb, root, customerJoin, accountTypeJoin, key, filter.getFilterValue()));
+                predicates.add(createPredicate(cb, root, customerJoin, key, filter.getFilterValue()));
             }
         }
 
@@ -140,7 +139,7 @@ public class AccountRepository extends GenericRepository<Account, Long> {
     }
 
     //Searching for all the columns, made transitive path 
-    private Predicate createPredicate(CriteriaBuilder cb, Root<Account> root, Join<Account, Customer> customerJoin, Join<Account, AccountType> accountTypeJoin, String key, Object value) {
+    private Predicate createPredicate(CriteriaBuilder cb, Root<Account> root, Join<Account, Customer> customerJoin,String key, Object value) {
         switch (key) {
             case "accountNumber":
                 // Filter by account number
@@ -151,7 +150,6 @@ public class AccountRepository extends GenericRepository<Account, Long> {
             case "customer.lastName":
                 // Filter by last name
                 return cb.like(cb.lower(customerJoin.get("lastName")), "%" + value.toString().toLowerCase() + "%");
-
             case "status":
                 // Filter by account status
                 return cb.equal(root.get("status"), AccountStatusEnum.valueOf(value.toString().toUpperCase()));
@@ -166,8 +164,7 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Account> root = cq.from(Account.class);
         Join<Account, Customer> customerJoin = root.join("customer", javax.persistence.criteria.JoinType.LEFT);
-        Join<Account, AccountType> accountTypeJoin = root.join("accountType", javax.persistence.criteria.JoinType.LEFT);
-
+     
         // Select the count of Account entities
         cq.select(cb.count(root));
 
@@ -178,7 +175,7 @@ public class AccountRepository extends GenericRepository<Account, Long> {
             FilterMeta filter = entry.getValue();
 
             if (filter.getFilterValue() != null && !filter.getFilterValue().toString().isEmpty()) {
-                predicates.add(createPredicate(cb, root, customerJoin, accountTypeJoin, key, filter.getFilterValue()));
+                predicates.add(createPredicate(cb, root, customerJoin,key, filter.getFilterValue()));
             }
         }
 

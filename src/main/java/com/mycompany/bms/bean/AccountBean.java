@@ -38,7 +38,6 @@ public class AccountBean implements Serializable {
         }
         lazyDataModel = new AccountLazyDataModel();
         lazyDataModel.setAccountRepository(accountRepository); // Set repository
-//        statusOptions = Arrays.asList(AccountStatusEnum.values());
 
     }
 
