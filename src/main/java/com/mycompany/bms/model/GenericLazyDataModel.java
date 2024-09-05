@@ -32,7 +32,7 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
                 }
                 System.out.println("total loaded users = " +numberOfUser);
        
-          return genericRepo.getEntities(first, pageSize, sortBy, filterBy);
+          return loadedUsers;
     }
 
 }

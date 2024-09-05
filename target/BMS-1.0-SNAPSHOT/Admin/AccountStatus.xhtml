@@ -15,66 +15,52 @@
         <h:form id="accountStatusForm">
 
             <!-- DataTable for displaying accounts -->
-            <p:dataTable id="accountTable" var="account"
-                         value="#{accountBean.lazyDataModel}" paginator="true"
-                         rows="5" rowsPerPageTemplate="5,10,15"
-                         lazy="true" style="margin-top:20px"
-                         paginatorPosition="bottom"  paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+            <p:dataTable id="accountTable" var="account" value="#{accountBean.lazyDataModel}"
+                         lazy="true" paginator="true" rows="5"
+                         filterEvent="keyup"
+                         filterDelay="300"
+                         filteredValue="#{accountBean.lazyDataModel.filters}"
+                         selectionMode="single"
+                         rowKey="#{account.id}"
+                         paginatorPosition="bottom"
+                         rowsPerPageTemplate="5,10,15"
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
                          {CurrentPageReport} {NextPageLink} {LastPageLink}"
                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords}">
 
-                <p:column headerText="Account Number" filterBy="#{account.accountNumber}" filterMatchMode="exact">
+                <p:column headerText="Account Number" sortBy="#{account.accountNumber}" filterBy="#{account.accountNumber}">
                     <h:outputText value="#{account.accountNumber}" />
                 </p:column>
 
-                <p:column headerText="First Name" filterBy="#{account.customer.firstName}" filterMatchMode="contains">
+                <p:column headerText="Customer First Name" sortBy="#{account.customer.firstName}" filterBy="#{account.customer.firstName}">
                     <h:outputText value="#{account.customer.firstName}" />
                 </p:column>
 
-                <p:column headerText="Last Name" filterBy="#{account.customer.lastName}" filterMatchMode="exact">
+                <p:column headerText="Customer Last Name" sortBy="#{account.customer.lastName}" filterBy="#{account.customer.lastName}">
                     <h:outputText value="#{account.customer.lastName}" />
                 </p:column>
-                <p:column headerText="Balance" filterBy="#{account.balance}" filterMatchMode="exact">
-                    <h:outputText value="#{account.balance}" />
-                </p:column>
 
-                <p:column headerText="Status" filterBy="#{status}" filterMatchMode="exact">
-                    <f:facet name="filter">
-                        <p:selectOneMenu onchange="PF('accountTable').filter()" value="#{accountBean.selectedStatus}">
-                            <f:selectItem itemLabel="Select Status" itemValue="" />
-                            <f:selectItems value="#{accountBean.statusOptions}" var="status" 
-                                           itemLabel="#{status}" itemValue="#{status}" />
-                        </p:selectOneMenu>
-                    </f:facet>
+                <p:column headerText="Status" sortBy="#{account.status}" filterBy="#{account.status}">
                     <h:outputText value="#{account.status}" />
                 </p:column>
 
-<!--                <p:column headerText="Interest Earned" filterBy="#{account.interestEarned}" filterMatchMode="exact">
-                    <h:outputText value="#{account.interestEarned}" />
-                </p:column>-->
-
-                <p:column headerText="Account Type" filterBy="#{account.accountType.accountType}" filterMatchMode="exact">
-                    <h:outputText value="#{account.accountType.accountType}" />
-                </p:column>
                 <p:column headerText="Actions">
-
                     <p:commandButton icon="pi pi-fw pi-user-edit"
                                      style="margin: 3px; border:1px solid gold; background-color: gold;"
                                      action="#{accountBean.prepareEditEntity(account)}"
                                      oncomplete="PF('editStatusDialog').show()"
                                      update=":growl"
                                      ajax="true"/>
-
                 </p:column>
             </p:dataTable>
         </h:form>
 
-        <!--Dialog box for the editing the account status-->
-        <p:dialog header="Edit Status" widgetVar="editStatusDialog" modal="true" showEffect="hide" hideEffect="fade">
+        <!-- Dialog box for editing the account status -->
+        <p:dialog header="Edit Status" widgetVar="editStatusDialog" modal="true" showEffect="fade" hideEffect="fade">
             <h:form id="editStatusDialogForm">
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="accountStatus" value="Account Status:" />
-                    <p:selectOneMenu id="accountStatus" value="#{accountBean.selectedEntity.status}" required="true" >
+                    <p:selectOneMenu id="accountStatus" value="#{accountBean.selectedEntity.status}" required="true">
                         <f:selectItem itemLabel="Select Status" itemValue="" />
                         <f:selectItems value="#{accountBean.accountStatusValues}" var="status"
                                        itemLabel="#{status}" itemValue="#{status}" />
@@ -83,19 +69,15 @@
                 <p:commandButton value="Update"
                                  icon="pi pi-fw pi-save"
                                  action="#{accountBean.saveEntity}"
-                                 update=":accountTypeListForm :accountTypeDialogForm :growl"
-                                 oncomplete="if (args.validationFailed) 
-                                 { PF('accountTypeDialog').show(); } 
-                                 else 
-                                 { PF('accountTypeDialog').hide(); }"
+                                 update=":accountStatusForm :growl"
+                                 oncomplete="if (args.validationFailed) { PF('editStatusDialog').show(); } else { PF('editStatusDialog').hide(); }"
                                  ajax="true" />
                 <p:commandButton value="Cancel"
                                  icon="pi pi-fw pi-times"
-                                 onclick="PF('accountTypeDialog').hide();"
+                                 onclick="PF('editStatusDialog').hide();"
                                  type="button" />
             </h:form>
         </p:dialog>
-
 
     </h:body>
 </html>

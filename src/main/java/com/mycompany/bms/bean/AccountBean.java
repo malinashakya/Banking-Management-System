@@ -2,7 +2,7 @@ package com.mycompany.bms.bean;
 
 import com.mycompany.bms.model.Account;
 import com.mycompany.bms.model.AccountStatusEnum;
-import com.mycompany.bms.model.GenericLazyDataModel;
+import com.mycompany.bms.model.AccountLazyDataModel;
 import com.mycompany.bms.repository.AccountRepository;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,11 +24,9 @@ public class AccountBean implements Serializable {
     @Inject
     private AccountRepository accountRepository;
 
-//    @Inject
-//    private SessionAdminBean sessionAdminBean; // Inject SessionAdminBean
     private Account selectedEntity;
     private boolean editMode = false;
-    private GenericLazyDataModel<Account> lazyDataModel;
+    private AccountLazyDataModel lazyDataModel;
     private AccountStatusEnum selectedStatus;
     private List<AccountStatusEnum> statusOptions;
 
@@ -39,8 +36,10 @@ public class AccountBean implements Serializable {
         if (selectedEntity == null) {
             selectedEntity = new Account();
         }
-        lazyDataModel = new GenericLazyDataModel<>(accountRepository, Account.class);
-        statusOptions = Arrays.asList(AccountStatusEnum.values());
+        lazyDataModel = new AccountLazyDataModel();
+        lazyDataModel.setAccountRepository(accountRepository); // Set repository
+//        statusOptions = Arrays.asList(AccountStatusEnum.values());
+
     }
 
     public List<AccountStatusEnum> getStatusOptions() {
@@ -129,18 +128,18 @@ public class AccountBean implements Serializable {
         this.editMode = editMode;
     }
 
-    public GenericLazyDataModel<Account> getLazyDataModel() {
+    public AccountLazyDataModel getLazyDataModel() {
         return lazyDataModel;
     }
 
-    public void setLazyDataModel(GenericLazyDataModel<Account> lazyDataModel) {
+    public void setLazyDataModel(AccountLazyDataModel lazyDataModel) {
         this.lazyDataModel = lazyDataModel;
     }
 
-    //For Dashboard purpose
+    // For Dashboard purpose
     public List<Account> getTopCustomersByBalance() {
         return accountRepository.findAll().stream()
-                .sorted(Comparator.comparing(Account::getBalance).reversed())
+                .sorted((a1, a2) -> a2.getBalance().compareTo(a1.getBalance())) // Descending order
                 .limit(3)
                 .collect(Collectors.toList());
     }

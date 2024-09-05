@@ -14,6 +14,7 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.math.BigInteger;
@@ -63,7 +64,6 @@ public class AccountRepository extends GenericRepository<Account, Long> {
     }
 
     public String generateAccountNumber(Account account) {
-        // Ensure accountTypeAlias is a String
         String accountTypeAlias = String.valueOf(account.getAccountType().getAccountType()).substring(0, 2); // Taking two letters from the AccountType as the alias
         String customerId = String.valueOf(account.getCustomer().getId());
         String accountTypeId = String.valueOf(account.getAccountType().getId());
@@ -112,14 +112,26 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Account> cq = cb.createQuery(Account.class);
         Root<Account> root = cq.from(Account.class);
+        Join<Account, Customer> customerJoin = root.join("customer", javax.persistence.criteria.JoinType.LEFT);
+        Join<Account, AccountType> accountTypeJoin = root.join("accountType", javax.persistence.criteria.JoinType.LEFT);
 
         // Apply filters
-        Predicate[] predicates = createPredicates(cb, root, filters);
-        if (predicates.length > 0) {
-            cq.where(predicates);
+        List<Predicate> predicates = new ArrayList<>();
+        for (Map.Entry<String, FilterMeta> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            FilterMeta filter = entry.getValue();
+
+            if (filter.getFilterValue() != null && !filter.getFilterValue().toString().isEmpty()) {
+                predicates.add(createPredicate(cb, root, customerJoin, accountTypeJoin, key, filter.getFilterValue()));
+            }
         }
 
-        // Create and execute the query
+        // Add predicates to the query
+        if (!predicates.isEmpty()) {
+            cq.where(predicates.toArray(new Predicate[0]));
+        }
+
+        // Execute query with pagination
         TypedQuery<Account> query = getEntityManager().createQuery(cq);
         query.setFirstResult(first);
         query.setMaxResults(pageSize);
@@ -127,33 +139,51 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         return query.getResultList();
     }
 
-    private Predicate[] createPredicates(CriteriaBuilder cb, Root<Account> root, Map<String, FilterMeta> filters) {
-        List<Predicate> predicates = new ArrayList<>();
+    //Searching for all the columns, made transitive path 
+    private Predicate createPredicate(CriteriaBuilder cb, Root<Account> root, Join<Account, Customer> customerJoin, Join<Account, AccountType> accountTypeJoin, String key, Object value) {
+        switch (key) {
+            case "accountNumber":
+                // Filter by account number
+                return cb.like(cb.lower(root.get("accountNumber")), "%" + value.toString().toLowerCase() + "%");
+            case "customer.firstName":
+                // Filter by first name
+                return cb.like(cb.lower(customerJoin.get("firstName")), "%" + value.toString().toLowerCase() + "%");
+            case "customer.lastName":
+                // Filter by last name
+                return cb.like(cb.lower(customerJoin.get("lastName")), "%" + value.toString().toLowerCase() + "%");
 
-        for (Map.Entry<String, FilterMeta> entry : filters.entrySet()) {
-            String key = entry.getKey();
-            FilterMeta filter = entry.getValue();
-
-            if (filter.getFilterValue() != null && !filter.getFilterValue().toString().isEmpty()) {
-                predicates.add(createPredicate(cb, root, key, filter.getFilterValue()));
-            }
+            case "status":
+                // Filter by account status
+                return cb.equal(root.get("status"), AccountStatusEnum.valueOf(value.toString().toUpperCase()));
+            default:
+                // Default predicate (no filtering)
+                return cb.conjunction();
         }
-
-        return predicates.toArray(new Predicate[0]);
     }
 
     public int countAccounts(Map<String, FilterMeta> filters) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Account> root = cq.from(Account.class);
+        Join<Account, Customer> customerJoin = root.join("customer", javax.persistence.criteria.JoinType.LEFT);
+        Join<Account, AccountType> accountTypeJoin = root.join("accountType", javax.persistence.criteria.JoinType.LEFT);
 
         // Select the count of Account entities
         cq.select(cb.count(root));
 
         // Create predicates based on the provided filters
-        Predicate[] predicates = createPredicates(cb, root, filters);
-        if (predicates.length > 0) {
-            cq.where(predicates);
+        List<Predicate> predicates = new ArrayList<>();
+        for (Map.Entry<String, FilterMeta> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            FilterMeta filter = entry.getValue();
+
+            if (filter.getFilterValue() != null && !filter.getFilterValue().toString().isEmpty()) {
+                predicates.add(createPredicate(cb, root, customerJoin, accountTypeJoin, key, filter.getFilterValue()));
+            }
+        }
+
+        if (!predicates.isEmpty()) {
+            cq.where(predicates.toArray(new Predicate[0]));
         }
 
         // Create and execute the query
@@ -219,9 +249,7 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         return query.getResultList();
     }
 
-    //For checking the duplicate account type of one customer
     public List<Account> findByCustomerAndAccountType(Customer customer, AccountType accountType) {
-
         return entityManager.createQuery("SELECT a FROM Account a WHERE a.customer = :customer AND a.accountType = :accountType", Account.class)
                 .setParameter("customer", customer)
                 .setParameter("accountType", accountType)
@@ -234,5 +262,4 @@ public class AccountRepository extends GenericRepository<Account, Long> {
         query.setParameter("customerId", customerId);
         return query.getResultList();
     }
-
 }
