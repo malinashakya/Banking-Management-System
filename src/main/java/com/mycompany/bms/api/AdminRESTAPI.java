@@ -83,4 +83,23 @@ public class AdminRESTAPI {
             return RestResponse.responseBuilder("false", "500", "An error occurred", e.getMessage());
         }
     }
+
+//Login API
+    @POST
+    @Path("/login")
+    public Response login(Admin loginDetails) {
+        try {
+            Admin admin = adminRepository.authenticate(loginDetails.getUsername(), loginDetails.getPassword());
+            if (admin != null) {
+                String result = "{\"username\": \"" + admin.getUsername() + "\"}"; // Example JSON for result
+                return RestResponse.responseBuilder("true", "200", "Login successful", result);
+            } else {
+                // Invalid credentials
+                return RestResponse.responseBuilder("false", "401", "Invalid credentials", null);
+            }
+        } catch (Exception e) {
+            // Unexpected error
+            return RestResponse.responseBuilder("false", "500", "An error occurred: " + e.getMessage(), null);
+        }
+    }
 }
