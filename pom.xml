@@ -99,7 +99,23 @@
             <scope>provided</scope>
         </dependency>
 
-        
+        <!--For Token Generation-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId> <!-- for JSON serialization/deserialization -->
+            <version>0.11.2</version>
+        </dependency>
+
     </dependencies>
     
     <build>

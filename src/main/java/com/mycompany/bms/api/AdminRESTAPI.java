@@ -2,6 +2,7 @@ package com.mycompany.bms.api;
 
 import com.mycompany.bms.model.Admin;
 import com.mycompany.bms.repository.AdminRepository;
+import com.mycompany.bms.util.JwtUtil;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -84,21 +85,21 @@ public class AdminRESTAPI {
         }
     }
 
-//Login API
+  // Login API
     @POST
     @Path("/login")
     public Response login(Admin loginDetails) {
         try {
             Admin admin = adminRepository.authenticate(loginDetails.getUsername(), loginDetails.getPassword());
             if (admin != null) {
-                String result = "{\"username\": \"" + admin.getUsername() + "\"}"; // Example JSON for result
+                // Generate JWT token
+                String token = JwtUtil.generateToken(admin.getUsername());
+                String result = "{\"username\": \"" + admin.getUsername() + "\", \"token\": \"" + token + "\"}";
                 return RestResponse.responseBuilder("true", "200", "Login successful", result);
             } else {
-                // Invalid credentials
                 return RestResponse.responseBuilder("false", "401", "Invalid credentials", null);
             }
         } catch (Exception e) {
-            // Unexpected error
             return RestResponse.responseBuilder("false", "500", "An error occurred: " + e.getMessage(), null);
         }
     }
