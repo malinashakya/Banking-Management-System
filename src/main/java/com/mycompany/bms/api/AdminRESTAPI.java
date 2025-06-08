@@ -85,7 +85,7 @@ public class AdminRESTAPI {
         }
     }
 
-  // Login API
+    // Login API
     @POST
     @Path("/login")
     public Response login(Admin loginDetails) {
@@ -102,5 +102,12 @@ public class AdminRESTAPI {
         } catch (Exception e) {
             return RestResponse.responseBuilder("false", "500", "An error occurred: " + e.getMessage(), null);
         }
+    }
+
+    //Just for test purpose
+    @GET
+    @Path("greetings")
+    public Response getGreetings() {
+        return RestResponse.responseBuilder("true", "200", "Greeted", "Hello everyone");
     }
 }

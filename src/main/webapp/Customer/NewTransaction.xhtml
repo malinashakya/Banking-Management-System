@@ -11,13 +11,15 @@
         <p:growl id="growl" showDetail="true" />
         <ui:include src="menu.xhtml" />
 
-        <!-- Single form encapsulating both panels -->
         <h:form id="mainForm">
             <p:panel header="Transfer Money" styleClass="ui-widget-content" id="detailsid">
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="sourceAccount" value="Source Account:" />
-                    <p:selectOneMenu id="sourceAccount" value="#{transactionCustomerBean.selectedEntity.account}" converter="accountConverter">
-                        <f:selectItems value="#{accountInfoCustomerBean.customerSavingsAccounts}" var="account" itemValue="#{account}" itemLabel="#{account.accountNumber} - #{account.customer.firstName} #{account.customer.lastName}" />
+                    <p:selectOneMenu id="sourceAccount"
+                                     value="#{transactionCustomerBean.selectedEntity.account}"
+                                     converter="accountConverter">
+                        <f:selectItems value="#{accountInfoCustomerBean.customerSavingsAccounts}" var="account"
+                                       itemValue="#{account}" itemLabel="#{account.accountNumber} - #{account.customer.firstName} #{account.customer.lastName}" />
                     </p:selectOneMenu>
 
                     <p:outputLabel for="amount" value="Amount:" />
@@ -32,11 +34,15 @@
                     <p:inputText id="targetAccountFullName" value="#{transactionCustomerBean.targetAccountFullName}" />
                 </h:panelGrid>
 
-                <p:commandButton value="Transfer" onclick="PF('pinDialog').show();" type="button" style="margin-right: 10px;" />
+                <!-- Updated Transfer button: opens dialog -->
+                <p:commandButton value="Transfer"
+                                 type="button"
+                                 onclick="PF('pinDialog').show();"
+                                 style="margin-right: 10px;" />
                 <p:commandButton value="Cancel" onclick="PF('transferDialog').hide()" type="button" />
             </p:panel>
 
-            <!-- Dialog to ask for PIN -->
+            <!-- PIN Dialog -->
             <p:dialog id="pinDialog" header="Enter PIN" widgetVar="pinDialog" modal="true" closable="false" resizable="false">
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:outputLabel for="pin" value="Enter PIN:" />
@@ -44,33 +50,39 @@
                                 feedback="false" label="PIN" maxlength="4" />
 
                     <p:outputLabel/>
-                    <!-- Process the entire form including the panel data -->
-                    <p:commandButton value="Confirm" action="#{transactionCustomerBean.saveOrUpdateEntity()}"
-                                     update=":growl :mainForm" process="@form" 
-                                     oncomplete="PF('pinDialog').hide();" />
+                </h:panelGrid>
+                <h:panelGrid columns="2" styleClass="button-container" style="text-align: center;">
+                    <p:commandButton value="Confirm"
+                                     action="#{transactionCustomerBean.saveOrUpdateEntity()}"
+                                     update=":growl :mainForm"
+                                     process="@form"
+                                     oncomplete="PF('pinDialog').hide(); if (#{transactionCustomerBean.showChangePinDialog}) PF('changePinDialog').show();" />
                     <p:commandButton value="Cancel" onclick="PF('pinDialog').hide()" type="button" />
                 </h:panelGrid>
             </p:dialog>
-
-            <!-- Dialog to change the PIN after 3 invalid attempts -->
-            <p:dialog id="changePinDialog" header="Change PIN" widgetVar="changePinDialog" modal="true" closable="false" resizable="false"
-                      rendered="#{transactionCustomerBean.showChangePinDialog}">
-                <h:panelGrid columns="2" cellpadding="5">
-                    <p:outputLabel for="newPin" value="New PIN:" />
-                    <p:password id="newPin" value="#{transactionCustomerBean.newPin}" required="true" feedback="false" label="New PIN" maxlength="4" />
-
-                    <p:outputLabel for="confirmNewPin" value="Confirm New PIN:" />
-                    <p:password id="confirmNewPin" value="#{transactionCustomerBean.confirmNewPin}" required="true" feedback="false" label="Confirm New PIN" maxlength="4" />
-
-                    <p:outputLabel/>
-                    <!-- Button to confirm the PIN change -->
-                    <p:commandButton value="Change PIN" action="#{transactionCustomerBean.changePin()}"
-                                     update=":growl :mainForm" process="@form"
-                                     oncomplete="PF('changePinDialog').hide();" />
-                    <p:commandButton value="Cancel" onclick="PF('changePinDialog').hide()" type="button" />
-                </h:panelGrid>
-            </p:dialog>
-
         </h:form>
+        <h:form id="changePinForm">
+    <p:dialog id="changePinDialog" header="Change PIN" widgetVar="changePinDialog"
+              modal="true" closable="false" resizable="false">
+        <h:panelGrid columns="2" cellpadding="5">
+            <p:outputLabel for="newPin" value="New PIN:" />
+            <p:password id="newPin" value="#{transactionCustomerBean.newPin}" required="true"
+                        feedback="false" label="New PIN" maxlength="4" />
+
+            <p:outputLabel for="confirmNewPin" value="Confirm New PIN:" />
+            <p:password id="confirmNewPin" value="#{transactionCustomerBean.confirmNewPin}" required="true"
+                        feedback="false" label="Confirm New PIN" maxlength="4" />
+        </h:panelGrid>
+
+        <h:panelGrid columns="2">
+            <p:commandButton value="Change PIN"
+                             action="#{transactionCustomerBean.changePin}"
+                             update=":growl :mainForm"
+                             process="@form"
+                             oncomplete="PF('changePinDialog').hide();" />
+            <p:commandButton value="Cancel" onclick="PF('changePinDialog').hide()" type="button" />
+        </h:panelGrid>
+    </p:dialog>
+</h:form>
     </h:body>
 </html>

@@ -6,9 +6,20 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Login - Banking Management System</title>
-          
-          <link rel="stylesheet" type="text/css" href="/BMS-1.0-SNAPSHOT/Admin/CSS/styles.css" />
 
+        <link rel="stylesheet" type="text/css" href="/BMS-1.0-SNAPSHOT/Admin/CSS/styles.css" />
+        <style>
+            .register-btn {
+                display: inline-block;
+                padding: 12px 24px;
+                margin-top: 10px;
+                color: #007bff;
+                font-size: 12px;
+                text-align: center;
+                text-decoration: none;
+            }
+
+        </style>
 
     </h:head>
     <h:body>
@@ -34,6 +45,10 @@
                     </div>
 
                     <p:commandButton value="Login" action="#{loginAdminBean.login}" styleClass="login-button" update="messages" />
+                    <a href="/BMS-1.0-SNAPSHOT/Admin/RegisterAdmin.xhtml" class="register-btn">
+                        Register Now
+                    </a>
+
                 </h:form>
             </div>
             <div class="login-right"></div>

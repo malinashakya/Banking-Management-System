@@ -120,7 +120,7 @@ public class TransactionCustomerBean implements Serializable {
                     .filter(account -> account.getType() == AccountTypeEnum.SAVINGS
                     && account.getStatus() == AccountStatusEnum.ACTIVE
                     && account.getAccountNumber().equals(targetAccountNumber)
-                    && (account.getCustomer().getFirstName() + " " + account.getCustomer().getLastName()).equals(targetAccountFullName))
+                    && (account.getCustomer().getFirstName() + " " + account.getCustomer().getLastName()).trim().equalsIgnoreCase(targetAccountFullName.trim()))
                     .findFirst();
 
             if (!optionalTargetAccount.isPresent()) {
@@ -149,10 +149,11 @@ public class TransactionCustomerBean implements Serializable {
 
                 // Redirect to the PIN change page if 3 invalid attempts
                 if (invalidPinCount >= 3) {
-                    invalidPinCount = 0; // Reset the invalid PIN attempt counter
-                    facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Customer/PINChange.xhtml");
+                    invalidPinCount = 0;
+                    showChangePinDialog = true;
                     return;
                 }
+
                 return;
             }
 
@@ -208,12 +209,18 @@ public class TransactionCustomerBean implements Serializable {
 
         sourceAccount.setPin(newPin);
         accountRepository.update(sourceAccount);
-        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "PIN changed successfully"));
-        invalidPinCount = 0; // Reset invalid PIN attempt counter
-        showChangePinDialog = false; // Reset flag after PIN change
 
-        // Redirect to home page or another appropriate page after successful PIN change
+        // Add success message
+        facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "PIN changed successfully"));
+
+        // Keep messages across redirect
+        facesContext.getExternalContext().getFlash().setKeepMessages(true);
+
+        invalidPinCount = 0;
+        showChangePinDialog = false;
+
         try {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "PIN changed successfully"));
             facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/Customer/CustomerDashboard.xhtml");
         } catch (IOException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to redirect after PIN change."));

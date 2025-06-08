@@ -24,12 +24,15 @@ public class AdminPhaseListener implements PhaseListener {
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         String requestURI = context.getExternalContext().getRequestContextPath() + context.getExternalContext().getRequestServletPath();
         String loginURI = context.getExternalContext().getRequestContextPath() + "/Admin/loginpage.xhtml";
+        String registerURI = context.getExternalContext().getRequestContextPath() + "/Admin/RegisterAdmin.xhtml";
 
         boolean loggedIn = (session != null && session.getAttribute("loggedInAdmin") != null);
         boolean loginRequest = requestURI.equals(loginURI);
+        boolean registerRequest = requestURI.equals(registerURI);
+
         boolean adminRequest = requestURI.startsWith(context.getExternalContext().getRequestContextPath() + "/Admin/");
 
-        if (!loggedIn && adminRequest && !loginRequest) {
+        if (!loggedIn && adminRequest && !loginRequest && !registerRequest) {
             try {
                 context.getExternalContext().redirect(loginURI);
             } catch (IOException e) {

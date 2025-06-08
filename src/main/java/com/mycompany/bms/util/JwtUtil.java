@@ -23,6 +23,6 @@ public class JwtUtil {
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiration)
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
-                .compact();
+                .compact(); //binding everything in one
     }
 }
